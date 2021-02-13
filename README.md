@@ -15,7 +15,7 @@
 ## Installation
 ```
 # Clone the repository :
-git clone https://github.com/rreemmii-dev/ClashOfClans-Discord-Bot.git
+git clone https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot.git
 
 # Download the libraries :
 pip install -r requirements.txt
