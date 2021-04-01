@@ -1,0 +1,65 @@
+{
+    "1": {
+        "\n__Army :__": {"Army Camps": "No Level"},
+        "\n__Defenses :__": {"Cannon": 1},
+        "\n__Resources :__": {"Gold Mines": 1, "Elixir Collectors": 1},
+        "\n__Traps :__": {"Any": " "},
+        "\n__Special :__": {"Any": " "}
+    },
+    "2": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 2, "Star Laboratory": 2},
+        "\n__Defenses :__": {"Wall": 1, "Cannon": 1, "Double Cannon": 1, "Archer Tower": 1},
+        "\n__Resources :__": {"Gold Mines": 2, "Elixir Collectors": 2},
+        "\n__Traps :__": {"Push Trap": 2},
+        "\n__Special :__": {"Any": " "}
+    },
+    "3": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 4, "Star Laboratory": 3},
+        "\n__Defenses :__": {"Wall": 3, "Cannon": 3, "Double Cannon": 3, "Archer Tower": 3, "Crusher": 2, "Hidden Tesla": 3, "Firecraker": 3},
+        "\n__Resources :__": {"Gold Mines": 3, "Elixir Collectors": 3, "Gold Storage": 2, "Elixir Storage": 2},
+        "\n__Traps :__": {"Push Trap": 3, "Spring Trap": 1, "Mines": 3},
+        "\n__Special :__": {"Gem Mine": 3}
+    },
+    "4": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 6, "Star Laboratory": 4},
+        "\n__Defenses :__": {"Wall": 4, "Cannon": 4, "Double Cannon": 4, "Archer Tower": 4, "Crusher": 4, "Hidden Tesla": 4, "Firecraker": 4, "Guard Post": 4, "Air Bombs": 4},
+        "\n__Resources :__": {"Gold Mines": 4, "Elixir Collectors": 4, "Gold Storage": 4, "Elixir Storage": 4},
+        "\n__Traps :__": {"Push Trap": 4, "Spring Trap": 2, "Mines": 4, "Mega Mines": 4},
+        "\n__Special :__": {"Gem Mine": 4, "Clock Tower": 4}
+    },
+    "5": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 7, "Star Laboratory": 5},
+        "\n__Defenses :__": {"Wall": 5, "Cannon": 5, "Double Cannon": 5, "Archer Tower": 5, "Crusher": 5, "Hidden Tesla": 5, "Firecraker": 5, "Guard Post": 5, "Air Bombs": 5, "Multi Mortar": 5},
+        "\n__Resources :__": {"Gold Mines": 5, "Elixir Collectors": 5, "Gold Storage": 5, "Elixir Storage": 5},
+        "\n__Traps :__": {"Push Trap": 5, "Spring Trap": 2, "Mines": 5, "Mega Mines": 5},
+        "\n__Special :__": {"Gem Mine": 5, "Clock Tower": 5, "Battle Machine": 5}
+    },
+    "6": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 8, "Star Laboratory": 6},
+        "\n__Defenses :__": {"Wall": 6, "Cannon": 6, "Double Cannon": 6, "Archer Tower": 6, "Crusher": 6, "Hidden Tesla": 6, "Firecraker": 6, "Guard Post": 6, "Air Bombs": 6, "Multi Mortar": 6, "Roaster": 6},
+        "\n__Resources :__": {"Gold Mines": 6, "Elixir Collectors": 6, "Gold Storage": 6, "Elixir Storage": 6},
+        "\n__Traps :__": {"Push Trap": 6, "Spring Trap": 3, "Mines": 6, "Mega Mines": 6},
+        "\n__Special :__": {"Gem Mine": 6, "Clock Tower": 6, "Battle Machine": 10}
+    },
+    "7": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 9, "Star Laboratory": 7},
+        "\n__Defenses :__": {"Wall": 7, "Cannon": 7, "Double Cannon": 7, "Archer Tower": 7, "Crusher": 7, "Hidden Tesla": 7, "Firecraker": 7, "Guard Post": 7, "Air Bombs": 7, "Multi Mortar": 7, "Roaster": 7, "Giant Cannon": 7},
+        "\n__Resources :__": {"Gold Mines": 7, "Elixir Collectors": 7, "Gold Storage": 7, "Elixir Storage": 7},
+        "\n__Traps :__": {"Push Trap": 7, "Spring Trap": 3, "Mines": 7, "Mega Mines": 7},
+        "\n__Special :__": {"Gem Mine": 7, "Clock Tower": 7, "Battle Machine": 20}
+    },
+    "8": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 10, "Star Laboratory": 8},
+        "\n__Defenses :__": {"Wall": 8, "Cannon": 8, "Double Cannon": 8, "Archer Tower": 8, "Crusher": 8, "Hidden Tesla": 8, "Firecraker": 8, "Guard Post": 8, "Air Bombs": 8, "Multi Mortar": 8, "Roaster": 8, "Giant Cannon": 8, "Mega Tesla": 8},
+        "\n__Resources :__": {"Gold Mines": 8, "Elixir Collectors": 8, "Gold Storage": 8, "Elixir Storage": 8},
+        "\n__Traps :__": {"Push Trap": 8, "Spring Trap": 4, "Mines": 8, "Mega Mines": 8},
+        "\n__Special :__": {"Gem Mine": 8, "Clock Tower": 8, "Battle Machine": 25}
+    },
+    "9": {
+        "\n__Army :__": {"Army Camps": "No Level", "Builders Barracks": 11, "Star Laboratory": 9, "O.T.T.O hut": 1},
+        "\n__Defenses :__": {"Wall": 9, "Cannon": 9, "Double Cannon": 9, "Archer Tower": 9, "Crusher": 9, "Hidden Tesla": 9, "Firecraker": 9, "Guard Post": 9, "Air Bombs": 9, "Multi Mortar": 9, "Roaster": 9, "Giant Cannon": 9, "Mega Tesla": 9, "Lava Launcher": 9},
+        "\n__Resources :__": {"Gold Mines": 9, "Elixir Collectors": 9, "Gold Storage": 9, "Elixir Storage": 9},
+        "\n__Traps :__": {"Push Trap": 9, "Spring Trap": 4, "Mines": 9, "Mega Mines": 9},
+        "\n__Special :__": {"Gem Mine": 9, "Clock Tower": 9, "Battle Machine": 30}
+    }
+}
