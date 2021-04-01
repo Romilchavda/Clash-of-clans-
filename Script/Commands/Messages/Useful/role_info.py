@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed, int_to_str
+=======
+from Script.import_functions import create_embed
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
 
 
 async def role_info(ctx, role):
@@ -27,6 +31,7 @@ async def role_info(ctx, role):
     if role.permissions.view_audit_log:
         perms += "View logs\n"
     if perms == "":
+<<<<<<< HEAD
         perms = "Any\n"
     nb_humans = 0
     for members in ctx.guild.members:
@@ -38,4 +43,9 @@ async def role_info(ctx, role):
             nb_bots += 1
     embed = create_embed(role.name, f"{Emojis['Members']} Humans : {int_to_str(nb_humans)}\n{Emojis['Bot']} Bots : {int_to_str(nb_bots)}\n\n{Emojis['Settings']} **Role permissions :** \n{perms}", role.color, "", ctx.guild.me.avatar_url)
     await ctx.send(embed=embed)
+=======
+        perms = "Any"
+    embed = create_embed(role.name, f"**Role permissions :**\n{perms}", role.color, "", ctx.guild.me.avatar_url)
+    await ctx.channel.send(embed=embed)
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return

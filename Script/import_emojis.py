@@ -24,21 +24,33 @@ class EmojisBot(discord.Client):
         # th-bh-leagues
         guild = self.get_guild(Emojis_th_bh_leagues_id)
         th_emojis = {}
+<<<<<<< HEAD
         th_emojis_dict = {"TH_01": ("TH 1", 1), "TH_02": ("TH 2", 2), "TH_03": ("TH 3", 3), "TH_04": ("TH 4", 4), "TH_05": ("TH 5", 5), "TH_06": ("TH 6", 6), "TH_07": ("TH 7", 7), "TH_08": ("TH 8", 8), "TH_09": ("TH 9", 9), "TH_10": ("TH 10", 10), "TH_11": ("TH 11", 11), "TH_12": ("TH 12", 12), "TH_13": ("TH 13", 13)}
+=======
+        th_emojis_dict = {"TH_01": ["TH 1", 1], "TH_02": ["TH 2", 2], "TH_03": ["TH 3", 3], "TH_04": ["TH 4", 4], "TH_05": ["TH 5", 5], "TH_06": ["TH 6", 6], "TH_07": ["TH 7", 7], "TH_08": ["TH 8", 8], "TH_09": ["TH 9", 9], "TH_10": ["TH 10", 10], "TH_11": ["TH 11", 11], "TH_12": ["TH 12", 12], "TH_13": ["TH 13", 13]}
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         for emoji_name, emoji_dict in th_emojis_dict.items():
             emoji = discord.utils.get(guild.emojis, name=emoji_name)
             th_emojis[emoji] = th_emojis_dict[emoji_name]
         emojis["Th_emojis"] = th_emojis
 
         bh_emojis = {}
+<<<<<<< HEAD
         bh_emojis_dict = {"BH_01": ("BH 1", 1), "BH_02": ("BH 2", 2), "BH_03": ("BH 3", 3), "BH_04": ("BH 4", 4), "BH_05": ("BH 5", 5), "BH_06": ("BH 6", 6), "BH_07": ("BH 7", 7), "BH_08": ("BH 8", 8), "BH_09": ("BH 9", 9)}
+=======
+        bh_emojis_dict = {"BH_01": ["BH 1", 1], "BH_02": ["BH 2", 2], "BH_03": ["BH 3", 3], "BH_04": ["BH 4", 4], "BH_05": ["BH 5", 5], "BH_06": ["BH 6", 6], "BH_07": ["BH 7", 7], "BH_08": ["BH 8", 8], "BH_09": ["BH 9", 9]}
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         for emoji_name, emoji_dict in bh_emojis_dict.items():
             emoji = discord.utils.get(guild.emojis, name=emoji_name)
             bh_emojis[emoji] = bh_emojis_dict[emoji_name]
         emojis["Bh_emojis"] = bh_emojis
 
         league_emojis = {}
+<<<<<<< HEAD
         league_emojis_dict = {"unranked_league": ("unranked league", 0), "bronze_league": ("bronze league", 400), "silver_league": ("silver league", 800), "gold_league": ("gold league", 1400), "crystal_league": ("crystal league", 2000), "master_league": ("master league", 2600), "champion_league": ("champion league", 3200), "titan_league": ("titan league", 4100), "legend_league": ("legend league", 5000)}
+=======
+        league_emojis_dict = {"unranked_league": ["unranked league", 0], "bronze_league": ["bronze league", 400], "silver_league": ["silver league", 800], "gold_league": ["gold league", 1400], "crystal_league": ["crystal league", 2000], "master_league": ["master league", 2600], "champion_league": ["champion league", 3200], "titan_league": ["titan league", 4100], "legend_league": ["legend league", 5000]}
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         for emoji_name, emoji_dict in league_emojis_dict.items():
             emoji = discord.utils.get(guild.emojis, name=emoji_name)
             league_emojis[emoji] = league_emojis_dict[emoji_name]

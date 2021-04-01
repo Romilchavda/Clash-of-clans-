@@ -28,6 +28,12 @@ async def member_info(ctx, member):
         perms += "View logs\n"
     if perms == "":
         perms = "Any"
+<<<<<<< HEAD
     embed = create_embed(member.name, f"{Emojis['Invite']} Server join : **{member.joined_at.date().isoformat()}**.\n{Emojis['Discord']} Discord account creation : **{member.created_at.date().isoformat()}**\n\n{Emojis['Settings']} **Member permissions :**\n{perms}", member.color, "", ctx.guild.me.avatar_url)
     embed.set_thumbnail(url=member.avatar_url)
     await ctx.send(embed=embed)
+=======
+    embed = create_embed(member.name, f"*The date format is YYYY-MM-DD*\n{Emojis['Invite']} Server join : **{member.joined_at.date().isoformat()}**.\n{Emojis['Discord']} Discord account creation : **{member.created_at.date().isoformat()}**\n\n**Member permissions :**\n{perms}", member.color, "", ctx.guild.me.avatar_url)
+    embed.set_thumbnail(url=member.avatar_url)
+    await ctx.channel.send(embed=embed)
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9

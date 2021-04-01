@@ -3,8 +3,13 @@ from Script.Const_variables.import_const import Ids
 from Script.import_functions import create_embed_img
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import io
+<<<<<<< HEAD
 WelcomeImage = Image.open("Pictures/Welcome.png")
 Font = ImageFont.truetype("ttf/Supercell-magic-webfont.x-font-ttf", 100)
+=======
+WelcomeImage = Image.open("Script/../Pictures/Welcome.png")
+Font = ImageFont.truetype("Script/../ttf/Supercell-magic-webfont.x-font-ttf", 100)
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
 
 
 async def member_join(self, member):
@@ -21,6 +26,7 @@ async def member_join(self, member):
         if x == 0:
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
             await member.guild.create_voice_channel("👤 Users : " + str(nb_humans), overwrites=overwrite)
+<<<<<<< HEAD
         role = discord.utils.get(member.guild.roles, name="Rules not checked")
         await member.add_roles(role)
 
@@ -29,6 +35,14 @@ async def member_join(self, member):
         image = WelcomeImage
         buffer_avatar = io.BytesIO()
         await member.avatar_url.save(buffer_avatar)
+=======
+        welcome = self.get_channel(Ids["Welcome"])
+
+        image = WelcomeImage
+        avatar_asset = member.avatar_url
+        buffer_avatar = io.BytesIO()
+        await avatar_asset.save(buffer_avatar)
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         buffer_avatar.seek(0)
 
         avatar = Image.open(buffer_avatar)
@@ -76,4 +90,9 @@ async def member_join(self, member):
 
         embed = create_embed_img(f"Welcome {member.name} !", f"{member.mention} \nWelcome in the support server for Clash INFO !", member.color, "", member.guild.me.avatar_url, url)
         await welcome.send(embed=embed, file=file)
+<<<<<<< HEAD
+=======
+        role = discord.utils.get(member.guild.roles, name="Rules not checked")
+        await member.add_roles(role)
+>>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return
