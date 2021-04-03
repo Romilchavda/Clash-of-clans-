@@ -1,4 +1,3 @@
-dblpy
 discord.py
 discord-py-slash-command
 coc.py

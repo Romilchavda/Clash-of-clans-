@@ -35,6 +35,6 @@ def create_embed(title, description, colour, footer, icon_url):
 
 def trophies_to_league(trophies):
     league_emojis_list = sorted(Emojis["League_emojis"].items(), key=lambda t: t[1][1], reverse=True)
-    for tupple in league_emojis_list:
-        if trophies >= tupple[1][1]:
-            return tupple[0]
+    for tuple in league_emojis_list:
+        if trophies >= tuple[1][1]:
+            return tuple[0]

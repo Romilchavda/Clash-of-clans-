@@ -16,12 +16,7 @@ async def auto_roles_th(ctx, channel):
         for emoji in Emojis["Th_emojis"].keys():
             await msg.add_reaction(emoji)
     else:
-<<<<<<< HEAD
         await ctx.send("You are not allowed to create an auto-roles system. You must be an administrator", hidden=True)
-=======
-        embed = create_embed("You cannot do this action", "You are not allowed to create an auto-roles system. You must be an administrator", 0xff8000, "", ctx.guild.me.avatar_url)
-        await ctx.channel.send(embed=embed)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return
 
 
@@ -38,12 +33,7 @@ async def auto_roles_bh(ctx, channel):
         for emoji in Emojis["Bh_emojis"].keys():
             await msg.add_reaction(emoji)
     else:
-<<<<<<< HEAD
         await ctx.send("You are not allowed to create an auto-roles system. You must be an administrator", hidden=True)
-=======
-        embed = create_embed("You cannot do this action", "You are not allowed to create an auto-roles system. You must be an administrator", 0xff8000, "", ctx.guild.me.avatar_url)
-        await ctx.channel.send(embed=embed)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return
 
 
@@ -60,10 +50,5 @@ async def auto_roles_leagues(ctx, channel):
         for emoji in Emojis["League_emojis"].keys():
             await msg.add_reaction(emoji)
     else:
-<<<<<<< HEAD
         await ctx.send("You are not allowed to create an auto-roles system. You must be an administrator", hidden=True)
-=======
-        embed = create_embed("You cannot do this action", "You are not allowed to create an auto-roles system. You must be an administrator", 0xff8000, "", ctx.guild.me.avatar_url)
-        await ctx.channel.send(embed=embed)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return

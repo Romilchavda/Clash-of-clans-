@@ -19,11 +19,7 @@ async def guild_join(self, guild):
         if a == 0:
             overwrite = {guild.default_role: discord.PermissionOverwrite(view_channel=True, send_messages=False), bot: discord.PermissionOverwrite(send_messages=True)}
             channel = await guild.create_text_channel("clash info news", overwrites=overwrite)
-<<<<<<< HEAD
         embed = create_embed("Thank you for using this bot on your server !", f"Hello\nIf you want to receive the list of the features for the bot, please check the reaction {Emojis['News']} bellow. If you want to delete this channel, please check the reaction {Emojis['Delete']} bellow. You can join the Clash INFO support server here : https://discord.gg/KQmstPw\n\nPlease grant the permissions `Use External Emoji` to `@everyone`, or the bot slash commands won't show emojis !", 0x00ffff, "", guild.me.avatar_url)
-=======
-        embed = create_embed("Thank you for using this bot on your server !", f"Hello\nIf you want to receive the list of the features for the bot, please check the reaction {Emojis['News']} bellow. If you want to delete this channel, please check the reaction {Emojis['Delete']} bellow. You can join the Clash INFO support server here : https://discord.gg/KQmstPw", 0x00ffff, "", guild.me.avatar_url)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         msg = await channel.send(embed=embed)
         await msg.add_reaction(Emojis["News"])
         await msg.add_reaction(Emojis["Delete"])

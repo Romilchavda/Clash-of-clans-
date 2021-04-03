@@ -1,4 +1,5 @@
 {
+    "Last Update": "2021-04-03",
     "Barbarian": {"name": "Barbarian", "emoji": "barb", "player": "-", "max": 9, "TH1": 1, "TH2": 1, "TH3": 2, "TH4": 2, "TH5": 3, "TH6": 3, "TH7": 4, "TH8": 5, "TH9": 6, "TH10": 7, "TH11": 8, "TH12": 9, "TH13": 9},
     "Archer": {"name": "Archer", "emoji": "archer", "player": "-", "max": 9, "TH1": 1, "TH2": 1, "TH3": 2, "TH4": 2, "TH5": 3, "TH6": 3, "TH7": 4, "TH8": 5, "TH9": 6, "TH10": 7, "TH11": 8, "TH12": 9, "TH13": 9},
     "Giant": {"name": "Giant", "emoji": "giant", "player": "-", "max": 10, "TH1": 1, "TH2": 1, "TH3": 1, "TH4": 2, "TH5": 2, "TH6": 3, "TH7": 4, "TH8": 5, "TH9": 6, "TH10": 7, "TH11": 8, "TH12": 9, "TH13": 10},

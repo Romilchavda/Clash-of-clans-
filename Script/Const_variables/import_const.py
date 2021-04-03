@@ -14,14 +14,16 @@ th_buildings = json.load(def_th)
 def_th.close()
 Th_buildings = {}
 for th_lvl, dict in th_buildings.items():
-    Th_buildings[int(th_lvl)] = dict
+    if th_lvl != "Last Update":
+        Th_buildings[int(th_lvl)] = dict
 
 def_bh = open("Script/Const_variables/bh_buildings.json", "r")
 bh_buildings = json.load(def_bh)
 def_bh.close()
 Bh_buildings = {}
 for bh_lvl, dict in bh_buildings.items():
-    Bh_buildings[int(bh_lvl)] = dict
+    if bh_lvl != "Last Update":
+        Bh_buildings[int(bh_lvl)] = dict
 
 def_ids = open("Script/Const_variables/ids.json", "r")
 Ids = json.load(def_ids)

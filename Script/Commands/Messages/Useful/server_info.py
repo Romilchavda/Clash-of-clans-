@@ -19,7 +19,6 @@ async def server_info(ctx):
             break
         emojis += f"{emoji} "
         count += 1
-<<<<<<< HEAD
     admins = ""
     count = 0
     for member in ctx.guild.members:
@@ -32,17 +31,4 @@ async def server_info(ctx):
     embed = create_embed(ctx.guild.name, f"{Emojis['Owner']} Owner : {ctx.guild.owner.mention}\n{Emojis['Calendar']} Created at : {ctx.guild.created_at.date().isoformat()}\n{Emojis['Members']} Humans : {int_to_str(nb_humans)}\n{Emojis['Bot']} Bots : {int_to_str(nb_bots)}\n{Emojis['Pin']} Region : {ctx.guild.region}\n{Emojis['Boost']} Boost level : {ctx.guild.premium_tier}/3\n{Emojis['Boost']} Boost number : {ctx.guild.premium_subscription_count}\n{Emojis['Emoji_ghost']} emojis : {emojis}\nAdministrators : {admins}", ctx.guild.me.color, "", ctx.guild.icon_url)
     embed.set_thumbnail(url=ctx.guild.icon_url)
     await ctx.send(embed=embed)
-=======
-    roles = ""
-    count = 0
-    for role in ctx.guild.roles:
-        if count > 10:
-            roles += "..."
-            break
-        roles += f"{role.mention} "
-        count += 1
-    embed = create_embed(ctx.guild.name, f"{Emojis['Owner']} Owner : {ctx.guild.owner.mention}\n{Emojis['Calendar']} Created at (*YYYY-MM-DD*) : {ctx.guild.created_at.date().isoformat()}\n{Emojis['Members']} Humans : {int_to_str(nb_humans)}\n{Emojis['Bot']} Bots : {int_to_str(nb_bots)}\n{Emojis['Pin']} Region : {ctx.guild.region}\n{Emojis['Boost']} Boost level : {ctx.guild.premium_tier}/3\n{Emojis['Boost']} Boost number : {ctx.guild.premium_subscription_count}\n{Emojis['Emoji_ghost']} emojis : {emojis}\nRoles : {roles}", ctx.guild.me.color, "", ctx.guild.icon_url)
-    embed.set_thumbnail(url=ctx.guild.icon_url)
-    await ctx.channel.send(embed=embed)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
     return

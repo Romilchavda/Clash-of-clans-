@@ -1,7 +1,8 @@
 {
+    "Last Update": "2021-04-03",
     "1": {
         "\n__Army :__": {"Army Camp": 1, "Barracks": 3},
-        "\n__Defenses :__": {"Wall": 1, "Cannon": 2},
+        "\n__Defenses :__": {"Cannon": 2},
         "\n__Resources :__": {"Gold Mine": 2, "Elixir Collector": 2, "Gold Storage": 1, "Elixir Storage": 1},
         "\n__Traps :__": {"Any": " "}
     },
@@ -56,25 +57,25 @@
     "10": {
         "\n__Army :__": {"Army Camp": 8, "Barracks": 12, "Dark Barracks": 7, "Spell Factory": 5, "Dark Spell Factory": 5, "Laboratory": 8, "Clan Castle": 6, "Barbarian King": 40, "Archer Queen": 40},
         "\n__Defenses :__": {"Wall": 11, "Cannon": 13, "Archer Tower": 13, "Mortar": 8, "Air Defense": 8, "Wizard Tower": 9, "Air Sweeper": 6, "Hidden Tesla": 8, "Bomb Tower": 4, "X-Bow": 4, "Inferno Tower": 3},
-        "\n__Resources :__": {"Gold Mine": 13, "Elixir Collector": 13, "Gold Storage": 11, "Elixir Storage": 11, "Dark Elixir Drill": 7, "Dark Elixir Storage": 7},
+        "\n__Resources :__": {"Gold Mine": 13, "Elixir Collector": 13, "Gold Storage": 11, "Elixir Storage": 11, "Dark Elixir Drill": 7, "Dark Elixir Storage": 6},
         "\n__Traps :__": {"Bomb": 7, "Spring Trap": 5, "Air Bomb": 4, "Giant Bomb": 4, "Seeking Air Mine": 3, "Skeleton Trap": 4}
     },
     "11": {
-        "\n__Army :__": {"Army Camp": 9, "Barracks": 13, "Dark Barracks": 8, "Spell Factory": 5, "Dark Spell Factory": 5, "Laboratory": 9, "Clan Castle": 7, "Barbarian King": 50, "Archer Queen": 50, "Grand Warden": 20},
+        "\n__Army :__": {"Army Camp": 9, "Barracks": 13, "Dark Barracks": 8, "Spell Factory": 6, "Dark Spell Factory": 5, "Laboratory": 9, "Clan Castle": 7, "Barbarian King": 50, "Archer Queen": 50, "Grand Warden": 20},
         "\n__Defenses :__": {"Wall": 12, "Cannon": 15, "Archer Tower": 15, "Mortar": 10, "Air Defense": 9, "Wizard Tower": 10, "Air Sweeper": 7, "Hidden Tesla": 9, "Bomb Tower": 6, "X-Bow": 5, "Inferno Tower": 5, "Eagle Artillery": 2},
-        "\n__Resources :__": {"Gold Mine": 14, "Elixir Collector": 14, "Gold Storage": 12, "Elixir Storage": 12, "Dark Elixir Drill": 8, "Dark Elixir Storage": 7},
+        "\n__Resources :__": {"Gold Mine": 14, "Elixir Collector": 14, "Gold Storage": 12, "Elixir Storage": 12, "Dark Elixir Drill": 8, "Dark Elixir Storage": 6},
         "\n__Traps :__": {"Bomb": 8, "Spring Trap": 5, "Air Bomb": 5, "Giant Bomb": 5, "Seeking Air Mine": 3, "Skeleton Trap": 4, "Tornado Trap": 2}
     },
     "12": {
-        "\n__Army :__": {"Army Camp": 10, "Barracks": 14, "Dark Barracks": 8, "Spell Factory": 5, "Dark Spell Factory": 5, "Workshop": 3, "Laboratory": 10, "Clan Castle": 8, "Barbarian King": 65, "Archer Queen": 65, "Grand Warden": 40},
-        "\n__Defenses :__": {"Wall": 13, "Cannon": 17, "Archer Tower": 17, "Mortar": 12, "Air Defense": 10, "Wizard Tower": 11, "Air Sweeper": 7, "Hidden Tesla": 10, "Bomb Tower": 6, "X-Bow": 6, "Inferno Tower": 6, "Eagle Artillery": 3},
-        "\n__Resources :__": {"Gold Mine": 14, "Elixir Collector": 14, "Gold Storage": 14, "Elixir Storage": 14, "Dark Elixir Drill": 8, "Dark Elixir Storage": 7},
-        "\n__Traps :__": {"Bomb": 8, "Spring Trap": 5, "Air Bomb": 6, "Giant Bomb": 6, "Seeking Air Mine": 3, "Skeleton Trap": 4, "Tornado Trap": 3}
+        "\n__Army :__": {"Army Camp": 10, "Barracks": 14, "Dark Barracks": 9, "Spell Factory": 6, "Dark Spell Factory": 5, "Workshop": 3, "Laboratory": 10, "Clan Castle": 8, "Barbarian King": 65, "Archer Queen": 65, "Grand Warden": 40},
+        "\n__Defenses :__": {"Wall": 13, "Cannon": 17, "Archer Tower": 17, "Mortar": 12, "Air Defense": 10, "Wizard Tower": 11, "Air Sweeper": 7, "Hidden Tesla": 10, "Bomb Tower": 7, "X-Bow": 6, "Inferno Tower": 6, "Eagle Artillery": 3},
+        "\n__Resources :__": {"Gold Mine": 14, "Elixir Collector": 14, "Gold Storage": 13, "Elixir Storage": 13, "Dark Elixir Drill": 8, "Dark Elixir Storage": 7},
+        "\n__Traps :__": {"Bomb": 8, "Spring Trap": 5, "Air Bomb": 6, "Giant Bomb": 5, "Seeking Air Mine": 3, "Skeleton Trap": 4, "Tornado Trap": 3}
     },
     "13": {
-        "\n__Army :__": {"Army Camp": 11, "Barracks": 14, "Dark Barracks": 8, "Spell Factory": 5, "Dark Spell Factory": 5, "Workshop": 4, "Laboratory": 11, "Clan Castle": 9, "Barbarian King": 70, "Archer Queen": 70, "Grand Warden": 50, "Royal Champion": 25},
-        "\n__Defenses :__": {"Wall": 14, "Cannon": 19, "Archer Tower": 19, "Mortar": 13, "Air Defense": 11, "Wizard Tower": 13, "Air Sweeper": 7, "Hidden Tesla": 12, "Bomb Tower": 8, "X-Bow": 7, "Inferno Tower": 7, "Eagle Artillery": 4, "Scattershot": 2},
+        "\n__Army :__": {"Army Camp": 11, "Barracks": 14, "Dark Barracks": 9, "Spell Factory": 6, "Dark Spell Factory": 5, "Workshop": 5, "Laboratory": 11, "Clan Castle": 9, "Barbarian King": 75, "Archer Queen": 75, "Grand Warden": 50, "Royal Champion": 25},
+        "\n__Defenses :__": {"Wall": 14, "Cannon": 19, "Archer Tower": 19, "Mortar": 13, "Air Defense": 11, "Wizard Tower": 13, "Air Sweeper": 7, "Hidden Tesla": 12, "Bomb Tower": 8, "X-Bow": 8, "Inferno Tower": 7, "Eagle Artillery": 4, "Scattershot": 2},
         "\n__Resources :__": {"Gold Mine": 14, "Elixir Collector": 14, "Gold Storage": 14, "Elixir Storage": 14, "Dark Elixir Drill": 8, "Dark Elixir Storage": 8},
-        "\n__Traps :__": {"Bomb": 9, "Spring Trap": 5, "Air Bomb": 6, "Giant Bomb": 6, "Seeking Air Mine": 3, "Skeleton Trap": 4, "Tornado Trap": 3}
+        "\n__Traps :__": {"Bomb": 9, "Spring Trap": 5, "Air Bomb": 8, "Giant Bomb": 7, "Seeking Air Mine": 4, "Skeleton Trap": 4, "Tornado Trap": 3}
     }
 }

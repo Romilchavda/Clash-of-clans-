@@ -23,11 +23,7 @@ async def raw_reaction_add_create_ticket(self, raw_reaction):
         except KeyError:
             pass
         ticket_cat = channel.category
-<<<<<<< HEAD
         text_channel = await member.guild.create_text_channel("Ticket " + member.name, category=ticket_cat, overwrites=overwrite, topic=str(raw_reaction.user_id))
-=======
-        text_channel = await member.guild.create_text_channel("Ticket " + member.name, category=ticket_cat, overwrites=overwrite, topic=raw_reaction.user_id)
->>>>>>> 2c5eeb557ba56deaebc5d7b35352d13b7f7ff1c9
         await text_channel.send(member.mention + " this is your ticket !")
         return
     return
