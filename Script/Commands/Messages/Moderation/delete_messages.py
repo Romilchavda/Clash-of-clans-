@@ -14,6 +14,7 @@ async def delete_messages_number(ctx, number):
             if not msg.pinned:
                 nb_msg += 1
                 await msg.delete()
+        nb_msg -= 1
         if nb_msg == 1:
             embed = create_embed("Messages deleted", f"{int_to_str(nb_msg)} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         else:
@@ -60,6 +61,7 @@ async def delete_messages_all(ctx):
             if not msg.pinned:
                 nb_msg += 1
                 await msg.delete()
+        nb_msg -= 1
         if nb_msg == 1:
             embed = create_embed("Messages deleted", f"{int_to_str(nb_msg)} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         else:

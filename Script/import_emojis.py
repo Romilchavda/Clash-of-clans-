@@ -1,14 +1,17 @@
 import discord
 import asyncio
+from Script.Const_variables.import_const import Login
+
 
 Emojis = {}
 
 Emojis_general_discord_id = 714841480602320958
 Emojis_troops_spells_id = 716259214279966770
-Emojis_general_spam_id = 779396058349568001
 Emojis_th_bh_leagues_id = 696344010905747487
 Emojis_badges_id = 761885092649762826
+Emojis_general_icons_id = 836587468144509009
 Support_id = 719537805604290650
+Emojis_general_spam_id = 779396058349568001
 
 
 class EmojisBot(discord.Client):
@@ -21,10 +24,10 @@ class EmojisBot(discord.Client):
     async def on_ready(self):
         emojis = {}
 
-        # th-bh-leagues
+        # Th-Bh-Leagues
         guild = self.get_guild(Emojis_th_bh_leagues_id)
         th_emojis = {}
-        th_emojis_dict = {"TH_01": ("TH 1", 1), "TH_02": ("TH 2", 2), "TH_03": ("TH 3", 3), "TH_04": ("TH 4", 4), "TH_05": ("TH 5", 5), "TH_06": ("TH 6", 6), "TH_07": ("TH 7", 7), "TH_08": ("TH 8", 8), "TH_09": ("TH 9", 9), "TH_10": ("TH 10", 10), "TH_11": ("TH 11", 11), "TH_12": ("TH 12", 12), "TH_13": ("TH 13", 13)}
+        th_emojis_dict = {"TH_01": ("TH 1", 1), "TH_02": ("TH 2", 2), "TH_03": ("TH 3", 3), "TH_04": ("TH 4", 4), "TH_05": ("TH 5", 5), "TH_06": ("TH 6", 6), "TH_07": ("TH 7", 7), "TH_08": ("TH 8", 8), "TH_09": ("TH 9", 9), "TH_10": ("TH 10", 10), "TH_11": ("TH 11", 11), "TH_12": ("TH 12", 12), "TH_13": ("TH 13", 13), "TH_14": ("TH 14", 14)}
         for emoji_name, emoji_dict in th_emojis_dict.items():
             emoji = discord.utils.get(guild.emojis, name=emoji_name)
             th_emojis[emoji] = th_emojis_dict[emoji_name]
@@ -50,16 +53,16 @@ class EmojisBot(discord.Client):
         emojis["Royal_champion"] = discord.utils.get(guild.emojis, name="royal_champion")
         emojis["Battle_machine"] = discord.utils.get(guild.emojis, name="battle_machine")
 
-        # troops
+        # Troops
         guild = self.get_guild(Emojis_troops_spells_id)
-        emojis["Troop"] = discord.utils.get(guild.emojis, name="barb")
+        emojis["Troop"] = discord.utils.get(guild.emojis, name="TE1")
         troops_emojis = {}
-        emoji_to_name = {"barb": "Barbarian", "archer": "Archer", "giant": "Giant", "goblin": "Goblin", "wall_br": "Wall Breaker", "ball": "Balloon", "wiz": "Wizard", "healer": "Healer", "drag": "Dragon", "pekka": "P.E.K.K.A", "baby_drag": "Baby Dragon", "miner": "Miner", "electro_d": "Electro Dragon", "yeti": "Yeti", "minion": "Minion", "hog_r": "Hog Rider", "valky": "Valkyrie", "golem": "Golem", "witch": "Witch", "hound": "Lava Hound", "bowler": "Bowler", "ice_g": "Ice Golem", "headh": "Headhunter", "light": "Lightning Spell", "heal": "Healing Spell", "rage": "Rage Spell", "jump": "Jump Spell", "freeze": "Freeze Spell", "clone": "Clone Spell", "invisibility": "Invisibility Spell", "poison": "Poison Spell", "quake": "Earthquake Spell", "haste": "Haste Spell", "skeleton": "Skeleton Spell", "bat": "Bat Spell", "wrecker": "Wall Wrecker", "blimp": "Battle Blimp", "slammer": "Stone Slammer", "barracks": "Siege Barracks", "launcher": "Log Launcher"}
+        emoji_to_name = {"TE1": "Barbarian", "TE2": "Archer", "TE3": "Giant", "TE4": "Goblin", "TE5": "Wall Breaker", "TE6": "Balloon", "TE7": "Wizard", "TE8": "Healer", "TE9": "Dragon", "TE10": "P.E.K.K.A", "TE11": "Baby Dragon", "TE12": "Miner", "TE13": "Electro Dragon", "TE14": "Yeti", "TD1": "Minion", "TD2": "Hog Rider", "TD3": "Valkyrie", "TD4": "Golem", "TD5": "Witch", "TD6": "Lava Hound", "TD7": "Bowler", "TD8": "Ice Golem", "TD9": "Headhunter", "SE1": "Lightning Spell", "SE2": "Healing Spell", "SE3": "Rage Spell", "SE4": "Jump Spell", "SE5": "Freeze Spell", "SE6": "Clone Spell", "SE7": "Invisibility Spell", "SD1": "Poison Spell", "SD2": "Earthquake Spell", "SD3": "Haste Spell", "SD4": "Skeleton Spell", "SD5": "Bat Spell", "M1": "Wall Wrecker", "M2": "Battle Blimp", "M3": "Stone Slammer", "M4": "Siege Barracks", "M5": "Log Launcher", "P1": "L.A.S.S.I", "P2": "Electro Owl", "P3": "Mighty Yak", "P4": "Unicorn"}
         for emoji in guild.emojis:
             troops_emojis.update({emoji_to_name[emoji.name]: emoji})
         emojis["Troops_emojis"] = troops_emojis
 
-        # support
+        # Support
         guild = self.get_guild(Support_id)
         emojis["Bot"] = discord.utils.get(guild.emojis, name="bot")
         emojis["Bot_certified"] = discord.utils.get(guild.emojis, name="bot_certified")
@@ -67,7 +70,7 @@ class EmojisBot(discord.Client):
         emojis["Yes"] = discord.utils.get(guild.emojis, name="yes")
         emojis["No"] = discord.utils.get(guild.emojis, name="no")
 
-        # general Discord
+        # Discord
         guild = self.get_guild(Emojis_general_discord_id)
         emojis["Add_reaction"] = discord.utils.get(guild.emojis, name="add_reaction")
         emojis["Channel"] = discord.utils.get(guild.emojis, name="channel")
@@ -98,7 +101,20 @@ class EmojisBot(discord.Client):
         emojis["Voice"] = discord.utils.get(guild.emojis, name="voice")
         emojis["Voice_locked"] = discord.utils.get(guild.emojis, name="voice_locked")
 
-        # général spam
+        # Icons
+        guild = self.get_guild(Emojis_general_icons_id)
+        emojis["Browser"] = discord.utils.get(guild.emojis, name="browser")
+        emojis["Calendar"] = discord.utils.get(guild.emojis, name="calendar")
+        emojis["Delete"] = discord.utils.get(guild.emojis, name="delete")
+        emojis["Description"] = discord.utils.get(guild.emojis, name="description")
+        emojis["Id"] = discord.utils.get(guild.emojis, name="id")
+        emojis["Language"] = discord.utils.get(guild.emojis, name="language")
+        emojis["Name"] = discord.utils.get(guild.emojis, name="name")
+        emojis["Star"] = discord.utils.get(guild.emojis, name="star")
+        emojis["Star_empty"] = discord.utils.get(guild.emojis, name="star_empty")
+        emojis["Ticket"] = discord.utils.get(guild.emojis, name="ticket")
+
+        # Spam
         guild = self.get_guild(Emojis_general_spam_id)
         fr_emoji = discord.utils.get(guild.emojis, name="fr")
         us_uk_emoji = discord.utils.get(guild.emojis, name="us_uk")
@@ -107,26 +123,17 @@ class EmojisBot(discord.Client):
         emojis["Banned1"] = discord.utils.get(guild.emojis, name="banned1")
         emojis["Banned2"] = discord.utils.get(guild.emojis, name="banned2")
         emojis["Banned3"] = discord.utils.get(guild.emojis, name="banned3")
-        emojis["Browser"] = discord.utils.get(guild.emojis, name="browser")
-        emojis["Calendar"] = discord.utils.get(guild.emojis, name="calendar")
-        emojis["Delete"] = discord.utils.get(guild.emojis, name="delete")
-        emojis["Description"] = discord.utils.get(guild.emojis, name="description")
         emojis["Dg"] = discord.utils.get(guild.emojis, name="dg")
         emojis["Donations"] = discord.utils.get(guild.emojis, name="donations")
-        emojis["Empty_star"] = discord.utils.get(guild.emojis, name="empty_star")
         emojis["End"] = discord.utils.get(guild.emojis, name="end")
         emojis["Exp"] = discord.utils.get(guild.emojis, name="exp")
-        emojis["Id"] = discord.utils.get(guild.emojis, name="id")
         emojis["Link"] = discord.utils.get(guild.emojis, name="link")
-        emojis["Name"] = discord.utils.get(guild.emojis, name="name")
         emojis["Python"] = discord.utils.get(guild.emojis, name="python")
         emojis["Received"] = discord.utils.get(guild.emojis, name="received")
         emojis["Think"] = discord.utils.get(guild.emojis, name="think")
-        emojis["Ticket"] = discord.utils.get(guild.emojis, name="ticket")
         emojis["Trophy"] = discord.utils.get(guild.emojis, name="trophy")
-        emojis["Star"] = discord.utils.get(guild.emojis, name="star")
 
-        # badges
+        # Badges
         guild = self.get_guild(Emojis_badges_id)
         emojis["Balance"] = discord.utils.get(guild.emojis, name="balance")
         emojis["Boost"] = discord.utils.get(guild.emojis, name="boost")
@@ -157,8 +164,6 @@ class EmojisBot(discord.Client):
 client = EmojisBot()
 loop = asyncio.get_event_loop()
 
-
-from Script.Const_variables.import_const import Login
 
 async def login():
     await client.login(Login["discord"]["beta"])

@@ -6,6 +6,8 @@ from Script.import_functions import create_embed
 async def ping(ctx, latency=None):
     if latency is not None:
         api = int(round(latency, 3) * 1000)
+    else:
+        api = "*unknown*"
     url = "https://api.watchbot.app/bot/704688212832026724"
     headers = {"AUTH-TOKEN": Login["watchbot"]["token"]}
     uptime_dict = requests.get(url, headers=headers).json()

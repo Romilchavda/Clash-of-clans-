@@ -7,22 +7,22 @@ from Script.Clients.clash_of_clans import Clash_of_clans
 
 async def player_info(ctx, tag, information):
     player = await Clash_of_clans.get_player(tag)
-    lvl_rdb = 0
+    lvl_bk = 0
     lvl_aq = 0
-    lvl_gg = 0
-    lvl_ch = 0
+    lvl_gw = 0
+    lvl_rc = 0
     lvl_bm = 0
     for hero in player.heroes:
         if hero.name == "Battle Machine":
             lvl_bm = hero.level
         if hero.name == "Barbarian King":
-            lvl_rdb = hero.level
+            lvl_bk = hero.level
         if hero.name == "Archer Queen":
             lvl_aq = hero.level
         if hero.name == "Grand Warden":
-            lvl_gg = hero.level
+            lvl_gw = hero.level
         if hero.name == "Royal Champion":
-            lvl_ch = hero.level
+            lvl_rc = hero.level
     if information == "main":
         for th, value in Emojis["Th_emojis"].items():
             if value[1] == player.town_hall:
@@ -30,23 +30,21 @@ async def player_info(ctx, tag, information):
         weapon = ""
         if player.town_hall_weapon is not None:
             weapon = f"({player.town_hall_weapon} {Emojis['Star']})"
-        embed_principal = create_embed(f"Player : {player.name} ({player.tag}) (Main information)", f"{trophies_to_league(player.trophies)} Number of trophies : {player.trophies}\n{trophies_to_league(player.best_trophies)} Best trophies : {player.best_trophies}\n{th} Town Hall level : {player.town_hall} {weapon}\n{Emojis['Exp']} Experience level : {player.exp_level}\n{Emojis['Members']} Clan : {player.clan.name} ({player.clan.tag})\n{Emojis['Star']} War stars earned : {player.war_stars}\n{Emojis['Barbarian_king']} Heros level : {Emojis['Barbarian_king']} {lvl_rdb} / {Emojis['Archer_queen']} {lvl_aq} / {Emojis['Grand_warden']} {lvl_gg} / {Emojis['Royal_champion']} {lvl_ch}\n{Emojis['Donations']} Troops donated : {player.donations}\n{Emojis['Received']} Troops received : {player.received}\n:crossed_swords: Attacks won : {player.attack_wins}\n:shield: Defenses won : {player.defense_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
-        embed = embed_principal
+        embed = create_embed(f"Player : {player.name} ({player.tag}) (Main information)", f"{trophies_to_league(player.trophies)} Number of trophies : {player.trophies}\n{trophies_to_league(player.best_trophies)} Best trophies : {player.best_trophies}\n{th} Town Hall level : {player.town_hall} {weapon}\n{Emojis['Exp']} Experience level : {player.exp_level}\n{Emojis['Members']} Clan : {player.clan.name} ({player.clan.tag})\n{Emojis['Star']} War stars earned : {player.war_stars}\n{Emojis['Barbarian_king']} Heros level : {Emojis['Barbarian_king']} {lvl_bk} / {Emojis['Archer_queen']} {lvl_aq} / {Emojis['Grand_warden']} {lvl_gw} / {Emojis['Royal_champion']} {lvl_rc}\n{Emojis['Donations']} Troops donated : {player.donations}\n{Emojis['Received']} Troops received : {player.received}\n:crossed_swords: Attacks won : {player.attack_wins}\n:shield: Defenses won : {player.defense_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     elif information == "builder_base":
-        if player.builder_hall != 0:
+        if player.builder_hall:
             for bh, value in Emojis["Bh_emojis"].items():
                 if value[1] == player.builder_hall:
                     break
-            embed_builder = create_embed(f"Player : {player.name} ({player.tag}) (Builder base)", f"{Emojis['Trophy']} Number of trophies : {player.versus_trophies}\n{Emojis['Trophy']} Best trophies : {player.best_versus_trophies}\n{bh} Builder Hall level : {player.builder_hall}\n{Emojis['Battle_machine']} Hero level : {Emojis['Battle_machine']} {lvl_bm}\n:crossed_swords: Versus battle won : {player.versus_attack_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
-            embed = embed_builder
+            embed = create_embed(f"Player : {player.name} ({player.tag}) (Builder base)", f"{Emojis['Trophy']} Number of trophies : {player.versus_trophies}\n{Emojis['Trophy']} Best trophies : {player.best_versus_trophies}\n{bh} Builder Hall level : {player.builder_hall}\n{Emojis['Battle_machine']} Hero level : {Emojis['Battle_machine']} {lvl_bm}\n:crossed_swords: Versus battle won : {player.versus_attack_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         else:
             embed = create_embed(f"Player : {player.name} ({player.tag}) (Builder base)", f"This player has not yet unlocked the builder base !\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     elif information == "success":
-        achievements = "*name | stars | score (target description)*"
+        achievements = "*name : stars | % for next star*"
+        Emojis['Star'] = ":star:"
         for achievement in player.achievements:
-            achievements += f"\n{achievement.stars} | {achievement.value} ({achievement.info})"
-        embed_success = create_embed(f"Player : {player.name} ({player.tag}) (Achievements)", f"{achievements}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
-        embed = embed_success
+            achievements += f"\n{achievement.name} : {achievement.stars} {Emojis['Star']} | {int(achievement.value/achievement.target*100)}%"
+        embed = create_embed(f"Player : {player.name} ({player.tag}) (Achievements)", f"{achievements}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     return embed
 
 
@@ -79,6 +77,9 @@ async def player_troops(ctx, tag):
                 a = 0
             if troop["name"] == "Wall Wrecker":
                 msg += "\n\n__Siege machines__ :\n"
+                a = 0
+            if troop["name"] == "L.A.S.S.I":
+                msg += "\n\n__Pets__ :\n"
                 a = 0
             if a == 4:
                 a = 0

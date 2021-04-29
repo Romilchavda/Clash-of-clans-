@@ -12,7 +12,7 @@ async def tickets(ctx, text, ticket_channel, support):
             embed = create_embed("Support role changed", f"The new support role for tickets in this server is : {support.mention}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
             await ctx.send(embed=embed)
             json_txt = json.dumps(Support, sort_keys=True, indent=4)
-            def_support = open("Modifiable_variables/def_support_tickets.json", "w")
+            def_support = open("Modifiable_variables/support_role_ for_tickets.json", "w")
             def_support.write(json_txt)
             def_support.close()
         else:

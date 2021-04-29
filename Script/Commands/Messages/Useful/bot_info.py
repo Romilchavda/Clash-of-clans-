@@ -1,6 +1,6 @@
 import discord
 from Script.import_emojis import Emojis
-from Script.import_functions import create_embed, create_embed_img
+from Script.import_functions import create_embed
 from Script.Clients.discord import Clash_info
 
 
@@ -22,10 +22,4 @@ async def bot_info(ctx):
     msg_created = f"{Emojis['Calendar']} The bot was created the 28/04/2020, and certified the 23/09/2020."
     embed = create_embed("Clash INFO", f"{msg_perm}\n{msg_serv}\n{msg_created}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     await ctx.send(embed=embed)
-    return
-
-    file = discord.File("Script/Pictures/stats.png", filename="stats.png")
-    url = "attachment://stats.png"
-    embed = create_embed_img("Clash INFO", f"{msg_perm}\n{msg_serv}\n{msg_created}", ctx.guild.me.color, "", ctx.guild.me.avatar_url, url)
-    await ctx.send(embed=embed, file=file)
     return

@@ -1,4 +1,4 @@
-# ----- LIBRARIES : -----
+# ----- PACKAGES : -----
 import dbl
 import coc
 import requests
@@ -12,12 +12,6 @@ from Script.import_functions import *
 
 
 # ----- COMMANDS : -----
-
-# ON_READY
-from Script.Commands.On_Ready.loop import loop
-
-# GUILD
-from Script.Commands.Guild.guild_join import guild_join
 
 # MESSAGES
 from Script.Commands.Messages.help import help
@@ -48,6 +42,7 @@ from Script.Commands.Messages.Moderation.delete_messages import delete_messages_
 
 from Script.Commands.Messages.Creators.add_a_bot_id import add_a_bot_id
 from Script.Commands.Messages.Creators.add_reaction_with_id import add_reaction_with_id
+from Script.Commands.Messages.Creators.download_emojis import download_emojis
 from Script.Commands.Messages.Creators.find_user_by_id import find_user_by_id
 from Script.Commands.Messages.Creators.refresh_dbl import refresh_dbl
 from Script.Commands.Messages.Creators.servers_list import servers_list
@@ -55,27 +50,18 @@ from Script.Commands.Messages.Creators.servers_list import servers_list
 
 # ----- VARIABLES : -----
 
-# CONST VARIABLES
-from Script.import_emojis import Emojis
-from Script.Const_variables.import_const import Th_buildings, Bh_buildings, Troops, Ids
-
 # MODIFIABLE VARIABLES
-def_prefix = open("Script/Modifiable_variables/def_prefix.json", "r")
+def_prefix = open("Script/Modifiable_variables/prefix.json", "r")
 Prefix_txt = def_prefix.read()
 def_prefix.close()
 Prefix = json.loads(Prefix_txt)
 
-def_history = open("Script/Modifiable_variables/def_history.json", "r")
-History_txt = def_history.read()
-def_history.close()
-History = json.loads(History_txt)
-
-def_votes = open("Script/Modifiable_variables/def_votes.json", "r")
+def_votes = open("Script/Modifiable_variables/votes.json", "r")
 Votes_txt = def_votes.read()
 def_votes.close()
 Votes = json.loads(Votes_txt)
 
-def_support = open("Script/Modifiable_variables/def_support_tickets.json", "r")
+def_support = open("Script/Modifiable_variables/support_role_ for_tickets.json", "r")
 Support_txt = def_support.read()
 def_support.close()
 Support = json.loads(Support_txt)
@@ -95,10 +81,6 @@ if __name__ == "__main__":
     from Script.Clients.discord import Clash_info
     Client_slash = SlashCommand(Clash_info)
 
-    @Client_slash.slash(name="ency")
-    async def _ency(ctx):
-        await ctx.send("Make your researches faster with https://ency.live/")
-        return
 
     @Client_slash.slash(name="help")
     async def _help(ctx):
@@ -114,13 +96,13 @@ if __name__ == "__main__":
     # Clash Of Clans
 
     @Client_slash.slash(name="get_player")
-    async def _get_player(ctx, tag, information):
-        await get_player(ctx, tag, information)
+    async def _get_player(ctx, player_tag, information):
+        await get_player(ctx, player_tag, information)
         return
 
     @Client_slash.slash(name="get_clan")
-    async def _get_clan(ctx, tag):
-        await get_clan(ctx, tag)
+    async def _get_clan(ctx, clan_tag):
+        await get_clan(ctx, clan_tag)
         return
 
     @Client_slash.slash(name="search_clan")
@@ -129,8 +111,8 @@ if __name__ == "__main__":
         return
 
     @Client_slash.slash(name="clan_members")
-    async def _clan_members(ctx, tag):
-        await clan_members(ctx, tag)
+    async def _clan_members(ctx, clan_tag):
+        await clan_members(ctx, clan_tag)
         return
 
     @Client_slash.slash(name="buildings_th")
@@ -270,8 +252,8 @@ if __name__ == "__main__":
     # MODERATION
 
     @Client_slash.subcommand(base="delete_messages", name="number_of_messages")
-    async def _delete_messages_number(ctx, number):
-        await delete_messages_number(ctx, number)
+    async def _delete_messages_number(ctx, number_of_messages):
+        await delete_messages_number(ctx, number_of_messages)
         return
 
     @Client_slash.subcommand(base="delete_messages", name="for_x_minutes")
@@ -295,6 +277,11 @@ if __name__ == "__main__":
     @Client_slash.slash(name="__add_reactino_with_id")
     async def ___add_reaction_with_id(ctx, channel_id, message_id, emoji_id):
         await add_reaction_with_id(ctx, channel_id, message_id, emoji_id)
+        return
+
+    @Client_slash.slash(name="__download_emojis")
+    async def ___download_emojis(ctx):
+        await download_emojis(ctx)
         return
 
     @Client_slash.slash(name="__find_user_by_id")
@@ -374,7 +361,7 @@ if __name__ == "__main__":
         print(req.content)
 
 
-    Clash_info.run(Token)
+    Clash_info.run(Token)  # Comment this line to create slash commands
 
     json__help = {
         "name": "_help",
@@ -721,44 +708,3 @@ if __name__ == "__main__":
     see_slash_command_guild()
 
     Clash_info.run(Token)
-
-    """
-    from import_emojis import EmojisBot
-    intents = discord.Intents.default()
-    intents.members = True
-    main_bot_dict = {"name": "main", "client": Bot(intents=intents), "event": asyncio.Event()}
-    emojis_bot_dict = {"name": "emojis", "client": EmojisBot(), "event": asyncio.Event()}
-    Bots = {"emojis": emojis_bot_dict, "main": main_bot_dict}
-
-    loop = asyncio.get_event_loop()
-
-    async def login():
-        for bot in Bots.values():
-            await bot["client"].login(Token)
-
-    async def wrapped_connect(bot):
-        try:
-            if bot["name"] == "main":
-                await Bots["emojis"]["client"].emoji_connected.wait()
-            await bot["client"].connect()
-            if bot["name"] == "emojis":
-                global Emojis
-                Emojis = bot["client"].emojis
-        except:
-            await bot["client"].close()
-            bot["event"].set()
-
-    async def check_close():
-        futures = [bot["event"].wait() for bot in Bots.values()]
-        await asyncio.wait(futures)
-
-    loop.run_until_complete(login())
-
-    for bot in Bots.values():
-        loop.create_task(wrapped_connect(bot))
-
-    loop.run_until_complete(check_close())
-
-    # normally not called
-    loop.close()
-    """

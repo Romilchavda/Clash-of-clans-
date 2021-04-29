@@ -1,4 +1,5 @@
 from Script.import_functions import create_embed
+# TODO : Allow users to refuse DM
 
 
 async def direct_message_role(ctx, role, text):
