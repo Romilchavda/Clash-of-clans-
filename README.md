@@ -4,7 +4,6 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Python)
 ![GitHub repo size](https://img.shields.io/github/repo-size/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Repo%20Size)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Code%20Size)
-![GitHub all releases](https://img.shields.io/github/downloads/rreemmii-dev/Clash-Of-Clans-Discord-Bot/total?label=Downloads)
 ![GitHub Repo stars](https://img.shields.io/github/stars/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Stars)
 ![GitHub contributors](https://img.shields.io/github/contributors/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Contributors)
 
