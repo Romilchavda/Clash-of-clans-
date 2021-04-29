@@ -30,8 +30,9 @@ pip install -r Clash-Of-Clans-Discord-Bot\requirements.txt
 ```
 
 ## Usage
-Add your token, email/password... [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/login.json).
-You can edit [this file](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/ids.json) with your IDs.
+Add yours tokens, email/password... [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/login.json).
+
+You can edit [this file](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/ids.json) with yours IDs.
 ```shell
 # Run the script
 python3 Clash-Of-Clans-Discord-Bot\main.py
