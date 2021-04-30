@@ -29,7 +29,7 @@ pip install -r Clash-Of-Clans-Discord-Bot\requirements.txt
 ```
 
 ## Usage
-Create your own bot [here](https://discord.com/developers/applications) or [dd our bot](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot).
+Create your own bot [here](https://discord.com/developers/applications) or [add our bot](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot).
 
 Add yours tokens, email/password... [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/login.json).
 
