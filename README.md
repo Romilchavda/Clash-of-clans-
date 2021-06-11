@@ -1,6 +1,6 @@
 # Discord-Bot
 
-![Discord](https://img.shields.io/discord/719537805604290650?color=%230000ff&label=Discord&logo=https%3A%2F%2Fdiscord.com%2Fassets%2F2c21aeda16de354ba5334551a883b481.png&logoColor=%2300000000)
+[![Discord](https://img.shields.io/discord/719537805604290650?color=%230000ff&label=Discord&logo=https%3A%2F%2Fdiscord.com%2Fassets%2F2c21aeda16de354ba5334551a883b481.png&logoColor=%2300000000)](https://discord.gg/KQmstPw)
 ![GitHub top language](https://img.shields.io/github/languages/top/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Python)
 ![GitHub repo size](https://img.shields.io/github/repo-size/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Repo%20Size)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Code%20Size)
