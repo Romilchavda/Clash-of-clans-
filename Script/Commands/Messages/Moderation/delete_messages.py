@@ -5,7 +5,6 @@ from Script.import_functions import create_embed, int_to_str
 
 async def delete_messages_number(ctx, number):
     if ctx.author.guild_permissions.manage_messages:
-        await ctx.defer()
         if number <= 0:
             await ctx.send("Error\nYou cannot delete a negative number of messages", hidden=True)
             return
@@ -30,7 +29,6 @@ async def delete_messages_number(ctx, number):
 
 async def delete_messages_time(ctx, minutes):
     if ctx.author.guild_permissions.manage_messages:
-        await ctx.defer()
         if minutes <= 0:
             await ctx.send("Error\nYou must choose a number of minutes strictly positive", hidden=True)
             return
@@ -55,9 +53,8 @@ async def delete_messages_time(ctx, minutes):
 
 async def delete_messages_all(ctx):
     if ctx.author.guild_permissions.manage_messages:
-        await ctx.defer()
         nb_msg = 0
-        async for msg in ctx.channel.history(limit=None):
+        async for msg in ctx.channel.history(limit=100):
             if not msg.pinned:
                 nb_msg += 1
                 await msg.delete()

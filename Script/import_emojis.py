@@ -1,6 +1,6 @@
 import discord
 import asyncio
-from Script.Const_variables.import_const import Login
+from Data.Const_variables.import_const import Login
 
 
 Emojis = {}
@@ -66,7 +66,9 @@ class EmojisBot(discord.Client):
         guild = self.get_guild(Support_id)
         emojis["Bot"] = discord.utils.get(guild.emojis, name="bot")
         emojis["Bot_certified"] = discord.utils.get(guild.emojis, name="bot_certified")
+        emojis["Clash_esport"] = discord.utils.get(guild.emojis, name="ClashESPORT")
         emojis["Clash_info"] = discord.utils.get(guild.emojis, name="ClashINFO")
+        emojis["Github"] = discord.utils.get(guild.emojis, name="github")
         emojis["Yes"] = discord.utils.get(guild.emojis, name="yes")
         emojis["No"] = discord.utils.get(guild.emojis, name="no")
 
@@ -119,6 +121,11 @@ class EmojisBot(discord.Client):
         fr_emoji = discord.utils.get(guild.emojis, name="fr")
         us_uk_emoji = discord.utils.get(guild.emojis, name="us_uk")
         emojis["Languages_emojis"] = {"English": us_uk_emoji, "French": fr_emoji}
+
+        emojis["Numbers"] = {}
+        numbers = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
+        for number, name in numbers.items():
+            emojis["Numbers"][number] = discord.utils.get(guild.emojis, name=name)
 
         emojis["Banned1"] = discord.utils.get(guild.emojis, name="banned1")
         emojis["Banned2"] = discord.utils.get(guild.emojis, name="banned2")

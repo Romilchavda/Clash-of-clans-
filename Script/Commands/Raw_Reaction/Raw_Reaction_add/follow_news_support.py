@@ -1,5 +1,5 @@
 from Script.import_emojis import Emojis
-from Script.Const_variables.import_const import Ids
+from Data.Const_variables.import_const import Ids
 from Script.import_functions import create_embed
 
 

@@ -1,6 +1,6 @@
 import discord
 from Script.clash_info import Bot
-from Script.Const_variables.import_const import Login
+from Data.Const_variables.import_const import Login
 
 
 intents = discord.Intents.default()

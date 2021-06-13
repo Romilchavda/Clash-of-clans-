@@ -20,7 +20,7 @@ async def clan_members(ctx, tag):
                 await ctx.send(embed=embed)
                 msg = ""
                 x = 0
-        if x is not 0:
+        if x != 0:
             embed = create_embed(f"Clan members {clan.name} ({clan.tag})", f"Members list : \n{msg}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
             await ctx.send(embed=embed)
     except coc.errors.NotFound:

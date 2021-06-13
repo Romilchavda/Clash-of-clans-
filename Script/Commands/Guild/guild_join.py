@@ -1,12 +1,12 @@
 import discord
 from Script.import_emojis import Emojis
-from Script.Const_variables.import_const import Ids
+from Data.Const_variables.import_const import Ids
 from Script.import_functions import create_embed
 from Script.Clients.top_gg import Dbl_client
 
 
 async def guild_join(self, guild):
-    await Dbl_client.update_stats(len(self.guilds))
+    await Dbl_client.post_guild_count(len(self.guilds))
     bot = guild.me
     log = self.get_channel(Ids["Log_bot"])
     await log.send(f"The bot has JOINED the server {guild.name}, with {len(guild.members)} members")

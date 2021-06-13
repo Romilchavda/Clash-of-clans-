@@ -1,6 +1,6 @@
 import discord
 import datetime
-from Script.Const_variables.import_const import Ids
+from Data.Const_variables.import_const import Ids
 from Script.import_functions import create_embed
 
 
@@ -24,11 +24,12 @@ async def member_remove(self, member):
             embed.set_thumbnail(url=member.avatar_url)
             await welcome.send(embed=embed)
         else:
-            async for message in welcome.history(limit=None):
+            async for message in welcome.history(limit=100):
                 old_embed = message.embeds[0]
                 if int(old_embed.description.split("`")[1]) == member.id:
-                    new_embed = old_embed
-                    new_embed.description = old_embed.description + "TesT"
+                    new_embed = old_embed.copy()
+                    new_embed.description = old_embed.description + f"\n*Unfortunately, {member.name} left us after less than a day in the server*"
+                    new_embed.set_image(url="attachment://welcome.png")
                     await message.edit(embed=new_embed)
                     break
     return

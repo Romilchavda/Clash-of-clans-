@@ -1,5 +1,6 @@
 import discord
-from Script.Const_variables.import_const import Ids
+from Script.import_emojis import Emojis
+from Data.Const_variables.import_const import Ids
 from Script.import_functions import create_embed_img
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -74,6 +75,7 @@ async def member_join(self, member):
         file = discord.File(buffer_output, "welcome.png")
         url = "attachment://welcome.png"
 
-        embed = create_embed_img(f"Welcome {member.name} !", f"ID : `{member.id}`", member.color, "", member.guild.me.avatar_url, url)
+        rules_channel = self.get_channel(Ids["Rules"])
+        embed = create_embed_img(f"Welcome {member.name} !", f"Welcome ! Please check the {rules_channel.mention}, you will find everything you need here !\n{Emojis['Id']} ID : `{member.id}`\n{Emojis['Discord']} Discord account creation : {member.created_at.date().isoformat()}", member.color, "", member.guild.me.avatar_url, url)
         await welcome.send(embed=embed, file=file)
     return

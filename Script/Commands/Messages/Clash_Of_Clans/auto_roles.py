@@ -1,4 +1,5 @@
 import discord
+import discord_slash
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 
@@ -13,6 +14,8 @@ async def auto_roles_th(ctx, channel):
             msg += f"{emoji} to be {role.mention}\n"
         embed = create_embed("Click on the emojis to get the matching roles", msg, ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         msg = await channel.send(embed=embed)
+        if type(ctx) == discord_slash.context.SlashContext:
+            await ctx.send("Done", hidden=True)
         for emoji in Emojis["Th_emojis"].keys():
             await msg.add_reaction(emoji)
     else:
@@ -30,6 +33,8 @@ async def auto_roles_bh(ctx, channel):
             msg += f"{emoji} to be {role.mention}\n"
         embed = create_embed("Click on the emojis to get the matching roles", msg, ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         msg = await channel.send(embed=embed)
+        if type(ctx) == discord_slash.context.SlashContext:
+            await ctx.send("Done", hidden=True)
         for emoji in Emojis["Bh_emojis"].keys():
             await msg.add_reaction(emoji)
     else:
@@ -47,6 +52,8 @@ async def auto_roles_leagues(ctx, channel):
             msg += f"{emoji} to be {role.mention}\n"
         embed = create_embed("Click on the emojis to get the matching roles", msg, ctx.guild.me.color, "", ctx.guild.me.avatar_url)
         msg = await channel.send(embed=embed)
+        if type(ctx) == discord_slash.context.SlashContext:
+            await ctx.send("Done", hidden=True)
         for emoji in Emojis["League_emojis"].keys():
             await msg.add_reaction(emoji)
     else:

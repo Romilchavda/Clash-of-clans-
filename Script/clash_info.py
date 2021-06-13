@@ -11,7 +11,7 @@ from Script.import_functions import *
 # ----- COMMANDS : -----
 
 # ON_READY
-from Script.Commands.On_Ready.ready import ready_loop
+from Script.Commands.On_Ready.ready_loop import ready_loop
 
 # GUILD
 from Script.Commands.Guild.guild_join import guild_join
@@ -59,6 +59,7 @@ from Script.Commands.Messages.Clash_Of_Clans.buildings_bh import buildings_bh
 from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
 from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
 
+from Script.Commands.Messages.Useful.github import github
 from Script.Commands.Messages.Useful.tickets import tickets, close_ticket
 from Script.Commands.Messages.Useful.member_info import member_info
 from Script.Commands.Messages.Useful.role_info import role_info
@@ -76,48 +77,24 @@ from Script.Commands.Messages.Moderation.delete_messages import delete_messages_
 
 # CONST VARIABLES
 from Script.import_emojis import Emojis
-from Script.Const_variables.import_const import Ids
+from Data.Const_variables.import_const import Ids
 
 
 # MODIFIABLE VARIABLES
-from Script.Modifiable_variables.import_var import Prefix, Votes
+from Data.Modifiable_variables.import_var import Prefix, Votes
 
 
-# ----- Modified discord.message.Message class : -----
-# This class allow us to use message.send() instead of message.channel.send(), to use the same code between slash commands and "classical" messages
-# It recreates a discord.message.Message object with all the parameters of our message. You can use it with : new_message = Msg(your_message)
-from discord.message import Message
-class Msg(Message):
-    def __init__(self, message):
-        __slots__ = ('_edited_timestamp', 'tts', 'content', 'channel', 'webhook_id',
-                     'mention_everyone', 'embeds', 'id', 'mentions', 'author',
-                     '_cs_channel_mentions', '_cs_raw_mentions', 'attachments',
-                     '_cs_clean_content', '_cs_raw_channel_mentions', 'nonce', 'pinned',
-                     'role_mentions', '_cs_raw_role_mentions', 'type', 'call', 'flags',
-                     '_cs_system_content', '_cs_guild', '_state', 'reactions', 'reference',
-                     'application', 'activity', 'stickers')
-        __replace__ = {
-            "_edited_timestamp": "edited_timestamp"
-        }
-        data = {}
-        for attr in __slots__:
-            if attr in list(__replace__.keys()):
-                name = __replace__[attr]
-            else:
-                name = attr
-            try:
-                getattr(message, attr)
-            except AttributeError:
-                pass
-            data.update({name: getattr(message, attr, None)})
-        data["author"] = {"id": data["author"].id}
-        super().__init__(state=message._state, channel=message.channel, data=data)
-
-    async def send(self, *args, **kwargs):
-        if "hidden" in list(kwargs.keys()):
-            kwargs.pop("hidden")
-        msg = await self.channel.send(*args, **kwargs)
-        return msg
+# This allow us to use discord.message.Message and discord_slash.context.SlashContext with the same functions :
+async def send(self, *args, **kwargs):
+    only_discord_slash = ["hidden"]
+    for kwarg in dict(kwargs):
+        if kwarg in only_discord_slash:
+            kwargs.pop(kwarg)
+    return await self.channel.send(*args, **kwargs)
+async def defer(self, *args, **kwargs):
+    pass
+setattr(discord.message.Message, "send", send)
+setattr(discord.message.Message, "defer", defer)
 
 
 class Bot(discord.Client):
@@ -127,8 +104,15 @@ class Bot(discord.Client):
         self.id = None
 
 
+    async def on_dbl_vote(self, data):
+        print(data)
+        print("clash_info.py")
+
+
     # READY
     async def on_ready(self):
+        from Script.Clients.top_gg import Dbl_client
+        Dbl_client.bot = self
         await ready_loop(self)
 
 
@@ -166,13 +150,34 @@ class Bot(discord.Client):
 
     # RAW REACTION
     async def on_raw_reaction_add(self, raw_reaction):
+        used_emojis = [Emojis["Yes"], Emojis["Yes"], list(Emojis["Numbers"].values()), Emojis["End"], Emojis["Delete"], Emojis["Ticket"], list(Emojis["Languages_emojis"].values()), Emojis["Yes"], list(Emojis["Th_emojis"].keys()), list(Emojis["Bh_emojis"].keys()), list(Emojis["League_emojis"].keys())]
+        go = False
+        for obj in used_emojis:
+            if (type(obj) is list) and (raw_reaction.emoji in obj):
+                go = True
+            elif (type(obj) is dict) and (raw_reaction.emoji in list(obj.keys())):
+                go = True
+            elif raw_reaction == obj:
+                go = True
+        if not go:
+            return
+
         channel = self.get_channel(raw_reaction.channel_id)
+        if not channel.permissions_for(channel.guild.me).read_message_history:
+            if channel.permissions_for(channel.guild.me).send_messages:
+                await channel.send("Sorry, I don't have the `read messages history` permission")
+            else:
+                pass
+            return
         raw_reaction.message = None
-        if channel.guild.me.guild_permissions.read_message_history:
-            async for message in channel.history(limit=None):
+        try:
+            async for message in channel.history(limit=100):
                 if message.id == raw_reaction.message_id:
                     raw_reaction.message = message
                     break
+        except Exception as e:
+            print("Error Raw Reaction ADD : ", e)
+            return
         if (raw_reaction.message is not None) and (not raw_reaction.member.bot) and (raw_reaction.message.guild is not None) and (raw_reaction.message.author.id == self.id) and (raw_reaction.message.embeds != []):
             raw_reaction.complete_emoji = self.get_emoji(raw_reaction.emoji.id)
             await raw_reaction_add_follow_news_support(self, raw_reaction)
@@ -187,15 +192,32 @@ class Bot(discord.Client):
         return
 
     async def on_raw_reaction_remove(self, raw_reaction):
+        used_emojis = [Emojis["Yes"], Emojis["Yes"], list(Emojis["Numbers"].values()), Emojis["End"], Emojis["Delete"], Emojis["Ticket"], list(Emojis["Languages_emojis"].values()), Emojis["Yes"], list(Emojis["Th_emojis"].keys()), list(Emojis["Bh_emojis"].keys()), list(Emojis["League_emojis"].keys())]
+        go = False
+        for obj in used_emojis:
+            if (type(obj) is list) and (raw_reaction.emoji in obj):
+                go = True
+            elif (type(obj) is dict) and (raw_reaction.emoji in list(obj.keys())):
+                go = True
+            elif raw_reaction == obj:
+                go = True
+        if not go:
+            return
+
         channel = self.get_channel(raw_reaction.channel_id)
+        if not channel.guild.me.guild_permissions.read_message_history:
+            await channel.send("Sorry, I don't have the `read messages history` permission")
+            return
         raw_reaction.message = None
-        if channel.guild.me.guild_permissions.read_message_history:
-            async for message in channel.history(limit=None):
+        try:
+            async for message in channel.history(limit=100):
                 if message.id == raw_reaction.message_id:
                     raw_reaction.message = message
                     break
+        except Exception as e:
+            print("Error Raw Reaction REMOVE : ", e)
         raw_reaction.member = channel.guild.get_member(raw_reaction.user_id)
-        if (raw_reaction.message is not None) and (not raw_reaction.member.bot) and (raw_reaction.message.guild is not None) and (raw_reaction.message.author.id == self.id) and (raw_reaction.message.embeds != []):
+        if (raw_reaction.message is not None) and (raw_reaction.member is not None) and (not raw_reaction.member.bot) and (raw_reaction.message.guild is not None) and (raw_reaction.message.author.id == self.id) and (raw_reaction.message.embeds != []):
             raw_reaction.complete_emoji = self.get_emoji(raw_reaction.emoji.id)
             await raw_reaction_remove_auto_roles(self, raw_reaction)
             await raw_reaction_remove_check_rules(self, raw_reaction)
@@ -206,20 +228,30 @@ class Bot(discord.Client):
 
     # RECEIVED MESSAGE
     async def on_message(self, message):
-        if message.author.bot and not message.author.id == self.id:
+        if message.author.bot and message.author.id != self.id:
             if message.channel.id == Ids["Votes"] and message.author.name == "Top.gg":
                 member_id = int(message.embeds[0].description.split("ID : ")[1])
-                member = message.guild.get_member(member_id)
+                member = self.get_user(member_id)
                 vote = int(message.embeds[0].title.split(" ")[1])
-                if str(Votes[member_id]) == "None":
+                if member_id not in list(Votes.keys()):
                     Votes[member.id] = vote
                 else:
-                    Votes[member.id] = Votes[member.id] + vote
+                    Votes[member.id] += vote
                 json_txt = json.dumps(Votes, sort_keys=True, indent=4)
-                def_votes = open("Script/Modifiable_variables/votes.json", "w")
+                def_votes = open("Data/Modifiable_variables/votes.json", "w")
                 def_votes.write(json_txt)
                 def_votes.close()
-                await message.channel.send("/show votes")
+                vote_copy = dict(Votes)
+                vote = {}
+                for member_id, member_votes in vote_copy.items():
+                    member = self.get_user(int(member_id))
+                    vote[member.mention] = member_votes
+                vote = sorted(vote.items(), key=lambda t: t[1])
+                txt = ""
+                for tuple in vote:
+                    txt += f"{tuple[0]} have voted {tuple[1]} times !\n"
+                embed = create_embed("Votes for Clash INFO", txt, message.guild.me.color, "", message.guild.me.avatar_url)
+                await message.channel.send(embed=embed)
                 return
             else:
                 return
@@ -233,13 +265,35 @@ class Bot(discord.Client):
             bot = message.guild.me
         # def Prefix
         global prefix
-        try:
+        if message.guild.id in list(Prefix.keys()):
             prefix = Prefix[message.guild.id]
-        except KeyError:
+        else:
             prefix = self.default_prefix
         no_prefix = message.content[len(prefix):]
         # test
-        if message.content == prefix and (message.author.id == 393317636160618496 or message.author.id in Ids["Creators"]) and (message.guild.id == Ids["Support"] or message.guild.id == 710237092931829893 or message.guild.id == 808814347224481863):
+        if message.content == prefix and (message.author.id == 393317636160618496 or message.author.id in Ids["Creators"]) and (message.guild.id == Ids["Support_server"] or message.guild.id == 710237092931829893 or message.guild.id == 808814347224481863):
+            for guild in self.guilds:
+                for channel in guild.channels:
+                    if channel.name == "tickets" and type(channel) == discord.TextChannel:
+                        async for message in channel.history(limit=None):
+                            if message.embeds:
+                                if message.author == guild.me and message.embeds[0].title == "Ticket :":
+                                    for reaction in message.reactions:
+                                        await reaction.clear()
+                                    await message.add_reaction(Emojis["Ticket"])
+                                    print(message.embeds[0].description)
+                                    print(message.embeds[0].description.startswith == "Click on " and "to create a ticket" in message.embeds[0].description)
+                                    if message.embeds[0].description.startswith == "Click on " and "to create a ticket" in message.embeds[0].description:
+                                        embed = message.embeds[0]
+                                        embed.description = "Click on "+Emojis["Ticket"]+" to create a ticket"
+                                        await message.edit(embed=embed)
+            from Script.Clients.top_gg import Dbl_client
+            print("GO")
+            r = await Dbl_client.get_user_vote(message.author.id)
+            print(r)
+            r = await Dbl_client.get_bot_votes()
+            print(r)
+            print("FINISH")
             return
         try:
             if bot.nick is not None:
@@ -251,14 +305,6 @@ class Bot(discord.Client):
                     embed = create_embed(f"The prefix is `{prefix}`", f"Put `{prefix}help` to get the list of commands.", bot.color, "", message.guild.me.avatar_url)
                     await message.channel.send(embed=embed)
             if message.content.startswith(prefix):
-                message = Msg(message)
-
-
-                # TEMP
-                if no_prefix.startswith("ency"):
-                    txt = "Make your researches faster with https://ency.live/"
-                    await message.channel.send(txt)
-                    return
 
                 # AIDE
                 if no_prefix.startswith("help"):
@@ -404,6 +450,7 @@ class Bot(discord.Client):
                     "add",
                     "embed",
                     "emoji info",
+                    "github",
                     "invite",
                     "ping",
                     "poll",
@@ -440,6 +487,10 @@ class Bot(discord.Client):
                             await message.channel.send(embed=embed)
                             return
                         await emoji_info(message, emoji)
+                        return
+
+                    if no_prefix.startswith("github"):
+                        await github(message)
                         return
 
                     if no_prefix.startswith("ping"):
@@ -517,7 +568,7 @@ class Bot(discord.Client):
                                 embed = create_embed("Prefix changed", "The new prefix is : `" + new + "`", bot.color, "", message.guild.me.avatar_url)
                                 await message.channel.send(embed=embed)
                                 json_txt = json.dumps(Prefix, sort_keys=True, indent=4)
-                                def_prefix = open("Script/Modifiable_variables/prefix.json", "w")
+                                def_prefix = open("Data/Modifiable_variables/prefix.json", "w")
                                 def_prefix.write(json_txt)
                                 def_prefix.close()
                             except IndexError:
@@ -561,8 +612,7 @@ class Bot(discord.Client):
 
                 CREATORS = (
                     "answer",
-                    "say",
-                    "show votes"
+                    "say"
                 )
                 if no_prefix.startswith(CREATORS):
                     await message.channel.trigger_typing()
@@ -570,14 +620,16 @@ class Bot(discord.Client):
 
                         if no_prefix.startswith("answer"):
                             channel = self.get_channel(message.reference.channel_id)
-                            async for msg in channel.history(limit=None):
+                            async for msg in channel.history(limit=100):
                                 if msg.id == message.reference.message_id:
                                     user_id = int(msg.content.split("`")[len(msg.content.split("`")) - 4])
                                     msg_id = int(msg.content.split("`")[len(msg.content.split("`")) - 2])
                                     user = self.get_user(user_id)
-                                    text = "ok"
+                                    text = ""
+                                    for part in message.content.split(" ")[1:]:
+                                        text += part + " "
                                     dm = await user.create_dm()
-                                    async for msg in dm.history(limit=None):
+                                    async for msg in dm.history(limit=100):
                                         if msg.id == msg_id:
                                             await msg.reply(text)
                                             return
@@ -594,21 +646,7 @@ class Bot(discord.Client):
                             await message.delete()
                             return
 
-                        if no_prefix.startswith("show votes"):
-                            vote_copy = Votes
-                            vote = {}
-                            txt = "```\n{\n"
-                            for k, v in vote_copy.items():
-                                member = self.get_user(int(k))
-                                vote[member.name + "#" + member.discriminator + " (" + k + ")"] = v
-                            vote = sorted(vote.items(), key=lambda t: t[1])
-                            for tuple in vote:
-                                txt += f"\t{tuple[0]} : {tuple[1]},\n"
-                            txt += "}\n```"
-                            await message.channel.send(txt)
-                            return
-
-                if message.guild.id == Ids["Support"]:
+                if message.guild.id == Ids["Support_server"]:
                     # perms mute
                     if message.content.startswith(prefix + "upmute"):
                         await message.channel.trigger_typing()
@@ -662,7 +700,7 @@ class Bot(discord.Client):
                         tickets_channel = self.get_channel(767418391559929906)
                         put_bot = self.get_channel(722025320202633323)
                         feedback = self.get_channel(719827869295050812)
-                        guild = self.get_guild(Ids["Support"])
+                        guild = self.get_guild(Ids["Support_server"])
                         bot_creator = discord.utils.get(guild.roles, id=719538013859872880)
                         bot_staff = discord.utils.get(guild.roles, id=743796789769142354)
                         embed = create_embed("Welcome in the Support server for Clash INFO !",
@@ -684,22 +722,14 @@ class Bot(discord.Client):
                         for emoji in Emojis["Languages_emojis"].keys():
                             await a.add_reaction(emoji)
                         return
-                    # note
-                    if message.content.startswith(prefix + "note"):
+                    # feedback
+                    if message.content.startswith(prefix + "feedback"):
                         await message.channel.trigger_typing()
-                        embed = create_embed("How do you like this bot ? Put a mark from 0 to 9 (0 is the worst and 9 is the best).", "", bot.color, "", message.guild.me.avatar_url)
+                        embed = create_embed("How do you like this bot ? Put a mark from 1 to 10", "", bot.color, "", message.guild.me.avatar_url)
                         a = await message.channel.send(embed=embed)
                         await message.delete()
-                        await a.add_reaction("0️⃣")
-                        await a.add_reaction("1️⃣")
-                        await a.add_reaction("2️⃣")
-                        await a.add_reaction("3️⃣")
-                        await a.add_reaction("4️⃣")
-                        await a.add_reaction("5️⃣")
-                        await a.add_reaction("6️⃣")
-                        await a.add_reaction("7️⃣")
-                        await a.add_reaction("8️⃣")
-                        await a.add_reaction("9️⃣")
+                        for emoji in Emojis["Numbers"].values():
+                            await a.add_reaction(emoji)
                         return
 
                 # mentions
@@ -773,7 +803,7 @@ class Bot(discord.Client):
                         return -1
 
                 except discord.Forbidden:
-                    embed = create_embed(member.name, "This member do not want to receive direct message from this server.", member.color, "", message.guild.me.avatar_url)
+                    embed = create_embed(member.name, "This member does not want to receive direct message from this server.", member.color, "", message.guild.me.avatar_url)
                     await message.channel.send(embed=embed)
                     return
                 except IndexError:
@@ -782,7 +812,7 @@ class Bot(discord.Client):
                     return
                 return
 
-            if message.guild.id == Ids["Support"]:
+            if message.guild.id == Ids["Support_server"]:
                 # mute
                 if message.content.startswith(prefix + "mute"):
                     await message.channel.trigger_typing()

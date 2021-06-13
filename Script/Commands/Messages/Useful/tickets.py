@@ -1,7 +1,7 @@
 import json
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
-from Script.Modifiable_variables.import_var import Support
+from Data.Modifiable_variables.import_var import Support
 
 
 async def tickets(ctx, text, ticket_channel, support):
@@ -12,13 +12,13 @@ async def tickets(ctx, text, ticket_channel, support):
             embed = create_embed("Support role changed", f"The new support role for tickets in this server is : {support.mention}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
             await ctx.send(embed=embed)
             json_txt = json.dumps(Support, sort_keys=True, indent=4)
-            def_support = open("Modifiable_variables/support_role_ for_tickets.json", "w")
+            def_support = open("Data/Modifiable_variables/support_for_tickets.json", "w")
             def_support.write(json_txt)
             def_support.close()
         else:
-            try:
-                support = ctx.guild.get_role(Support[str(ctx.guild.id)])
-            except KeyError:
+            if ctx.guild.id in list(Support.keys()):
+                support = ctx.guild.get_role(Support[ctx.guild.id])
+            else:
                 support = None
             if support is None:
                 support = "`not set : only administrators`"

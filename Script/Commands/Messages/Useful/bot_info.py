@@ -17,7 +17,7 @@ async def bot_info(ctx):
             msg_perm += "\n" + perm[0]
     msg_perm += "\nSo please grant it to the bot."
     if msg_perm == ":warning: The bot needs the permissions : " + "\nSo please grant it to the bot.":
-        msg_perm = f"{Emojis['Yes']} The bot have all required permissions !"
+        msg_perm = f"{Emojis['Yes']} The bot has all required permissions !"
     msg_serv = f"{Emojis['Discord']} The bot is on {len(Clash_info.guilds)} servers !"
     msg_created = f"{Emojis['Calendar']} The bot was created the 28/04/2020, and certified the 23/09/2020."
     embed = create_embed("Clash INFO", f"{msg_perm}\n{msg_serv}\n{msg_created}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)

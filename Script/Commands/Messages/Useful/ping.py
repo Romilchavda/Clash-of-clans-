@@ -1,5 +1,5 @@
 import requests
-from Script.Const_variables.import_const import Login
+from Data.Const_variables.import_const import Login
 from Script.import_functions import create_embed
 
 

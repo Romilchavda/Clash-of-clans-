@@ -1,5 +1,5 @@
 # ----- PACKAGES : -----
-import dbl
+import topgg
 import coc
 import requests
 import json
@@ -25,6 +25,7 @@ from Script.Commands.Messages.Clash_Of_Clans.buildings_bh import buildings_bh
 from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
 from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
 
+from Script.Commands.Messages.Useful.github import github
 from Script.Commands.Messages.Useful.tickets import tickets, close_ticket
 from Script.Commands.Messages.Useful.member_info import member_info
 from Script.Commands.Messages.Useful.role_info import role_info
@@ -51,17 +52,17 @@ from Script.Commands.Messages.Creators.servers_list import servers_list
 # ----- VARIABLES : -----
 
 # MODIFIABLE VARIABLES
-def_prefix = open("Script/Modifiable_variables/prefix.json", "r")
+def_prefix = open("Data/Modifiable_variables/prefix.json", "r")
 Prefix_txt = def_prefix.read()
 def_prefix.close()
 Prefix = json.loads(Prefix_txt)
 
-def_votes = open("Script/Modifiable_variables/votes.json", "r")
+def_votes = open("Data/Modifiable_variables/votes.json", "r")
 Votes_txt = def_votes.read()
 def_votes.close()
 Votes = json.loads(Votes_txt)
 
-def_support = open("Script/Modifiable_variables/support_role_ for_tickets.json", "r")
+def_support = open("Data/Modifiable_variables/support_for_tickets.json", "r")
 Support_txt = def_support.read()
 def_support.close()
 Support = json.loads(Support_txt)
@@ -73,7 +74,7 @@ Default_color = 0x00ffff
 if __name__ == "__main__":
 
     print(f"Python : {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
-    print("DBL : " + str(dbl.__version__))
+    print("DBL : " + str(topgg.__version__))
     print("CoC : " + str(coc.__version__))
     print("Discord : " + str(discord.__version__))
 
@@ -84,11 +85,13 @@ if __name__ == "__main__":
 
     @Client_slash.slash(name="help")
     async def _help(ctx):
+        await ctx.defer()
         await help(ctx)
         return
 
     @Client_slash.slash(name="_help")
     async def __help(ctx):
+        await ctx.defer()
         await help(ctx)
         return
 
@@ -97,36 +100,43 @@ if __name__ == "__main__":
 
     @Client_slash.slash(name="get_player")
     async def _get_player(ctx, player_tag, information):
+        await ctx.defer()
         await get_player(ctx, player_tag, information)
         return
 
     @Client_slash.slash(name="get_clan")
     async def _get_clan(ctx, clan_tag):
+        await ctx.defer()
         await get_clan(ctx, clan_tag)
         return
 
     @Client_slash.slash(name="search_clan")
     async def _search_clan(ctx, name, number=10):
+        await ctx.defer()
         await search_clan(ctx, name, number)
         return
 
     @Client_slash.slash(name="clan_members")
     async def _clan_members(ctx, clan_tag):
+        await ctx.defer()
         await clan_members(ctx, clan_tag)
         return
 
     @Client_slash.slash(name="buildings_th")
-    async def _buildings_th(ctx, th_level=0):
-        await buildings_th(ctx, th_level)
+    async def _buildings_th(ctx, town_hall_level=0):
+        await ctx.defer()
+        await buildings_th(ctx, town_hall_level)
         return
 
     @Client_slash.slash(name="buildings_bh")
-    async def _buildings_bh(ctx, bh_level=0):
-        await buildings_bh(ctx, bh_level)
+    async def _buildings_bh(ctx, builder_hall_level=0):
+        await ctx.defer()
+        await buildings_bh(ctx, builder_hall_level)
         return
 
     @Client_slash.subcommand(base="auto_roles", name="th")
     async def _auto_roles_th(ctx, channel=None):
+        await ctx.defer()
         if channel is None:
             channel = ctx.channel
         await auto_roles_th(ctx, channel)
@@ -134,6 +144,7 @@ if __name__ == "__main__":
 
     @Client_slash.subcommand(base="auto_roles", name="bh")
     async def _auto_roles_bh(ctx, channel=None):
+        await ctx.defer()
         if channel is None:
             channel = ctx.channel
         await auto_roles_bh(ctx, channel)
@@ -141,6 +152,7 @@ if __name__ == "__main__":
 
     @Client_slash.subcommand(base="auto_roles", name="leagues")
     async def _auto_roles_leagues(ctx, channel=None):
+        await ctx.defer()
         if channel is None:
             channel = ctx.channel
         await auto_roles_leagues(ctx, channel)
@@ -148,33 +160,34 @@ if __name__ == "__main__":
 
     @Client_slash.slash(name="file")
     async def _file(ctx):
+        await ctx.defer()
         await coc_file(ctx)
         return
 
 
     # USEFUL
 
+    @Client_slash.slash(name="github")
+    async def _github(ctx):
+        await ctx.defer()
+        await github(ctx)
+        return
+
     @Client_slash.slash(name="tickets")
-    async def _tickets(ctx, text, variable1=None, variable2=None):
-        if variable1 is None:
+    async def _tickets(ctx, text, ticket_channel=None, support_role=None):
+        await ctx.defer()
+        if ticket_channel is None:
             ticket_channel = ctx.channel
-            support = None
-        elif variable2 is None:
-            ticket_channel = ctx.guild.get_channel(int(variable1))
-            if ticket_channel is None:
-                support = ctx.guild.get_role(int(variable1))
-                ticket_channel = ctx.channel
-            else:
-                support = None
+        if support_role is not None:
+            Support.update({ctx.guild.id: support_role.id})
         else:
-            ticket_channel = ctx.guild.get_channel(int(variable1))
-            support = ctx.guild.get_role(int(variable2))
-        await tickets(ctx, text, ticket_channel, support)
-        Support.update({str(ctx.guild.id): support.id})
+            Support.pop(ctx.guild.id, None)
+        await tickets(ctx, text, ticket_channel, support_role)
         return
 
     @Client_slash.slash(name="close_ticket")
     async def _close_ticket(ctx, channel=None):
+        await ctx.defer()
         if channel is None:
             channel = ctx.channel
         else:
@@ -184,67 +197,80 @@ if __name__ == "__main__":
 
     @Client_slash.slash(name="member_info")
     async def _member_info(ctx, member):
+        await ctx.defer()
         await member_info(ctx, member)
         return
 
     @Client_slash.slash(name="role_info")
     async def _role_info(ctx, role):
+        await ctx.defer()
         await role_info(ctx, role)
         return
 
     @Client_slash.slash(name="server_info")
     async def _server_info(ctx):
+        await ctx.defer()
         await server_info(ctx)
         return
 
     @Client_slash.slash(name="emoji_info")
     async def _emoji_info(ctx, emoji):
+        await ctx.defer()
         await emoji_info(ctx, emoji)
         return
 
     @Client_slash.subcommand(base="direct_message", name="member")
     async def _direct_message_member(ctx, member, text):
+        await ctx.defer()
         await direct_message_member(ctx, member, text)
         return
 
     @Client_slash.subcommand(base="direct_message", name="role")
     async def _direct_message_member(ctx, role, text):
+        await ctx.defer()
         await direct_message_role(ctx, role, text)
         return
 
     @Client_slash.slash(name="poll")
     async def _poll(ctx, question):
+        await ctx.defer()
         await poll(ctx, question)
         return
 
     @Client_slash.slash(name="bot_info")
     async def _bot_info(ctx):
+        await ctx.defer()
         await bot_info(ctx)
         return
 
     @Client_slash.subcommand(base="add_the_bot", name="default")
     async def _add_the_bot_default(ctx):
+        await ctx.defer()
         await add_the_bot_default(ctx)
         return
 
     @Client_slash.subcommand(base="add_the_bot", name="administrator")
     async def _add_the_bot_administrator(ctx):
+        await ctx.defer()
         await add_the_bot_administrator(ctx)
         return
 
 
     @Client_slash.slash(name="support_server")
     async def _support_server(ctx):
+        await ctx.defer()
         await support_server(ctx)
         return
 
     @Client_slash.slash(name="promote_the_bot")
     async def _promote_the_bot(ctx):
+        await ctx.defer()
         await promote_the_bot(ctx)
         return
 
     @Client_slash.slash(name="youtube")
     async def _youtube(ctx):
+        await ctx.defer()
         await youtube(ctx)
         return
 
@@ -253,16 +279,19 @@ if __name__ == "__main__":
 
     @Client_slash.subcommand(base="delete_messages", name="number_of_messages")
     async def _delete_messages_number(ctx, number_of_messages):
+        await ctx.defer()
         await delete_messages_number(ctx, number_of_messages)
         return
 
     @Client_slash.subcommand(base="delete_messages", name="for_x_minutes")
     async def _delete_messages_time(ctx, minutes):
+        await ctx.defer()
         await delete_messages_time(ctx, minutes)
         return
 
     @Client_slash.subcommand(base="delete_messages", name="all")
     async def _delete_messages_all(ctx):
+        await ctx.defer()
         await delete_messages_all(ctx)
         return
 
@@ -270,32 +299,38 @@ if __name__ == "__main__":
     # CREATORS
 
     @Client_slash.slash(name="__add_a_bot_id")
-    async def ___add_a_bot_id(ctx, id):
-        await add_a_bot_id(ctx, id)
+    async def ___add_a_bot_id(ctx, bot_id):
+        await ctx.defer()
+        await add_a_bot_id(ctx, bot_id)
         return
 
-    @Client_slash.slash(name="__add_reactino_with_id")
+    @Client_slash.slash(name="__add_reaction_with_id")
     async def ___add_reaction_with_id(ctx, channel_id, message_id, emoji_id):
+        await ctx.defer()
         await add_reaction_with_id(ctx, channel_id, message_id, emoji_id)
         return
 
     @Client_slash.slash(name="__download_emojis")
     async def ___download_emojis(ctx):
+        await ctx.defer()
         await download_emojis(ctx)
         return
 
     @Client_slash.slash(name="__find_user_by_id")
     async def ___find_user_by_id(ctx, user_id):
+        await ctx.defer()
         await find_user_by_id(ctx, user_id)
         return
 
     @Client_slash.slash(name="__refresh_dbl")
     async def ___refresh_dbl(ctx):
+        await ctx.defer()
         await refresh_dbl(ctx)
         return
 
     @Client_slash.slash(name="__servers_list")
     async def ___servers_list(ctx):
+        await ctx.defer()
         await servers_list(ctx)
         return
 
@@ -309,11 +344,9 @@ if __name__ == "__main__":
         print(json_dict.get("name"), req)
         if not req.ok:
             print(json_dict["name"], req.content)
-            try:
+            if "retry_after" in list(req.json().keys()):
                 time.sleep(req.json()["retry_after"])
                 add_slash_command_json(json_dict)
-            except:
-                pass
     def add_slash_command_json_guild(json_dict):
         headers = {"Authorization": "Bot " + Token}
         url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands"
@@ -321,27 +354,25 @@ if __name__ == "__main__":
         print(json_dict.get("name"), req)
         if not req.ok:
             print(json_dict["name"], req.content)
-            try:
+            if "retry_after" in list(req.json().keys()):
                 time.sleep(req.json()["retry_after"])
                 add_slash_command_json(json_dict)
-            except:
-                pass
 
     def see_slash_commands():
         headers = {"Authorization": "Bot " + Token}
         url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/commands"
         req = requests.get(url, headers=headers)
-        dict = json.loads(req.content)
+        json_dict = json.loads(req.content)
         print("Slash Commands list : ", end="")
-        for command in dict:
+        for command in json_dict:
             print(command["name"], end=", ")
         print()
     def dlt_slash_command(name):
         headers = {"Authorization": "Bot " + Token}
         url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/commands"
         req = requests.get(url, headers=headers)
-        dict = json.loads(req.content)
-        for command in dict:
+        json_dict = json.loads(req.content)
+        for command in json_dict:
             if command.get("name") == name:
                 url += "/" + str(command.get("id"))
                 req = requests.delete(url, headers=headers)
@@ -354,9 +385,9 @@ if __name__ == "__main__":
         url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands"
         req = requests.get(url, headers=headers)
         print(req.content)
-    def dlt_slash_command_guild(id):
+    def dlt_slash_command_guild(command_id):
         headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands/"+str(id)
+        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands/"+str(command_id)
         req = requests.delete(url, headers=headers)
         print(req.content)
 
@@ -512,6 +543,11 @@ if __name__ == "__main__":
         "description": "Show some information about the bot (including the bot required permissions)"
     }
     add_slash_command_json(json_bot_info)
+    json_github = {
+        "name": "github",
+        "description": "You can check our GitHub to help us to improve the bot"
+    }
+    add_slash_command_json(json_github)
     json_tickets = {
         "name": "tickets",
         "description": "[Administrators only] Create a ticket category, channel and message",
@@ -649,7 +685,7 @@ if __name__ == "__main__":
     add_slash_command_json(json_promote_the_bot)
 
 
-    #Moderation
+    # Moderation
     json_delete_messages = {
         "name": "delete_messages",
         "description": "[Messages managers only] Delete the most recent and not-pinned messages in the current channel",

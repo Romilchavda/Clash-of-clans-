@@ -1,22 +1,12 @@
 import discord
-import dbl
-from discord.ext import commands
-from Script.Const_variables.import_const import Login
+import topgg
+from Data.Const_variables.import_const import Login
 
 
-class TopGG(commands.Cog, dbl.DBLClient):
-    def __init__(self):
-        self.bot = discord.Client()
-        self.token = Login["dbl"]["token"]
-        self.dblpy = dbl.DBLClient(self.bot, self.token)
-        self.http = self.dblpy
-
-    async def update_stats(self, server_count):
-        await self.bot.wait_until_ready()
-        try:
-            await self.dblpy.post_guild_count(server_count)
-        except Exception as e:
-            print("Failed to post server count\n{}: {}".format(type(e).__name__, e))
+class DblClient(topgg.DBLClient):
+    async def on_dbl_vote(self, data):
+        print(data)
+        print("top_gg.py")
 
 
-Dbl_client = TopGG()
+Dbl_client = DblClient(discord.Client(), Login["topgg"]["token"], autopost=True)

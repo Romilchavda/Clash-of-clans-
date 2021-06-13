@@ -1,6 +1,6 @@
 import coc
 from Script.import_emojis import Emojis
-from Script.Const_variables.import_const import Troops
+from Data.Const_variables.import_const import Troops
 from Script.import_functions import create_embed, trophies_to_league
 from Script.Clients.clash_of_clans import Clash_of_clans
 
@@ -27,10 +27,15 @@ async def player_info(ctx, tag, information):
         for th, value in Emojis["Th_emojis"].items():
             if value[1] == player.town_hall:
                 break
-        weapon = ""
-        if player.town_hall_weapon is not None:
+        if player.town_hall_weapon:
             weapon = f"({player.town_hall_weapon} {Emojis['Star']})"
-        embed = create_embed(f"Player : {player.name} ({player.tag}) (Main information)", f"{trophies_to_league(player.trophies)} Number of trophies : {player.trophies}\n{trophies_to_league(player.best_trophies)} Best trophies : {player.best_trophies}\n{th} Town Hall level : {player.town_hall} {weapon}\n{Emojis['Exp']} Experience level : {player.exp_level}\n{Emojis['Members']} Clan : {player.clan.name} ({player.clan.tag})\n{Emojis['Star']} War stars earned : {player.war_stars}\n{Emojis['Barbarian_king']} Heros level : {Emojis['Barbarian_king']} {lvl_bk} / {Emojis['Archer_queen']} {lvl_aq} / {Emojis['Grand_warden']} {lvl_gw} / {Emojis['Royal_champion']} {lvl_rc}\n{Emojis['Donations']} Troops donated : {player.donations}\n{Emojis['Received']} Troops received : {player.received}\n:crossed_swords: Attacks won : {player.attack_wins}\n:shield: Defenses won : {player.defense_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        else:
+            weapon = ""
+        if player.clan:
+            clan = f"{player.clan.name} ({player.clan.tag})"
+        else:
+            clan = "None"
+        embed = create_embed(f"Player : {player.name} ({player.tag}) (Main information)", f"{trophies_to_league(player.trophies)} Number of trophies : {player.trophies}\n{trophies_to_league(player.best_trophies)} Best trophies : {player.best_trophies}\n{th} Town Hall level : {player.town_hall} {weapon}\n{Emojis['Exp']} Experience level : {player.exp_level}\n{Emojis['Members']} Clan : {clan}\n{Emojis['Star']} War stars earned : {player.war_stars}\n{Emojis['Barbarian_king']} Heros level : {Emojis['Barbarian_king']} {lvl_bk} / {Emojis['Archer_queen']} {lvl_aq} / {Emojis['Grand_warden']} {lvl_gw} / {Emojis['Royal_champion']} {lvl_rc}\n{Emojis['Donations']} Troops donated : {player.donations}\n{Emojis['Received']} Troops received : {player.received}\n:crossed_swords: Attacks won : {player.attack_wins}\n:shield: Defenses won : {player.defense_wins}\n[Open in Clash Of Clans]({player.share_link})", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     elif information == "builder_base":
         if player.builder_hall:
             for bh, value in Emojis["Bh_emojis"].items():
@@ -93,15 +98,16 @@ async def player_troops(ctx, tag):
 
 async def get_player(ctx, tag, information):
     try:
-        if information == "troops":
-            embed = await player_troops(ctx, tag)
-        else:
-            embed = await player_info(ctx, tag, information)
-        msg = await ctx.send(embed=embed)
-        await msg.add_reaction(Emojis["Barbarian_king"])
-        await msg.add_reaction(Emojis["Battle_machine"])
-        await msg.add_reaction(Emojis["Troop"])
-        await msg.add_reaction(Emojis["Exp"])
+        await Clash_of_clans.get_player(tag)
     except coc.errors.NotFound:
         await ctx.send(f"Player not found\nThere is no player with the tag `{tag}` (do not forget the # in front of the tag).", hidden=True)
+    if information == "troops":
+        embed = await player_troops(ctx, tag)
+    else:
+        embed = await player_info(ctx, tag, information)
+    msg = await ctx.send(embed=embed)
+    await msg.add_reaction(Emojis["Barbarian_king"])
+    await msg.add_reaction(Emojis["Battle_machine"])
+    await msg.add_reaction(Emojis["Troop"])
+    await msg.add_reaction(Emojis["Exp"])
     return

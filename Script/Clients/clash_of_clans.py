@@ -1,5 +1,5 @@
 import coc
-from Script.Const_variables.import_const import Login
+from Data.Const_variables.import_const import Login
 
 
 key_name = "Clash INFO"
