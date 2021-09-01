@@ -1,3 +1,5 @@
+# Processes the end poll button
+
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 

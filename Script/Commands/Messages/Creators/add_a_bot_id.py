@@ -1,4 +1,7 @@
+# Sends a link to add the bot with the given ID
+
 import discord
+
 from Script.import_functions import create_embed
 
 

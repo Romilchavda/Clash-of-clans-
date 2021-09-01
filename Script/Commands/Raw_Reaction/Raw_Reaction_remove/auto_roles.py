@@ -1,4 +1,7 @@
+# Removes the role matching with the clicked emoji
+
 import discord
+
 from Script.import_emojis import Emojis
 
 

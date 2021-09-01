@@ -1,3 +1,5 @@
+# Processes the ticket deletion confirmation
+
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 

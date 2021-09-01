@@ -1,5 +1,7 @@
-from Script.import_emojis import Emojis
+# Adds the clash-info-news channel's updates to the channel
+
 from Data.Const_variables.import_const import Ids
+from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 
 
@@ -9,7 +11,7 @@ async def raw_reaction_add_follow_news_support(self, raw_reaction):
         channel = raw_reaction.message.channel
         if channel.permissions_for(raw_reaction.member).manage_webhooks:
             if channel.permissions_for(guild.me).manage_webhooks:
-                news = self.get_channel(Ids["News"])
+                news = self.get_channel(Ids["News_channel"])
                 await news.follow(destination=channel)
                 return
             else:

@@ -1,4 +1,7 @@
+# Adds the role matching with the clicked emoji
+
 import discord
+
 from Script.import_emojis import Emojis
 
 
@@ -9,15 +12,15 @@ async def raw_reaction_add_auto_roles(self, raw_reaction):
         member = raw_reaction.member
         if message.embeds[0].title == "Click on the emojis to get the matching roles":
             if raw_reaction.emoji in list(Emojis["Th_emojis"].keys()):
-                a = discord.utils.get(guild.roles, name=Emojis["Th_emojis"][raw_reaction.complete_emoji][0])
-                await member.add_roles(a)
+                role = discord.utils.get(guild.roles, name=Emojis["Th_emojis"][raw_reaction.complete_emoji][0])
+                await member.add_roles(role)
                 return
             if raw_reaction.emoji in list(Emojis["Bh_emojis"].keys()):
-                a = discord.utils.get(guild.roles, name=Emojis["Bh_emojis"][raw_reaction.complete_emoji][0])
-                await member.add_roles(a)
+                role = discord.utils.get(guild.roles, name=Emojis["Bh_emojis"][raw_reaction.complete_emoji][0])
+                await member.add_roles(role)
                 return
             if raw_reaction.emoji in list(Emojis["League_emojis"].keys()):
-                a = discord.utils.get(guild.roles, name=Emojis["League_emojis"][raw_reaction.complete_emoji][0])
-                await member.add_roles(a)
+                role = discord.utils.get(guild.roles, name=Emojis["League_emojis"][raw_reaction.complete_emoji][0])
+                await member.add_roles(role)
                 return
     return

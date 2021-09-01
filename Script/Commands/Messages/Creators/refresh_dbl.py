@@ -1,6 +1,8 @@
+# Refreshes the top.gg guilds count
+
+from Script.Clients.discord_client import Clash_info
+from Script.Clients.top_gg_client import Dbl_client
 from Script.import_emojis import Emojis
-from Script.Clients.top_gg import Dbl_client
-from Script.Clients.discord import Clash_info
 
 
 async def refresh_dbl(ctx):

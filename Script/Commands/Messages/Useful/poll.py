@@ -1,3 +1,5 @@
+# Creates poll with emojis to vote
+
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 

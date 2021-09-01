@@ -1,4 +1,6 @@
-from Script.Clients.discord import Clash_info
+# Allows to find the user with the given ID if he has common guilds with the bot
+
+from Script.Clients.discord_client import Clash_info
 
 
 async def find_user_by_id(ctx, user_id):
