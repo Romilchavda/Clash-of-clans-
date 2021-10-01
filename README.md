@@ -49,4 +49,4 @@ Distributed under the [BSD 3-Clause License](https://github.com/rreemmii-dev/Cla
 
 
 ---
-Discord : [RREEMMII#0001](https://discord.com/channels/@me/490190727612071939)
+Discord : [RREEMMII#7368](https://discord.com/channels/@me/490190727612071939)
