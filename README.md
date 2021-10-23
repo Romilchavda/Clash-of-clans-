@@ -40,7 +40,7 @@ python3 Clash-Of-Clans-Discord-Bot\main.py
 ```
 
 ## Features
-You can send the /help command to see the list of availables commands.
+You can send the /help command to see the list of available commands.
 
 ## License
 Distributed under the [BSD 3-Clause License](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/LICENSE).
