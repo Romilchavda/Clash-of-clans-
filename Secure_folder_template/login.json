@@ -1,0 +1,21 @@
+{
+    "discord": {
+        "token": "",
+        "beta": ""
+    },
+    "clash of clans": {
+        "email": "",
+        "password": ""
+    },
+    "clash of clans beta": {
+        "email": "",
+        "password": ""
+    },
+
+    "topgg": {
+        "token": ""
+    },
+    "watchbot": {
+        "token": ""
+    }
+}
