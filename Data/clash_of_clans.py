@@ -2,9 +2,9 @@ import sqlite3
 
 from Data.utils import Utils
 
-conn = sqlite3.connect("Data/Clash_Of_Clans.sqlite")
-conn.row_factory = sqlite3.Row
-cursor = conn.cursor()
+connection = sqlite3.connect("Data/Clash_Of_Clans.sqlite")
+connection.row_factory = sqlite3.Row
+cursor = connection.cursor()
 
 cursor.execute("SELECT * FROM Troops")
 Troops = {}

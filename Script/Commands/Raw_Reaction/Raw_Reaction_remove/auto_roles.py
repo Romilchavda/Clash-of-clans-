@@ -11,14 +11,17 @@ async def raw_reaction_remove_auto_roles(self, raw_reaction):
             guild = raw_reaction.message.guild
             if raw_reaction.emoji in list(Emojis["Th_emojis"].keys()):
                 role = discord.utils.get(guild.roles, name=Emojis["Th_emojis"][raw_reaction.complete_emoji][0])
-                await raw_reaction.member.remove_roles(role)
+                if role:
+                    await raw_reaction.member.remove_roles(role)
                 return
             if raw_reaction.emoji in list(Emojis["Bh_emojis"].keys()):
                 role = discord.utils.get(guild.roles, name=Emojis["Bh_emojis"][raw_reaction.complete_emoji][0])
-                await raw_reaction.member.remove_roles(role)
+                if role:
+                    await raw_reaction.member.remove_roles(role)
                 return
             if raw_reaction.emoji in list(Emojis["League_emojis"].keys()):
                 role = discord.utils.get(guild.roles, name=Emojis["League_emojis"][raw_reaction.complete_emoji][0])
-                await raw_reaction.member.remove_roles(role)
+                if role:
+                    await raw_reaction.member.remove_roles(role)
                 return
     return

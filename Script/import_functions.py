@@ -22,7 +22,7 @@ def create_embed_img(title, description, colour, footer, icon_url, img):
     embed.title = title
     embed.description = description
     embed.colour = colour
-    embed.set_footer(text=footer + "\nHelp command : /help (slash command)", icon_url=icon_url)
+    embed.set_footer(text=footer, icon_url=icon_url)
     embed.set_image(url=img)
     return embed
 
@@ -32,7 +32,7 @@ def create_embed(title, description, colour, footer, icon_url):
     embed.title = title
     embed.description = description
     embed.colour = colour
-    embed.set_footer(text=footer + "\nHelp command : /help (slash command)", icon_url=icon_url)
+    embed.set_footer(text=footer, icon_url=icon_url)
     return embed
 
 

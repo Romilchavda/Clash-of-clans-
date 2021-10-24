@@ -1,5 +1,4 @@
 # Called when the bot is ready to be used
-# TODO : Optimize the code ?
 
 import asyncio
 import datetime
@@ -112,8 +111,8 @@ async def ready_loop(self):
                     super().__init__()
 
                 async def on_ready(self):
-                    conn = sqlite3.connect("Data/Modifiable_variables.sqlite")
-                    cursor = conn.cursor()
+                    connection = sqlite3.connect("Data/Modifiable_variables.sqlite")
+                    cursor = connection.cursor()
                     cursor.execute("SELECT COUNT(*) FROM BotUsage")
                     nb_monthly_users = cursor.fetchone()[0]
                     text = f"Monthly users : {nb_monthly_users}"
@@ -126,7 +125,7 @@ async def ready_loop(self):
                     w = f"""CREATE TABLE IF NOT EXISTS BotUsage_{date.year}_{month} AS SELECT * FROM BotUsage"""
                     cursor.execute(w)
                     cursor.execute("DELETE FROM BotUsage")
-                    conn.commit()
+                    connection.commit()
                     await self.logout()
 
                 async def on_disconnect(self):
@@ -165,7 +164,4 @@ async def ready_loop(self):
         nb_guilds = len(self.guilds)
         act = discord.Activity(type=discord.ActivityType.watching, name=int_to_str(nb_guilds) + " servers")
         await self.change_presence(status=discord.Status.online, activity=act)
-        await asyncio.sleep(10)
-        act = discord.Activity(type=discord.ActivityType.watching, name="/help")
-        await self.change_presence(status=discord.Status.online, activity=act)
-        await asyncio.sleep(50)
+        await asyncio.sleep(60)

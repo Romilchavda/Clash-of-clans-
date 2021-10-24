@@ -8,7 +8,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Contributors)
 
 
-**This project is a Discord Bot about the game Clash Of Clans. It uses the [discord.py](https://discordpy.readthedocs.io/en/latest/api.html), the [discord-py-slash-command](https://discord-py-slash-command.readthedocs.io/en/latest/index.html), the [coc.py](https://cocpy.readthedocs.io/en/latest/index.html) and the [topggpy](https://topggpy.readthedocs.io/en/latest/api.html) libraries.**
+**This project is a Discord Bot about the game Clash Of Clans. It uses the [discord.py](https://discordpy.readthedocs.io/en/latest/api.html), the [discord-py-slash-command](https://discord-py-slash-command.readthedocs.io/en/latest/index.html), the [coc.py](https://cocpy.readthedocs.io/en/latest/index.html) and the [dblpy](https://dblpy.readthedocs.io/en/latest/api.html) libraries.**
 
 If you want to test the bot, you can add it [here](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot). You can also join the [support server](https://discord.gg/KQmstPw) and take a ticket if you have any questions.
 
@@ -31,7 +31,7 @@ pip install -r Clash-Of-Clans-Discord-Bot\requirements.txt
 ## Usage
 Create your own bot [here](https://discord.com/developers/applications) or [add our bot](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot).
 
-Add yours tokens, email/password... [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/login.json).
+Copy/paste the template of the [secure folder](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Secure_folder_template), add yours tokens, email/password... in the login.json file (in the secure folder), and add the path of your secure folder [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Data/utils.py).
 
 You can edit [this file](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/ids.json) with yours IDs.
 ```shell

@@ -191,7 +191,8 @@ async def wrapped_connect():
         await client.connect()
         global Emojis
         Emojis = client.emojis
-    except:
+    except Exception as e:
+        print("Error (import_emojis)", e)
         await client.close()
         client.emoji_connected.set()
 loop.create_task(wrapped_connect())

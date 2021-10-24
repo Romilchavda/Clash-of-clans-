@@ -10,6 +10,7 @@ import time
 import topgg
 
 # ----- PROJECT FILES : -----
+from Data.utils import Utils
 from Script.import_functions import *
 
 
@@ -18,26 +19,26 @@ from Script.import_functions import *
 # MESSAGES
 from Script.Commands.Messages.help import help
 
-from Script.Commands.Messages.Clash_Of_Clans.Buildings.buildings_bh import buildings_bh
-from Script.Commands.Messages.Clash_Of_Clans.Buildings.buildings_th import buildings_th
-from Script.Commands.Messages.Clash_Of_Clans.Buildings.coc_file import coc_file
-from Script.Commands.Messages.Clash_Of_Clans.Clan.clan_info import clan_info
-from Script.Commands.Messages.Clash_Of_Clans.Clan.clan_members import clan_members
-from Script.Commands.Messages.Clash_Of_Clans.Clan.search_clan import search_clan
-from Script.Commands.Messages.Clash_Of_Clans.Discord.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
-from Script.Commands.Messages.Clash_Of_Clans.Player.link_coc_account import link_coc_account
-from Script.Commands.Messages.Clash_Of_Clans.Player.player_info import player_info
+from Script.Commands.Messages.Clash_Of_Clans.buildings_bh import buildings_bh
+from Script.Commands.Messages.Clash_Of_Clans.buildings_th import buildings_th
+from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
+from Script.Commands.Messages.Clash_Of_Clans.clan_info import clan_info
+from Script.Commands.Messages.Clash_Of_Clans.clan_members import clan_members
+from Script.Commands.Messages.Clash_Of_Clans.search_clan import search_clan
+from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
+from Script.Commands.Messages.Clash_Of_Clans.link_coc_account import link_coc_account
+from Script.Commands.Messages.Clash_Of_Clans.player_info import player_info
 
-from Script.Commands.Messages.Useful.Bot.add_the_bot import add_the_bot_default, add_the_bot_administrator
-from Script.Commands.Messages.Useful.Bot.github import github
-from Script.Commands.Messages.Useful.Bot.promote_the_bot import promote_the_bot
-from Script.Commands.Messages.Useful.Bot.support_server import support_server
-from Script.Commands.Messages.Useful.Bot.youtube import youtube
-from Script.Commands.Messages.Useful.Info.bot_info import bot_info
-from Script.Commands.Messages.Useful.Info.emoji_info import emoji_info
-from Script.Commands.Messages.Useful.Info.member_info import member_info
-from Script.Commands.Messages.Useful.Info.role_info import role_info
-from Script.Commands.Messages.Useful.Info.server_info import server_info
+from Script.Commands.Messages.Useful.add_the_bot import add_the_bot_default, add_the_bot_administrator
+from Script.Commands.Messages.Useful.github import github
+from Script.Commands.Messages.Useful.promote_the_bot import promote_the_bot
+from Script.Commands.Messages.Useful.support_server import support_server
+from Script.Commands.Messages.Useful.youtube import youtube
+from Script.Commands.Messages.Useful.bot_info import bot_info
+from Script.Commands.Messages.Useful.emoji_info import emoji_info
+from Script.Commands.Messages.Useful.member_info import member_info
+from Script.Commands.Messages.Useful.role_info import role_info
+from Script.Commands.Messages.Useful.server_info import server_info
 from Script.Commands.Messages.Useful.direct_message import direct_message_member, direct_message_role
 from Script.Commands.Messages.Useful.poll import poll
 from Script.Commands.Messages.Useful.tickets import tickets, close_ticket
@@ -56,12 +57,12 @@ from Script.Commands.Messages.Creators.stats import stats
 # ----- VARIABLES : -----
 
 # MODIFIABLE VARIABLES
-def_votes = open("Data/Modifiable_variables/votes.json", "r")
+def_votes = open(Utils["secure_folder_path"] + "votes.json", "r")
 Votes_text = def_votes.read()
 def_votes.close()
 Votes = json.loads(Votes_text)
 
-def_support = open("Data/Modifiable_variables/support_for_tickets.json", "r")
+def_support = open(Utils["secure_folder_path"] + "support_for_tickets.json", "r")
 Support_text = def_support.read()
 def_support.close()
 Support = json.loads(Support_text)
@@ -81,19 +82,19 @@ if __name__ == "__main__":
     from Script.Clients.discord_client import Clash_info
     Client_slash = SlashCommand(Clash_info)
 
-    conn_modif = sqlite3.connect("Data/Modifiable_variables.sqlite")
-    cursor_modif = conn_modif.cursor()
+    connection_modifiable = sqlite3.connect(Utils["secure_folder_path"] + "Modifiable.sqlite")
+    cursor_modifiable = connection_modifiable.cursor()
 
-    conn_const = sqlite3.connect("Data/Constantes_variables.sqlite")
-    conn_const.row_factory = sqlite3.Row
-    cursor_const = conn_const.cursor()
+    connection_constants = sqlite3.connect("Data/Constants.sqlite")
+    connection_constants.row_factory = sqlite3.Row
+    cursor_constants = connection_constants.cursor()
 
 
     async def check_cmd_perms(ctx):
         if ctx.data['name'] == "_help":
             ctx.data['name'] = "help"
-        cursor_const.execute(f"""SELECT user_permissions, bot_permissions FROM RequiredPermissions WHERE command_name = '{ctx.data["name"]}'""")
-        perms_dict = dict(cursor_const.fetchall()[0])
+        cursor_constants.execute(f"""SELECT user_permissions, bot_permissions FROM RequiredPermissions WHERE command_name = '{ctx.data["name"]}'""")
+        perms_dict = dict(cursor_constants.fetchall()[0])
         if perms_dict["bot_permissions"]:
             perms_dict["bot_permissions"] += ", embed_links, external_emojis, send_messages, view_channel"
         else:
@@ -133,7 +134,7 @@ if __name__ == "__main__":
                 text += "You don't have this/these permission(s) :"
                 for perm in missing_user_perms:
                     text += "\n" + perm
-                text += "\nThis/These permission(s) is/are required to use this command."  # TODO : Separe 2 cases ?
+                text += "\nThis/These permission(s) is/are required to use this command."  # TODO : Split 2 cases ?
             embed = create_embed("Missing permissions", text, 0xFF0000, "", channel.guild.me.avatar_url)
             await ctx.send(embed=embed)
             return -1
@@ -142,10 +143,10 @@ if __name__ == "__main__":
 
     def edit_commands_used(user_id, cmd):
         text = f"""INSERT INTO BotUsage(user_id) SELECT({user_id}) WHERE NOT EXISTS(SELECT 1 FROM BotUsage WHERE user_id={user_id})"""
-        cursor_modif.execute(text)
+        cursor_modifiable.execute(text)
         text = f"""UPDATE BotUsage SET {cmd} = (SELECT {cmd} FROM BotUsage WHERE user_id={user_id})+1 WHERE user_id={user_id}"""
-        cursor_modif.execute(text)
-        conn_modif.commit()
+        cursor_modifiable.execute(text)
+        connection_modifiable.commit()
 
 
     # TODO : Replace @decorator by functions => no more "\n" ?
@@ -561,6 +562,17 @@ if __name__ == "__main__":
         url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands/"+str(command_id)
         req = requests.delete(url, headers=headers)
         print(req.content)
+
+
+    @Clash_info.event
+    async def on_component(ctx):
+        from Script.Commands.Components.Select_menu.change_th_lvl import change_th_lvl
+        await change_th_lvl(ctx)
+        from Script.Commands.Components.Select_menu.change_bh_lvl import change_bh_lvl
+        await change_bh_lvl(ctx)
+        from Script.Commands.Components.Select_menu.change_player_info_page import change_player_stats_page
+        await change_player_stats_page(ctx)
+        return
 
 
     Clash_info.run(Token)  # Comment this line to create slash commands

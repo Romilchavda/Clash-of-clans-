@@ -1,8 +1,10 @@
 import json
 
-Main_bot = 1
+from Data.utils import Utils
 
-def_login = open("Data/Const_variables/login.json", "r")
+Main_bot = 0
+
+def_login = open(Utils["secure_folder_path"] + "login.json", "r")
 Login = json.load(def_login)
 def_login.close()
 

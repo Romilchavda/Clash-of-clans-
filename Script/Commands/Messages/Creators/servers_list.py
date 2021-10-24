@@ -1,31 +1,30 @@
 # Sends the list of servers that have the bot
-# TODO : Send a .txt file instead of embeds
+
+import os
+
+import discord
 
 from Script.Clients.discord_client import Clash_info
-from Script.import_functions import create_embed
 
 
 async def servers_list(ctx):
     guilds = {}
     for guild in Clash_info.guilds:
         users = 0
+        bots = 0
         for member in guild.members:
-            if not member.bot:
+            if member.bot:
+                bots += 1
+            else:
                 users += 1
-        guilds[guild] = users
-    text = ""
+        guilds[guild] = {"users": users, "bots": bots}
     ones = 0
-    tens = 0
-    for guild in sorted(guilds, key=guilds.get, reverse=True):
+    file = open("tmp.txt", "w")
+    for guild in sorted(guilds.items(), key=lambda item: item[1]["users"], reverse=True):
         ones += 1
-        text += f"\n{ones + tens * 10}) The server `{guild.name}` with **{guilds[guild]}** members (owner : *{guild.owner.name}*)"
-        if ones == 10:
-            embed = create_embed(f"The {tens * 10 + 1} to {(tens + 1) * 10} best servers (by human members) :", text, ctx.guild.me.color, "", ctx.guild.me.avatar_url)
-            await ctx.send(embed=embed)
-            ones = 0
-            tens += 1
-            text = ""
-    if text != "":
-        embed = create_embed(f"The {tens * 10 + 1} to {(tens + 1) * 10} best servers (by human members) :", text, ctx.guild.me.color, "", ctx.guild.me.avatar_url)
-        await ctx.send(embed=embed)
+        text = f"\n{ones}) {guild[1]['users'] + guild[1]['bots']} members ({guild[1]['users']} users, {guild[1]['bots']} bots) ; creator : {guild[0].owner.name} ; server : {guild[0].name}"
+        file.write(text)
+    file.close()
+    await ctx.channel.send(file=discord.File("tmp.txt"))
+    os.remove("tmp.txt")
     return

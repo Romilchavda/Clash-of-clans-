@@ -3,8 +3,7 @@ import json
 
 
 # ----- PROJECT FILES : -----
-import discord.message
-
+from Data.utils import Utils
 from Script.import_functions import *
 
 
@@ -22,11 +21,9 @@ from Script.Commands.Member.member_join import member_join
 from Script.Commands.Member.member_remove import member_remove
 
 # REACTION add
-from Script.Commands.Reactions.Reaction_add.change_bh_lvl import reaction_add_change_bh_lvl
-from Script.Commands.Reactions.Reaction_add.change_player_stats_page import reaction_add_change_player_stats_page
-from Script.Commands.Reactions.Reaction_add.change_th_lvl import reaction_add_change_th_lvl
-from Script.Commands.Reactions.Reaction_add.close_ticket import reaction_add_close_ticket
-from Script.Commands.Reactions.Reaction_add.show_link_vote import reaction_add_show_link_vote
+from Script.Commands.Components.Select_menu.change_player_info_page import change_player_stats_page
+from Script.Commands.Raw_Reaction.Reaction_add.close_ticket import reaction_add_close_ticket
+from Script.Commands.Raw_Reaction.Reaction_add.show_link_vote import reaction_add_show_link_vote
 # REACTION remove
 
 
@@ -67,6 +64,17 @@ class Bot(discord.Client):
         Dbl_client.bot = self
         await ready_loop(self)
 
+    # MESSAGE DELETED
+    async def on_message_delete(self, message):
+        if message.guild:
+            if message.guild.id == Ids["Support_server"] and (message.author.id not in [704688212832026724, 710119855348645888]):
+                channel = message.guild.get_channel(895290013561000006)
+                embed = create_embed(f"{message.author} ({message.author.id})", message.channel.mention + "\n\n" + message.content, message.guild.me.color, "", message.guild.me.avatar_url)
+                await channel.send(embed=embed)
+                if message.embeds:
+                    await channel.send(embed=message.embeds[0])
+        return
+
     # GUILD
     async def on_guild_join(self, guild):
         await guild_join(self, guild)
@@ -89,15 +97,12 @@ class Bot(discord.Client):
     async def on_reaction_add(self, reaction, member):
         if (not member.bot) and (reaction.message.guild is not None) and (reaction.message.author.id == self.id) and (reaction.message.embeds != []):
             await reaction_add_close_ticket(self, reaction, member)
-            await reaction_add_change_th_lvl(self, reaction, member)
-            await reaction_add_change_bh_lvl(self, reaction, member)
             await reaction_add_show_link_vote(self, reaction, member)
-            await reaction_add_change_player_stats_page(self, reaction, member)
+            await change_player_stats_page(self, reaction, member)
         return
 
     # RAW REACTION
     async def on_raw_reaction_add(self, raw_reaction):
-        from Data.utils import Utils
         emoji_used = False
         for obj in Utils["used_emojis"]:
             if (type(obj) is list) and (raw_reaction.emoji in obj):
@@ -132,7 +137,6 @@ class Bot(discord.Client):
         return
 
     async def on_raw_reaction_remove(self, raw_reaction):
-        from Data.utils import Utils
         emoji_used = False
         for obj in Utils["used_emojis"]:
             if (type(obj) is list) and (raw_reaction.emoji in obj):
@@ -174,7 +178,7 @@ class Bot(discord.Client):
                 else:
                     Votes[member.id] += vote
                 json_text = json.dumps(Votes, sort_keys=True, indent=4)
-                def_votes = open("Data/Modifiable_variables/votes.json", "w")
+                def_votes = open(Utils["secure_folder_path"] + "votes.json", "w")
                 def_votes.write(json_text)
                 def_votes.close()
                 vote_copy = dict(Votes)
@@ -195,18 +199,24 @@ class Bot(discord.Client):
             channel = self.get_channel(Ids["Dm_bot_channel"])
             if message.author.id != self.id:
                 await message.author.send("Hello !\nI am a bot, so I cannot answer for your question ! You can ask it in the support server :\nhttps://discord.gg/KQmstPw\n```Default help command : /help \n(you can see it with sending @Clash INFO#3976 on your server)```")
-                await channel.send(f"`{message.content}` from :\n{message.author} (`{message.author.id}`)\nMessage_id : `{message.id}`")
+                await channel.send(f"```{message.content}``` from :\n{message.author} (`{message.author.id}`)\nMessage_id : `{message.id}`")
             return
         else:
             bot = message.guild.me
         # test
         if message.author.id in [490190727612071939]:
+            if message.content == "nf":
+                from Script.Commands.Messages.Clash_Of_Clans.best_donations import best_donations
+                await best_donations(message, "2YP09PCL9")
+            if message.content == "test@":
+                from Script.Commands.Messages.Creators.servers_list import servers_list
+                await servers_list(message)
             if message.content == "clean_dm":
                 dm_channel = await message.author.create_dm()
                 async for text in dm_channel.history(limit=None):
                     if text.author == bot:
                         await text.delete()
-                await message.channel.send("finish")
+                await message.add_reaction(Emojis["Yes"])
                 return
             if message.content == "rules":
                 await message.channel.trigger_typing()
