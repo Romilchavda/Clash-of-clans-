@@ -4,7 +4,7 @@ from Script.Commands.Messages.Clash_Of_Clans.buildings_th import buildings_th_em
 
 
 async def change_th_lvl(ctx):
-    if "Buildings Town Hall" in ctx.origin_message.embeds[0].description:
-        embed = buildings_th_embed(ctx, int(ctx.selected_options[0]))
+    if "Buildings Town Hall" in ctx.origin_message.embeds[0].footer.text:
+        embed = await buildings_th_embed(ctx, int(ctx.selected_options[0]))
         await ctx.edit_origin(embed=embed)
     return
