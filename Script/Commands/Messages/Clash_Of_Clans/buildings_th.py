@@ -23,9 +23,6 @@ async def buildings_th(ctx, lvl):
         return
 
     elif lvl == 0:
-        from Script.Commands.Messages.Creators.stats import stats
-        await stats(ctx)
-        return
         embed = create_embed("What is your TH level ?", "", ctx.guild.me.color, "Buildings Town Hall", ctx.guild.me.avatar_url)
         await ctx.send(components=Components["buildings_th"], embed=embed)
 
