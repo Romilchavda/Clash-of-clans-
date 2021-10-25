@@ -21,7 +21,6 @@ from Script.Commands.Member.member_join import member_join
 from Script.Commands.Member.member_remove import member_remove
 
 # REACTION add
-from Script.Commands.Components.Select_menu.change_player_info_page import change_player_stats_page
 from Script.Commands.Raw_Reaction.Reaction_add.close_ticket import reaction_add_close_ticket
 from Script.Commands.Raw_Reaction.Reaction_add.show_link_vote import reaction_add_show_link_vote
 # REACTION remove
@@ -98,12 +97,10 @@ class Bot(discord.Client):
         if (not member.bot) and (reaction.message.guild is not None) and (reaction.message.author.id == self.id) and (reaction.message.embeds != []):
             await reaction_add_close_ticket(self, reaction, member)
             await reaction_add_show_link_vote(self, reaction, member)
-            await change_player_stats_page(self, reaction, member)
         return
 
     # RAW REACTION
     async def on_raw_reaction_add(self, raw_reaction):
-        emoji_used = True
         if raw_reaction.member.bot:
             return
 
@@ -128,8 +125,6 @@ class Bot(discord.Client):
         return
 
     async def on_raw_reaction_remove(self, raw_reaction):
-        emoji_used = True
-
         channel = self.get_channel(raw_reaction.channel_id)
         if not getattr(channel.permissions_for(channel.guild.me), "read_messages"):
             return
