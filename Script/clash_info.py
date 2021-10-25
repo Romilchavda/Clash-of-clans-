@@ -103,16 +103,7 @@ class Bot(discord.Client):
 
     # RAW REACTION
     async def on_raw_reaction_add(self, raw_reaction):
-        emoji_used = False
-        for obj in Utils["used_emojis"]:
-            if (type(obj) is list) and (raw_reaction.emoji in obj):
-                emoji_used = True
-                break
-            elif raw_reaction.emoji == obj:
-                emoji_used = True
-                break
-        if not emoji_used:
-            return
+        emoji_used = True
         if raw_reaction.member.bot:
             return
 
@@ -137,14 +128,7 @@ class Bot(discord.Client):
         return
 
     async def on_raw_reaction_remove(self, raw_reaction):
-        emoji_used = False
-        for obj in Utils["used_emojis"]:
-            if (type(obj) is list) and (raw_reaction.emoji in obj):
-                emoji_used = True
-            elif raw_reaction.emoji == obj:
-                emoji_used = True
-        if not emoji_used:
-            return
+        emoji_used = True
 
         channel = self.get_channel(raw_reaction.channel_id)
         if not getattr(channel.permissions_for(channel.guild.me), "read_messages"):
