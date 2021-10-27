@@ -27,6 +27,6 @@ async def buildings_th(ctx, lvl):
         await ctx.send(components=Components["buildings_th"], embed=embed)
 
     elif 0 < lvl <= Utils["max_th_lvl"]:
-        embed = buildings_th_embed(ctx, lvl)
+        embed = await buildings_th_embed(ctx, lvl)
         await ctx.send(components=Components["buildings_th"], embed=embed)
     return
