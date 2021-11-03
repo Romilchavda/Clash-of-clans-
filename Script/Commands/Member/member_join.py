@@ -28,8 +28,6 @@ async def member_join(self, member):
         rules_not_checked = discord.utils.get(member.guild.roles, name="Rules not checked")
         await member.add_roles(rules_not_checked)
 
-        # return  # TODO : Image doesn't work on Raspberry Pi
-
         buffer_avatar = io.BytesIO()
         await member.avatar_url.save(buffer_avatar)
         buffer_avatar.seek(0)
@@ -61,7 +59,7 @@ async def member_join(self, member):
 
         draw = ImageDraw.Draw(image)
 
-        font = ImageFont.truetype("ttf/Supercell-magic-webfont.x-font-ttf", 100)
+        font = ImageFont.truetype("../ttf/Supercell-magic-webfont.x-font-ttf", 100)
         text_width, text_height = draw.textsize("Welcome " + member.name, font=font)
         x = (image_width - text_width) // 2
         y = (image_height - text_height) // 2 - 400

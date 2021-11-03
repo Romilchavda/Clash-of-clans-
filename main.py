@@ -149,7 +149,7 @@ if __name__ == "__main__":
         connection_modifiable.commit()
 
 
-    # TODO : Replace @decorator by functions => no more "\n" ?
+    # TODO : Replace @decorator by functions => less "\n" ?
     @Client_slash.slash(name="help")
     async def _help(ctx):
         if await check_cmd_perms(ctx) == -1:
