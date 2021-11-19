@@ -1,10 +1,11 @@
 # ----- PACKAGES : -----
+import discord
 import json
 
 
 # ----- PROJECT FILES : -----
-from Data.utils import Utils
-from Script.import_functions import *
+from Data.Constants.useful import Useful
+from Script.import_functions import create_embed
 
 
 # ----- COMMANDS : -----
@@ -43,12 +44,12 @@ from Script.Commands.Raw_Reaction.Raw_Reaction_remove.feedback import raw_reacti
 
 
 # CONST VARIABLES
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_emojis import Emojis
 
 
 # MODIFIABLE VARIABLES
-from Data.Modifiable_variables.import_var import Votes
+from Data.Variables.import_var import Votes
 
 
 class Bot(discord.Client):
@@ -62,17 +63,6 @@ class Bot(discord.Client):
         from Script.Clients.top_gg_client import Dbl_client
         Dbl_client.bot = self
         await ready_loop(self)
-
-    # MESSAGE DELETED
-    async def on_message_delete(self, message):
-        if message.guild:
-            if message.guild.id == Ids["Support_server"] and (message.author.id not in [704688212832026724, 710119855348645888]):
-                channel = message.guild.get_channel(895290013561000006)
-                embed = create_embed(f"{message.author} ({message.author.id})", message.channel.mention + "\n\n" + message.content, message.guild.me.color, "", message.guild.me.avatar_url)
-                await channel.send(embed=embed)
-                if message.embeds:
-                    await channel.send(embed=message.embeds[0])
-        return
 
     # GUILD
     async def on_guild_join(self, guild):
@@ -105,15 +95,16 @@ class Bot(discord.Client):
             return
 
         channel = self.get_channel(raw_reaction.channel_id)
-        if not getattr(channel.permissions_for(channel.guild.me), "read_messages"):
+        if not channel.permissions_for(channel.guild.me).read_messages:
             return
         raw_reaction.message = None
         async for message in channel.history(limit=None):
             if message.id == raw_reaction.message_id:
                 raw_reaction.message = message
                 break
+
         if (raw_reaction.message is not None) and (raw_reaction.message.guild is not None) and (raw_reaction.message.author.id == self.id) and (raw_reaction.message.embeds != []):
-            raw_reaction.complete_emoji = self.get_emoji(raw_reaction.emoji.id)
+            raw_reaction.whole_emoji = self.get_emoji(raw_reaction.emoji.id)
             await raw_reaction_add_follow_news_support(self, raw_reaction)
             await raw_reaction_add_auto_roles(self, raw_reaction)
             await raw_reaction_add_check_rules(self, raw_reaction)
@@ -126,7 +117,7 @@ class Bot(discord.Client):
 
     async def on_raw_reaction_remove(self, raw_reaction):
         channel = self.get_channel(raw_reaction.channel_id)
-        if not getattr(channel.permissions_for(channel.guild.me), "read_messages"):
+        if not channel.permissions_for(channel.guild.me).read_messages:
             return
         raw_reaction.member = channel.guild.get_member(raw_reaction.user_id)
         if (raw_reaction.member is None) or raw_reaction.member.bot:
@@ -137,8 +128,9 @@ class Bot(discord.Client):
             if message.id == raw_reaction.message_id:
                 raw_reaction.message = message
                 break
+
         if (raw_reaction.message is not None) and (raw_reaction.message.guild is not None) and (raw_reaction.message.author.id == self.id) and (raw_reaction.message.embeds != []):
-            raw_reaction.complete_emoji = self.get_emoji(raw_reaction.emoji.id)
+            raw_reaction.whole_emoji = self.get_emoji(raw_reaction.emoji.id)
             await raw_reaction_remove_auto_roles(self, raw_reaction)
             await raw_reaction_remove_check_rules(self, raw_reaction)
             await raw_reaction_remove_auto_roles_languages(self, raw_reaction)
@@ -157,7 +149,7 @@ class Bot(discord.Client):
                 else:
                     Votes[member.id] += vote
                 json_text = json.dumps(Votes, sort_keys=True, indent=4)
-                def_votes = open(Utils["secure_folder_path"] + "votes.json", "w")
+                def_votes = open(f"{Useful['secure_folder_path']}votes.json", "w")
                 def_votes.write(json_text)
                 def_votes.close()
                 vote_copy = dict(Votes)
@@ -168,28 +160,23 @@ class Bot(discord.Client):
                 vote = sorted(vote.items(), key=lambda t: t[1])
                 text = ""
                 for user_vote_tuple in vote:
-                    text += f"{user_vote_tuple[0]} have voted {user_vote_tuple[1]} times !\n"
+                    text += f"{user_vote_tuple[0]} has voted {user_vote_tuple[1]} times !\n"
                 embed = create_embed("Votes for Clash INFO", text, message.guild.me.color, "", message.guild.me.avatar_url)
                 await message.channel.send(embed=embed)
                 return
             else:
                 return
         if str(message.channel.type) == "private":
-            channel = self.get_channel(Ids["Dm_bot_channel"])
+            channel = self.get_channel(Ids["Dm_bot_log_channel"])
             if message.author.id != self.id:
-                await message.author.send("Hello !\nI am a bot, so I cannot answer for your question ! You can ask it in the support server :\nhttps://discord.gg/KQmstPw\n```Default help command : /help \n(you can see it with sending @Clash INFO#3976 on your server)```")
+                await message.author.send("Hello !\nI am a bot, so I cannot answer you !\nSupport server :\nhttps://discord.gg/KQmstPw")
                 await channel.send(f"```{message.content}``` from :\n{message.author} (`{message.author.id}`)\nMessage_id : `{message.id}`")
             return
         else:
             bot = message.guild.me
-        # test
+
+        # ----- TEST -----
         if message.author.id in [490190727612071939]:
-            if message.content == "nf":
-                from Script.Commands.Messages.Clash_Of_Clans.best_donations import best_donations
-                await best_donations(message, "2YP09PCL9")
-            if message.content == "test@":
-                from Script.Commands.Messages.Creators.servers_list import servers_list
-                await servers_list(message)
             if message.content == "clean_dm":
                 dm_channel = await message.author.create_dm()
                 async for text in dm_channel.history(limit=None):
@@ -213,7 +200,7 @@ class Bot(discord.Client):
                 text = ""
                 for emoji, name in Emojis["Languages_emojis"].items():
                     language = discord.utils.get(message.guild.roles, name=name)
-                    text += str(emoji) + " if you speak " + language.mention + "\n"
+                    text += f"{emoji} if you speak {language.mention}\n"
                 embed = create_embed("Click on the emojis to get the matching roles", text, bot.color, "", message.guild.me.avatar_url)
                 msg = await message.channel.send(embed=embed)
                 for emoji in Emojis["Languages_emojis"].keys():

@@ -2,7 +2,7 @@
 
 import requests
 
-from Data.Const_variables.import_const import Login
+from Data.Constants.import_const import Login
 from Script.import_functions import create_embed
 
 

@@ -3,20 +3,6 @@ import discord
 from Script.import_emojis import Emojis
 
 
-def int_to_str(number):
-    nb = " "
-    number = str(number)
-    a = -1
-    for i in range(len(number)):
-        a += 1
-        if a == 3:
-            nb = "," + nb
-            a = 0
-        j = len(number) - i - 1
-        nb = number[j] + nb
-    return nb
-
-
 def create_embed_img(title, description, colour, footer, icon_url, img):
     embed = discord.Embed()
     embed.title = title

@@ -1,4 +1,4 @@
-Utils = {
+{
     "secure_folder_path": "../Secure Folder/",
 
     "max_th_lvl": 14,

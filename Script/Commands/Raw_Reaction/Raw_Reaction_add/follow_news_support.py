@@ -1,6 +1,6 @@
-# Adds the clash-info-news channel's updates to the channel
+# Adds the clash-info-news channels updates to the channel
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 

@@ -4,7 +4,7 @@ import datetime
 
 import discord
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_functions import create_embed
 
 
@@ -17,12 +17,12 @@ async def member_remove(self, member):
         channel_found = False
         for channel in member.guild.channels:
             if channel.name.startswith("👤 Users : "):
-                await channel.edit(name="👤 Users : " + str(users))
+                await channel.edit(name=f"👤 Users : {users: ,}")
                 channel_found = True
                 break
         if not channel_found:
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
-            await member.guild.create_voice_channel("👤 Users : " + str(users), overwrites=overwrite)
+            await member.guild.create_voice_channel(f"👤 Users : {users: ,}", overwrites=overwrite)
 
         welcome = self.get_channel(Ids["Welcome_channel"])
         days_spent_in_the_server = (datetime.datetime.now().date() - member.joined_at.date()).days

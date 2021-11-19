@@ -1,4 +1,4 @@
-# Edits the message with the maximum level of each main base building for the given BH level
+# Edits the message with the maximum level of each main base building for the given TH level
 
 from Script.Commands.Messages.Clash_Of_Clans.buildings_th import buildings_th_embed
 

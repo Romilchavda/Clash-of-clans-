@@ -6,7 +6,7 @@ from Script.Commands.Messages.Clash_Of_Clans.player_info import player_info_embe
 
 async def change_player_stats_page(ctx):
     if "Player Information" == ctx.origin_message.embeds[0].footer.text:
-        tag = "#" + ctx.origin_message.embeds[0].title.split("#")[len(ctx.origin_message.embeds[0].title.split("#")) - 1].split("(")[0]
+        tag = f"#{ctx.origin_message.embeds[0].title.split('#')[len(ctx.origin_message.embeds[0].title.split('#')) - 1].split('(')[0]}"
         if ctx.selected_options[0] == "main":
             embed = await player_info_embed(ctx, tag, "main")
         if ctx.selected_options[0] == "troops":

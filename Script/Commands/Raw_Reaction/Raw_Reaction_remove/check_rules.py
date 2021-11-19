@@ -1,8 +1,8 @@
-# Removes the role when the rules are checked
+# Removes the member role when the rules are unchecked
 
 import discord
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_emojis import Emojis
 
 

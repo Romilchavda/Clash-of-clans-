@@ -10,12 +10,12 @@ async def reaction_add_close_ticket(self, reaction, member):
             if member.guild_permissions.manage_channels:
                 await reaction.message.channel.delete()
             else:
-                embed = create_embed("You cannot do this action", member.mention + ", you are not allowed to manage channels.", 0xff8000, "", member.guild.me.avatar_url)
+                embed = create_embed("You cannot do this action", f"{member.mention}, you are not allowed to manage channels.", 0xff8000, "", member.guild.me.avatar_url)
                 await reaction.message.channel.send(embed=embed)
         if reaction.emoji == Emojis['No']:
             if member.guild_permissions.manage_channels:
                 await reaction.message.delete()
             else:
-                embed = create_embed("You cannot do this action", member.mention + ", you are not allowed to manage channels.", 0xff8000, "", member.guild.me.avatar_url)
+                embed = create_embed("You cannot do this action", f"{member.mention}, you are not allowed to manage channels.", 0xff8000, "", member.guild.me.avatar_url)
                 await reaction.message.channel.send(embed=embed)
     return

@@ -5,7 +5,7 @@ import io
 import discord
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed_img
 
@@ -19,12 +19,12 @@ async def member_join(self, member):
         channel_found = False
         for channel in member.guild.channels:
             if channel.name.startswith("👤 "):
-                await channel.edit(name="👤 Users : " + str(users))
+                await channel.edit(name=f"👤 Users : {users: ,}")
                 channel_found = True
                 break
         if not channel_found:
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
-            await member.guild.create_voice_channel("👤 Users : " + str(users), overwrites=overwrite)
+            await member.guild.create_voice_channel(f"👤 Users : {users: ,}", overwrites=overwrite)
         rules_not_checked = discord.utils.get(member.guild.roles, name="Rules not checked")
         await member.add_roles(rules_not_checked)
 
@@ -60,10 +60,10 @@ async def member_join(self, member):
         draw = ImageDraw.Draw(image)
 
         font = ImageFont.truetype("../ttf/Supercell-magic-webfont.x-font-ttf", 100)
-        text_width, text_height = draw.textsize("Welcome " + member.name, font=font)
+        text_width, text_height = draw.textsize(f"Welcome {member.name}", font=font)
         x = (image_width - text_width) // 2
         y = (image_height - text_height) // 2 - 400
-        draw.text((x, y), "Welcome " + member.name, fill=(0, 0, 255), font=font)
+        draw.text((x, y), f"Welcome {member.name}", fill=(0, 0, 255), font=font)
         text_width, text_height = draw.textsize("Clash INFO support server", font=font)
         x = (image_width - text_width) // 2
         y = (image_height - text_height) // 2 + 400

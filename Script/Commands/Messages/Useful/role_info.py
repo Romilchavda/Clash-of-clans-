@@ -1,7 +1,7 @@
 # Sends information about the role
 
 from Script.import_emojis import Emojis
-from Script.import_functions import create_embed, int_to_str
+from Script.import_functions import create_embed
 
 
 async def role_info(ctx, role):
@@ -38,6 +38,6 @@ async def role_info(ctx, role):
     for members in role.members:
         if members.bot == 1:
             bots += 1
-    embed = create_embed(role.name, f"{Emojis['Members']} Humans : {int_to_str(users)}\n{Emojis['Bot']} Bots : {int_to_str(bots)}\n\n{Emojis['Settings']} **Role permissions :** \n{role_permissions}", role.color, "", ctx.guild.me.avatar_url)
+    embed = create_embed(role.name, f"{Emojis['Members']} Humans : {users: ,}\n{Emojis['Bot']} Bots : {bots: ,}\n\n{Emojis['Settings']} **Role permissions :** \n{role_permissions}", role.color, "", ctx.guild.me.avatar_url)
     await ctx.send(embed=embed)
     return

@@ -1,8 +1,8 @@
-# Initialize the Discord client : Clash_info
+# Initializes the Discord client : Clash_info
 
 import discord
 
-from Data.Const_variables.import_const import Login, Main_bot
+from Data.Constants.import_const import Login, Main_bot
 from Script.clash_info import Bot
 
 intents = discord.Intents.default()

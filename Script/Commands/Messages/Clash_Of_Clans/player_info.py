@@ -2,9 +2,9 @@
 
 import coc
 
-from Data.clash_of_clans import Troops
+from Data.Constants.clash_of_clans import Troops
 from Data.components import Components
-from Data.utils import Utils
+from Data.Constants.useful import Useful
 from Script.Clients.clash_of_clans_client import Clash_of_clans
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed, trophies_to_league
@@ -101,7 +101,7 @@ async def player_info_embed(ctx, tag, information):
                     text += "\n"
                 a += 1
                 emoji = f"<:{emoji.name}:{emoji.id}>"
-                text += f"{emoji} : {troop['player']} | {troop['TH' + lvl]} | {troop['TH' + str(Utils['max_th_lvl'])]} "
+                text += f"{emoji} : {troop['player']} | {troop['TH' + lvl]} | {troop['TH' + str(Useful['max_th_lvl'])]} "
         embed = create_embed(f"Player : {player.name} ({player.tag}) (Troops)", text, ctx.guild.me.color, "Player Information", ctx.guild.me.avatar_url)
 
     elif information == "success":

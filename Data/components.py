@@ -1,3 +1,5 @@
+# Assembles the used components in the constant Components
+
 import discord_slash.utils.manage_components as manage_components
 
 from Script.import_emojis import Emojis

@@ -1,6 +1,6 @@
 # Called when the bot leaves a guild
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.Clients.top_gg_client import Dbl_client
 
 
@@ -13,6 +13,6 @@ async def guild_remove(self, guild):
             bots += 1
         else:
             users += 1
-    log = self.get_channel(Ids["Log_bot_channel"])
+    log = self.get_channel(Ids["Guilds_bot_log_channel"])
     await log.send(f"The bot has LEFT the server {guild.name},\n owned by {guild.owner},\n with {len(guild.members)} members ({users} users and {bots} bots)")
     return

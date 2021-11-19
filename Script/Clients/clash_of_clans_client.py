@@ -1,8 +1,8 @@
-# Initialize the Clash Of Clans client : Clash_of_clans
+# Initializes the Clash Of Clans client : Clash_of_clans
 
 import coc
 
-from Data.Const_variables.import_const import Login, Main_bot
+from Data.Constants.import_const import Login, Main_bot
 
 if Main_bot:
     login = Login["clash of clans"]

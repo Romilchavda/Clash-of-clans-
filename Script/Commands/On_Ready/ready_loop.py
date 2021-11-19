@@ -8,14 +8,13 @@ import time
 
 import discord
 
-from Data.Const_variables.import_const import Login, Ids
+from Data.Constants.import_const import Login, Ids, Main_bot
 from Script.import_emojis import Emojis
-from Script.import_functions import int_to_str
 
 
 async def ready_loop(self):
-    if self.id == 704688212832026724:
-        status_channel = self.get_channel(733089353634545684)
+    if Main_bot:
+        status_channel = self.get_channel(Ids["Status_channel"])
         msg = await status_channel.send(f"{Emojis['Yes']} Connected")
         await msg.edit(content=f"{Emojis['Yes']} Connected `{msg.created_at.replace(microsecond=0).isoformat(sep=' ')}` UTC-0")
 
@@ -54,7 +53,7 @@ async def ready_loop(self):
                     msg = await channel.send(str(len(clash_info.guilds)))
                     await msg.pin()
                     diff_servers_count = len(clash_info.guilds) - old_servers_count
-                    diff_servers_count = "%+d" % (diff_servers_count)
+                    diff_servers_count = "%+d" % diff_servers_count
                     await channel.send(f"Evolution of number of servers this week : {diff_servers_count}")
                     await self.logout()
 
@@ -119,7 +118,7 @@ async def ready_loop(self):
                     channel = self.get_channel(Ids["Monthly_stats_channel"])
                     await channel.send(text)
                     if len(str(date.month)) == 1:
-                        month = "0" + str(date.month)
+                        month = f"0{date.month}"
                     else:
                         month = str(date.month)
                     w = f"""CREATE TABLE IF NOT EXISTS BotUsage_{date.year}_{month} AS SELECT * FROM BotUsage"""
@@ -162,6 +161,6 @@ async def ready_loop(self):
 
     while True:
         nb_guilds = len(self.guilds)
-        act = discord.Activity(type=discord.ActivityType.watching, name=int_to_str(nb_guilds) + " servers")
+        act = discord.Activity(type=discord.ActivityType.watching, name=f"{nb_guilds: ,} servers")
         await self.change_presence(status=discord.Status.online, activity=act)
         await asyncio.sleep(60)

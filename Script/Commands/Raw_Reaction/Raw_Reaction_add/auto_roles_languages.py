@@ -2,7 +2,7 @@
 
 import discord
 
-from Data.Const_variables.import_const import Ids
+from Data.Constants.import_const import Ids
 from Script.import_emojis import Emojis
 
 

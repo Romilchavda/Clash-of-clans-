@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 
-from Data.Const_variables.import_const import Login
+from Data.Constants.import_const import Login
 
 Emojis = {}
 
@@ -187,14 +187,9 @@ loop.run_until_complete(login())
 
 
 async def wrapped_connect():
-    try:
-        await client.connect()
-        global Emojis
-        Emojis = client.emojis
-    except Exception as e:
-        print("Error (import_emojis)", e)
-        await client.close()
-        client.emoji_connected.set()
+    await client.connect()
+    global Emojis
+    Emojis = client.emojis
 loop.create_task(wrapped_connect())
 
 

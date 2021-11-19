@@ -4,7 +4,7 @@ import datetime
 
 import discord
 
-from Script.import_functions import create_embed, int_to_str
+from Script.import_functions import create_embed
 
 
 async def delete_messages_number(ctx, number):
@@ -18,9 +18,9 @@ async def delete_messages_number(ctx, number):
             await message.delete()
     message_numbers -= 1
     if message_numbers == 1:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     else:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     try:
         await ctx.send(embed=embed)
     except discord.errors.NotFound:
@@ -39,9 +39,9 @@ async def delete_messages_time(ctx, minutes):
             await message.delete()
     message_numbers -= 1
     if message_numbers == 1:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     else:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     try:
         await ctx.send(embed=embed)
     except discord.errors.NotFound:
@@ -57,9 +57,9 @@ async def delete_messages_all(ctx):
             await message.delete()
     message_numbers -= 1
     if message_numbers == 1:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} message deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     else:
-        embed = create_embed("Messages deleted", f"{int_to_str(message_numbers)} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
+        embed = create_embed("Messages deleted", f"{message_numbers: ,} messages deleted", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
     try:
         await ctx.send(embed=embed)
     except discord.errors.NotFound:

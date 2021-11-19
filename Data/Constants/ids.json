@@ -4,13 +4,14 @@
     ],
     "Support_server": 719537805604290650,
     "Auto_roles_channel": 722020813259276378,
-    "Dm_bot_channel": 748509142578233364,
+    "Dm_bot_log_channel": 748509142578233364,
     "Feedback_channel": 719827869295050812,
-    "Log_bot_channel": 722423315909836860,
+    "Guilds_bot_log_channel": 722423315909836860,
     "Monthly_stats_channel": 869658106701959258,
     "News_channel": 741278417130881024,
     "Rules_channel": 719579241364193331,
     "Votes_channel": 793853230476034078,
     "Weekly_stats_channel": 785956772568367144,
-    "Welcome_channel": 722849076416217161
+    "Welcome_channel": 722849076416217161,
+    "Status_channel": 733089353634545684
 }

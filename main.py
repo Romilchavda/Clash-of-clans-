@@ -1,33 +1,33 @@
 # ----- PACKAGES : -----
-import coc
 import json
-
-import discord.errors
-import requests
 import sqlite3
 import sys
 import time
+
+import coc
+import discord.errors
+import requests
 import topgg
 
 # ----- PROJECT FILES : -----
-from Data.utils import Utils
+from Data.Constants.useful import Useful
 from Script.import_functions import *
-
 
 # ----- COMMANDS : -----
 
 # MESSAGES
 from Script.Commands.Messages.help import help
 
+from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
 from Script.Commands.Messages.Clash_Of_Clans.buildings_bh import buildings_bh
 from Script.Commands.Messages.Clash_Of_Clans.buildings_th import buildings_th
-from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
 from Script.Commands.Messages.Clash_Of_Clans.clan_info import clan_info
 from Script.Commands.Messages.Clash_Of_Clans.clan_members import clan_members
-from Script.Commands.Messages.Clash_Of_Clans.search_clan import search_clan
-from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
+from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
 from Script.Commands.Messages.Clash_Of_Clans.link_coc_account import link_coc_account
 from Script.Commands.Messages.Clash_Of_Clans.player_info import player_info
+from Script.Commands.Messages.Clash_Of_Clans.search_clan import search_clan
+from Script.Commands.Messages.Clash_Of_Clans.clan_super_troops_activated import clan_super_troops_activated
 
 from Script.Commands.Messages.Useful.add_the_bot import add_the_bot_default, add_the_bot_administrator
 from Script.Commands.Messages.Useful.github import github
@@ -53,39 +53,35 @@ from Script.Commands.Messages.Creators.refresh_dbl import refresh_dbl
 from Script.Commands.Messages.Creators.servers_list import servers_list
 from Script.Commands.Messages.Creators.stats import stats
 
-
 # ----- VARIABLES : -----
 
 # MODIFIABLE VARIABLES
-def_votes = open(Utils["secure_folder_path"] + "votes.json", "r")
+def_votes = open(f"{Useful['secure_folder_path']}votes.json", "r")
 Votes_text = def_votes.read()
 def_votes.close()
 Votes = json.loads(Votes_text)
 
-def_support = open(Utils["secure_folder_path"] + "support_for_tickets.json", "r")
+def_support = open(f"{Useful['secure_folder_path']}support_for_tickets.json", "r")
 Support_text = def_support.read()
 def_support.close()
 Support = json.loads(Support_text)
 
-
-Default_color = 0x00ffff
-
-
 if __name__ == "__main__":
 
-    print(f"Python : {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
-    print("DBL : " + str(topgg.__version__))
-    print("CoC : " + str(coc.__version__))
-    print("Discord : " + str(discord.__version__))
+    print(f"Python : {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+          f"DBL : {topgg.__version__}\n"
+          f"CoC : {coc.__version__}\n"
+          f"Discord : {discord.__version__}")
 
     from discord_slash import SlashCommand
     from Script.Clients.discord_client import Clash_info
+
     Client_slash = SlashCommand(Clash_info)
 
-    connection_modifiable = sqlite3.connect(Utils["secure_folder_path"] + "Modifiable.sqlite")
+    connection_modifiable = sqlite3.connect(f"{Useful['secure_folder_path']}Modifiable.sqlite")
     cursor_modifiable = connection_modifiable.cursor()
 
-    connection_constants = sqlite3.connect("Data/Constants.sqlite")
+    connection_constants = sqlite3.connect("Data/Constants/Constants.sqlite")
     connection_constants.row_factory = sqlite3.Row
     cursor_constants = connection_constants.cursor()
 
@@ -128,12 +124,12 @@ if __name__ == "__main__":
             if missing_bot_perms:
                 text += "The bot doesn't have the permission(s) :"
                 for perm in missing_bot_perms:
-                    text += "\n" + perm
+                    text += f"\n{perm}"
                 text += "\nPlease grant it/them to the bot and send again the command."
             if missing_user_perms:
                 text += "You don't have this/these permission(s) :"
                 for perm in missing_user_perms:
-                    text += "\n" + perm
+                    text += f"\n{perm}"
                 text += "\nThis/These permission(s) is/are required to use this command."  # TODO : Split 2 cases ?
             embed = create_embed("Missing permissions", text, 0xFF0000, "", channel.guild.me.avatar_url)
             await ctx.send(embed=embed)
@@ -159,6 +155,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "help")
         return
 
+
     @Client_slash.slash(name="_help")
     async def __help(ctx):
         if await check_cmd_perms(ctx) == -1:
@@ -182,6 +179,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "auto_roles__bh")
         return
 
+
     @Client_slash.subcommand(base="auto_roles", name="leagues")
     async def _auto_roles_leagues(ctx, channel=None):
         if await check_cmd_perms(ctx) == -1:
@@ -192,6 +190,7 @@ if __name__ == "__main__":
         await auto_roles_leagues(ctx, channel)
         edit_commands_used(ctx.author_id, "auto_roles__leagues")
         return
+
 
     @Client_slash.subcommand(base="auto_roles", name="th")
     async def _auto_roles_th(ctx, channel=None):
@@ -204,6 +203,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "auto_roles__th")
         return
 
+
     @Client_slash.slash(name="buildings_bh")
     async def _buildings_bh(ctx, builder_hall_level=0):
         if await check_cmd_perms(ctx) == -1:
@@ -212,6 +212,7 @@ if __name__ == "__main__":
         await buildings_bh(ctx, builder_hall_level)
         edit_commands_used(ctx.author_id, "buildings_bh")
         return
+
 
     @Client_slash.slash(name="buildings_th")
     async def _buildings_th(ctx, town_hall_level=0):
@@ -222,6 +223,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "buildings_th")
         return
 
+
     @Client_slash.slash(name="clan_info")
     async def _clan_info(ctx, clan_tag):
         if await check_cmd_perms(ctx) == -1:
@@ -230,6 +232,7 @@ if __name__ == "__main__":
         await clan_info(ctx, clan_tag)
         edit_commands_used(ctx.author_id, "clan_info")
         return
+
 
     @Client_slash.slash(name="clan_members")
     async def _clan_members(ctx, clan_tag):
@@ -240,6 +243,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "clan_members")
         return
 
+
     @Client_slash.slash(name="file")
     async def _file(ctx):
         if await check_cmd_perms(ctx) == -1:
@@ -248,6 +252,7 @@ if __name__ == "__main__":
         await coc_file(ctx)
         edit_commands_used(ctx.author_id, "file")
         return
+
 
     @Client_slash.slash(name="player_info")
     async def _player_info(ctx, player_tag, information):
@@ -258,6 +263,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "player_info")
         return
 
+
     @Client_slash.slash(name="search_clan")
     async def _search_clan(ctx, name, number=10):
         if await check_cmd_perms(ctx) == -1:
@@ -265,6 +271,16 @@ if __name__ == "__main__":
         await ctx.defer()
         await search_clan(ctx, name, number)
         edit_commands_used(ctx.author_id, "search_clan")
+        return
+
+
+    @Client_slash.slash(name="clan_super_troops_activated")
+    async def _clan_super_troops_activated(ctx, clan_tag, super_troop):
+        if await check_cmd_perms(ctx) == -1:
+            return
+        await ctx.defer()
+        await clan_super_troops_activated(ctx, clan_tag, super_troop)
+        edit_commands_used(ctx.author_id, "clan_super_troops_activated")
         return
 
 
@@ -279,6 +295,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "add_the_bot__administrator")
         return
 
+
     @Client_slash.subcommand(base="add_the_bot", name="default")
     async def _add_the_bot_default(ctx):
         if await check_cmd_perms(ctx) == -1:
@@ -287,6 +304,7 @@ if __name__ == "__main__":
         await add_the_bot_default(ctx)
         edit_commands_used(ctx.author_id, "add_the_bot__default")
         return
+
 
     @Client_slash.slash(name="bot_info")
     async def _bot_info(ctx):
@@ -297,6 +315,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "bot_info")
         return
 
+
     @Client_slash.subcommand(base="direct_message", name="member")
     async def _direct_message_member(ctx, member, text):
         if await check_cmd_perms(ctx) == -1:
@@ -305,6 +324,7 @@ if __name__ == "__main__":
         await direct_message_member(ctx, member, text)
         edit_commands_used(ctx.author_id, "direct_message__member")
         return
+
 
     @Client_slash.subcommand(base="direct_message", name="role")
     async def _direct_message_member(ctx, role, text):
@@ -315,6 +335,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "direct_message__role")
         return
 
+
     @Client_slash.slash(name="emoji_info")
     async def _emoji_info(ctx, emoji):
         if await check_cmd_perms(ctx) == -1:
@@ -323,6 +344,7 @@ if __name__ == "__main__":
         await emoji_info(ctx, emoji)
         edit_commands_used(ctx.author_id, "emoji_info")
         return
+
 
     @Client_slash.slash(name="github")
     async def _github(ctx):
@@ -333,6 +355,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "github")
         return
 
+
     @Client_slash.slash(name="link_coc_account")
     async def _link_coc_account(ctx, player_tag, player_token):
         if await check_cmd_perms(ctx) == -1:
@@ -341,6 +364,7 @@ if __name__ == "__main__":
         await link_coc_account(ctx, player_tag, player_token)
         edit_commands_used(ctx.author_id, "link_coc_account")
         return
+
 
     @Client_slash.slash(name="member_info")
     async def _member_info(ctx, member):
@@ -351,6 +375,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "member_info")
         return
 
+
     @Client_slash.slash(name="poll")
     async def _poll(ctx, question):
         if await check_cmd_perms(ctx) == -1:
@@ -359,6 +384,7 @@ if __name__ == "__main__":
         await poll(ctx, question)
         edit_commands_used(ctx.author_id, "poll")
         return
+
 
     @Client_slash.slash(name="promote_the_bot")
     async def _promote_the_bot(ctx):
@@ -369,6 +395,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "promote_the_bot")
         return
 
+
     @Client_slash.slash(name="role_info")
     async def _role_info(ctx, role):
         if await check_cmd_perms(ctx) == -1:
@@ -377,6 +404,7 @@ if __name__ == "__main__":
         await role_info(ctx, role)
         edit_commands_used(ctx.author_id, "role_info")
         return
+
 
     @Client_slash.slash(name="server_info")
     async def _server_info(ctx):
@@ -387,6 +415,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "server_info")
         return
 
+
     @Client_slash.slash(name="support_server")
     async def _support_server(ctx):
         if await check_cmd_perms(ctx) == -1:
@@ -395,6 +424,7 @@ if __name__ == "__main__":
         await support_server(ctx)
         edit_commands_used(ctx.author_id, "support_server")
         return
+
 
     @Client_slash.slash(name="tickets")
     async def _tickets(ctx, text, ticket_channel=None, support_role=None):
@@ -411,6 +441,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "tickets")
         return
 
+
     @Client_slash.slash(name="close_ticket")
     async def _close_ticket(ctx, channel=None):
         if await check_cmd_perms(ctx) == -1:
@@ -421,6 +452,7 @@ if __name__ == "__main__":
         await close_ticket(ctx, channel)
         edit_commands_used(ctx.author_id, "close_ticket")
         return
+
 
     @Client_slash.slash(name="youtube")
     async def _youtube(ctx):
@@ -443,6 +475,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "delete_messages__all")
         return
 
+
     @Client_slash.subcommand(base="delete_messages", name="for_x_minutes")
     async def _delete_messages_time(ctx, minutes):
         if await check_cmd_perms(ctx) == -1:
@@ -451,6 +484,7 @@ if __name__ == "__main__":
         await delete_messages_time(ctx, minutes)
         edit_commands_used(ctx.author_id, "delete_messages__for_x_minutes")
         return
+
 
     @Client_slash.subcommand(base="delete_messages", name="number_of_messages")
     async def _delete_messages_number(ctx, number_of_messages):
@@ -470,11 +504,13 @@ if __name__ == "__main__":
         await add_a_bot_id(ctx, int(bot_id))
         return
 
+
     @Client_slash.slash(name="__add_reaction_with_id")
     async def ___add_reaction_with_id(ctx, channel_id, message_id, emoji_id):
         await ctx.defer()
         await add_reaction_with_id(ctx, int(channel_id), int(message_id), int(emoji_id))
         return
+
 
     @Client_slash.slash(name="__download_emojis")
     async def ___download_emojis(ctx, recreate_emojis_zip):
@@ -482,11 +518,13 @@ if __name__ == "__main__":
         await download_emojis(ctx, recreate_emojis_zip)
         return
 
+
     @Client_slash.slash(name="__find_user_by_id")
     async def ___find_user_by_id(ctx, user_id):
         await ctx.defer()
         await find_user_by_id(ctx, int(user_id))
         return
+
 
     @Client_slash.slash(name="__refresh_dbl")
     async def ___refresh_dbl(ctx):
@@ -494,34 +532,29 @@ if __name__ == "__main__":
         await refresh_dbl(ctx)
         return
 
+
     @Client_slash.slash(name="__servers_list")
     async def ___servers_list(ctx):
         await ctx.defer()
         await servers_list(ctx)
         return
 
+
     @Client_slash.slash(name="__stats")
     async def ___stats(ctx):
-        await ctx.defer
+        await ctx.defer()
         await stats(ctx)
         return
 
 
     from Script.Clients.discord_client import Token
+
     Bot_id = Clash_info.id
+
+
     def add_slash_command_json(json_dict):
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/commands"
-        req = requests.post(url, headers=headers, json=json_dict)
-        print(json_dict.get("name"), req)
-        if not req.ok:
-            print(json_dict["name"], req.content)
-            if "retry_after" in list(req.json().keys()):
-                time.sleep(req.json()["retry_after"])
-                add_slash_command_json(json_dict)
-    def add_slash_command_json_guild(json_dict):
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands"
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
         req = requests.post(url, headers=headers, json=json_dict)
         print(json_dict.get("name"), req)
         if not req.ok:
@@ -530,36 +563,54 @@ if __name__ == "__main__":
                 time.sleep(req.json()["retry_after"])
                 add_slash_command_json(json_dict)
 
+
+    def add_slash_command_json_guild(json_dict):
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands"
+        req = requests.post(url, headers=headers, json=json_dict)
+        print(json_dict.get("name"), req)
+        if not req.ok:
+            print(json_dict["name"], req.content)
+            if "retry_after" in list(req.json().keys()):
+                time.sleep(req.json()["retry_after"])
+                add_slash_command_json(json_dict)
+
+
     def see_slash_commands():
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/commands"
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
         req = requests.get(url, headers=headers)
         json_dict = json.loads(req.content)
         print("Slash Commands list : ", end="")
         for command in json_dict:
             print(command["name"], end=", ")
         print()
+
+
     def dlt_slash_command(name):
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/commands"
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
         req = requests.get(url, headers=headers)
         json_dict = json.loads(req.content)
         for command in json_dict:
             if command.get("name") == name:
-                url += "/" + str(command.get("id"))
+                url += f"/{(command.get('id'))}"
                 req = requests.delete(url, headers=headers)
                 print(req)
                 print(req.content)
         print("Content :", req.content)
 
+
     def see_slash_command_guild():
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands"
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands"
         req = requests.get(url, headers=headers)
         print(req.content)
+
+
     def dlt_slash_command_guild(command_id):
-        headers = {"Authorization": "Bot " + Token}
-        url = "https://discord.com/api/v8/applications/" + str(Bot_id) + "/guilds/710237092931829893/commands/"+str(command_id)
+        headers = {"Authorization": f"Bot {Token}"}
+        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands/{command_id}"
         req = requests.delete(url, headers=headers)
         print(req.content)
 
@@ -731,6 +782,29 @@ if __name__ == "__main__":
         }]
     }
     add_slash_command_json(json_search_clan)
+    json_clan_super_troops_activated = {
+        "name": "clan_super_troops_activated",
+        "description": "Show which player has activated the super troop in the clan",
+        "options": [{
+            "name": "super_troop",
+            "description": "The wanted super troop",
+            "required": True,
+            "type": 3,
+            "choices": ["Super Barbarian"
+                        "Super Archer",
+                        "Super Giant",
+                        "Sneaky Goblin",
+                        "Super Wall Breaker",
+                        "Rocket Balloon",
+                        "Super Wizard",
+                        "Inferno Dragon",
+                        "Super Minion",
+                        "Super Valkyrie",
+                        "Super Witch",
+                        "Ice Hound"
+            ]
+        }]
+    }
 
     # Useful
     json_add_the_bot = {
@@ -889,7 +963,6 @@ if __name__ == "__main__":
         "description": "Show the YouTube channel dedicated to the bot (bot presentation, news...)"
     }
     add_slash_command_json(json_yt)
-
 
     # Moderation
     json_delete_messages = {

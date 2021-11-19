@@ -1,6 +1,6 @@
 # Sends information about a user
 
-from Data.Modifiable_variables.import_var import Linked_accounts
+from Data.Variables.import_var import Linked_accounts
 from Script.import_emojis import Emojis
 from Script.import_functions import create_embed
 
