@@ -13,7 +13,7 @@ async def buildings_th_embed(ctx, lvl):
         text_th += f"\n__{category} :__\n"
         for building_name, building_max_level in buildings.items():
             text_th += f"{building_name} level max : {building_max_level}\n"
-    embed = create_embed(f"__**TH {lvl} :\n**__", text_th, ctx.guild.me.color, "Buildings Town Hall", ctx.guild.me.avatar_url)
+    embed = create_embed(f"__**TH {lvl} :\n**__", text_th, ctx.guild.me.color, f"buildings_th|{ctx.author.id}", ctx.guild.me.avatar_url)
     return embed
 
 
@@ -23,10 +23,10 @@ async def buildings_th(ctx, lvl):
         return
 
     elif lvl == 0:
-        embed = create_embed("What is your TH level ?", "", ctx.guild.me.color, "Buildings Town Hall", ctx.guild.me.avatar_url)
-        await ctx.send(components=Components["buildings_th"], embed=embed)
+        embed = create_embed("What is your TH level ?", "", ctx.guild.me.color, f"buildings_th|{ctx.author.id}", ctx.guild.me.avatar_url)
+        await ctx.send(embed=embed, components=Components["buildings_th"])
 
     elif 0 < lvl <= Useful["max_th_lvl"]:
         embed = await buildings_th_embed(ctx, lvl)
-        await ctx.send(components=Components["buildings_th"], embed=embed)
+        await ctx.send(embed=embed, components=Components["buildings_th"])
     return

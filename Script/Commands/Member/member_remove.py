@@ -14,13 +14,11 @@ async def member_remove(self, member):
         for m in member.guild.members:
             if not m.bot:
                 users += 1
-        channel_found = False
         for channel in member.guild.channels:
-            if channel.name.startswith("👤 Users : "):
+            if channel.name.startswith("👤 "):
                 await channel.edit(name=f"👤 Users : {users: ,}")
-                channel_found = True
                 break
-        if not channel_found:
+        else:
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
             await member.guild.create_voice_channel(f"👤 Users : {users: ,}", overwrites=overwrite)
 
@@ -34,9 +32,10 @@ async def member_remove(self, member):
             async for message in welcome.history(limit=None):
                 old_embed = message.embeds[0]
                 if int(old_embed.description.split("`")[1]) == member.id:
-                    new_embed = old_embed.copy()
-                    new_embed.description = old_embed.description + f"\n*Unfortunately, {member.name} left us after less than a day in the server*"
-                    new_embed.set_image(url="attachment://welcome.png")
-                    await message.edit(embed=new_embed)
-                    break
+                    if message.author == message.guild.me:
+                        new_embed = old_embed.copy()
+                        new_embed.description = old_embed.description + f"\n*Unfortunately, {member.name} left us after less than a day in the server*"
+                        new_embed.set_image(url="attachment://welcome.png")
+                        await message.edit(embed=new_embed)
+                        break
     return

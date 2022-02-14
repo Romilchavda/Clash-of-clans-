@@ -1,4 +1,4 @@
-# Sends the list of the clan members 20 by 20, with several information about the member
+# Sends the list of the clan members 20 by 20, with some information about the member
 
 import coc
 
@@ -18,10 +18,9 @@ async def clan_members(ctx, tag):
     rank = 0
     async for member in clan.get_detailed_members():
         rank += 1
-        lvl_to_emoji = {v[1]: k for k, v in tuple(Emojis["Th_emojis"].items())}
-        text += f"- {rank} `{member.name}` : {trophies_to_league(member.trophies)} (best : {trophies_to_league(member.best_trophies)}) {lvl_to_emoji[member.town_hall]} {member.tag}\n"
+        text += f"- {rank} `{member.name}` : {trophies_to_league(member.trophies)} (best : {trophies_to_league(member.best_trophies)}) {Emojis['Th_emojis'][member.town_hall]} {member.tag}\n"
         x += 1
-        if x == 20:
+        if x == 25:
             embed = create_embed(f"Clan members {clan.name} ({clan.tag})", f"Members list : \n{text}", ctx.guild.me.color, "", ctx.guild.me.avatar_url)
             await ctx.send(embed=embed)
             text = ""

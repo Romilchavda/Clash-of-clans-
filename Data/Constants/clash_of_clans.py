@@ -8,13 +8,6 @@ connection = sqlite3.connect("Data/Constants/Clash_Of_Clans.sqlite")
 connection.row_factory = sqlite3.Row
 cursor = connection.cursor()
 
-cursor.execute("SELECT * FROM Troops")
-Troops = {}
-for troop in cursor.fetchall():
-    troops_dict = dict(troop)
-    troops_dict.update({"player": "-"})
-    Troops[troops_dict["name"]] = troops_dict
-
 BuilderBuildings = {}
 for lvl in range(1, Useful["max_bh_lvl"] + 1):
     BuilderBuildings.update({lvl: {}})

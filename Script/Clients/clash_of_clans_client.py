@@ -8,4 +8,4 @@ if Main_bot:
     login = Login["clash of clans"]
 else:
     login = Login["clash of clans beta"]
-Clash_of_clans = coc.login(login["email"], login["password"], key_names="Clash INFO", key_count=10)
+Clash_of_clans = coc.login(login["email"], login["password"], key_names="Clash INFO", key_count=10, load_game_data=coc.LoadGameData(default=True))

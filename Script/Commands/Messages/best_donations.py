@@ -3,8 +3,6 @@
 import coc
 
 from Script.Clients.clash_of_clans_client import Clash_of_clans
-from Script.import_emojis import Emojis
-from Script.import_functions import create_embed
 
 
 async def best_donations(ctx, tag):

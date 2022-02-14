@@ -12,21 +12,20 @@ from Script.import_functions import create_embed_img
 
 async def member_join(self, member):
     if member.guild.id == Ids["Support_server"]:
+        member_role = discord.utils.get(member.guild.roles, name="Member")
+        await member.add_roles(member_role)
+
         users = 0
         for m in member.guild.members:
             if not m.bot:
                 users += 1
-        channel_found = False
         for channel in member.guild.channels:
             if channel.name.startswith("👤 "):
                 await channel.edit(name=f"👤 Users : {users: ,}")
-                channel_found = True
                 break
-        if not channel_found:
+        else:
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
             await member.guild.create_voice_channel(f"👤 Users : {users: ,}", overwrites=overwrite)
-        rules_not_checked = discord.utils.get(member.guild.roles, name="Rules not checked")
-        await member.add_roles(rules_not_checked)
 
         buffer_avatar = io.BytesIO()
         await member.avatar_url.save(buffer_avatar)

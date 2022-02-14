@@ -1,5 +1,6 @@
 import discord
 
+from Data.Constants.useful import Useful
 from Script.import_emojis import Emojis
 
 
@@ -23,7 +24,7 @@ def create_embed(title, description, colour, footer, icon_url):
 
 
 def trophies_to_league(trophies):
-    league_emojis_list = sorted(Emojis["League_emojis"].items(), key=lambda t: t[1][1], reverse=True)
-    for league_emoji_tuple in league_emojis_list:
-        if trophies >= league_emoji_tuple[1][1]:
-            return league_emoji_tuple[0]
+    league_to_trophies = Useful["league_trophies"]
+    for league in sorted(league_to_trophies, key=league_to_trophies.get, reverse=True):
+        if trophies >= league_to_trophies[league]:
+            return Emojis["League_emojis"][league]

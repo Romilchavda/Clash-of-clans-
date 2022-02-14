@@ -4,7 +4,7 @@ import json
 
 from Data.Constants.useful import Useful
 
-Main_bot = 0
+Main_bot = 1
 
 login_file = open(f"{Useful['secure_folder_path']}login.json", "r")
 Login = json.load(login_file)

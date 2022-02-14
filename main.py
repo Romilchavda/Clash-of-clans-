@@ -10,7 +10,6 @@ import requests
 import topgg
 
 # ----- PROJECT FILES : -----
-from Data.Constants.useful import Useful
 from Script.import_functions import *
 
 # ----- COMMANDS : -----
@@ -18,37 +17,23 @@ from Script.import_functions import *
 # MESSAGES
 from Script.Commands.Messages.help import help
 
-from Script.Commands.Messages.Clash_Of_Clans.auto_roles import auto_roles_th, auto_roles_bh, auto_roles_leagues
-from Script.Commands.Messages.Clash_Of_Clans.buildings_bh import buildings_bh
-from Script.Commands.Messages.Clash_Of_Clans.buildings_th import buildings_th
-from Script.Commands.Messages.Clash_Of_Clans.clan_info import clan_info
-from Script.Commands.Messages.Clash_Of_Clans.clan_members import clan_members
-from Script.Commands.Messages.Clash_Of_Clans.coc_file import coc_file
-from Script.Commands.Messages.Clash_Of_Clans.link_coc_account import link_coc_account
-from Script.Commands.Messages.Clash_Of_Clans.player_info import player_info
-from Script.Commands.Messages.Clash_Of_Clans.search_clan import search_clan
-from Script.Commands.Messages.Clash_Of_Clans.clan_super_troops_activated import clan_super_troops_activated
-
-from Script.Commands.Messages.Useful.add_the_bot import add_the_bot_default, add_the_bot_administrator
-from Script.Commands.Messages.Useful.github import github
-from Script.Commands.Messages.Useful.promote_the_bot import promote_the_bot
-from Script.Commands.Messages.Useful.support_server import support_server
-from Script.Commands.Messages.Useful.youtube import youtube
-from Script.Commands.Messages.Useful.bot_info import bot_info
-from Script.Commands.Messages.Useful.emoji_info import emoji_info
-from Script.Commands.Messages.Useful.member_info import member_info
-from Script.Commands.Messages.Useful.role_info import role_info
-from Script.Commands.Messages.Useful.server_info import server_info
-from Script.Commands.Messages.Useful.direct_message import direct_message_member, direct_message_role
-from Script.Commands.Messages.Useful.poll import poll
-from Script.Commands.Messages.Useful.tickets import tickets, close_ticket
-
-from Script.Commands.Messages.Moderation.delete_messages import delete_messages_number, delete_messages_time, delete_messages_all
+from Script.Commands.Messages.auto_roles import auto_roles__th, auto_roles__bh, auto_roles__leagues
+from Script.Commands.Messages.buildings_bh import buildings_bh
+from Script.Commands.Messages.buildings_th import buildings_th
+from Script.Commands.Messages.clan_info import clan_info
+from Script.Commands.Messages.clan_members import clan_members
+from Script.Commands.Messages.link_coc_account import link_coc_account, unlink_coc_account
+from Script.Commands.Messages.member_info import member_info
+from Script.Commands.Messages.player_info import player_info
+from Script.Commands.Messages.search_clan import search_clan
+from Script.Commands.Messages.clan_super_troops_activated import clan_super_troops_activated
+from Script.Commands.Messages.bot_info import bot_info
 
 from Script.Commands.Messages.Creators.add_a_bot_id import add_a_bot_id
 from Script.Commands.Messages.Creators.add_reaction_with_id import add_reaction_with_id
 from Script.Commands.Messages.Creators.download_emojis import download_emojis
 from Script.Commands.Messages.Creators.find_user_by_id import find_user_by_id
+from Script.Commands.Messages.Creators.reboot import reboot
 from Script.Commands.Messages.Creators.refresh_dbl import refresh_dbl
 from Script.Commands.Messages.Creators.servers_list import servers_list
 from Script.Commands.Messages.Creators.stats import stats
@@ -56,15 +41,8 @@ from Script.Commands.Messages.Creators.stats import stats
 # ----- VARIABLES : -----
 
 # MODIFIABLE VARIABLES
-def_votes = open(f"{Useful['secure_folder_path']}votes.json", "r")
-Votes_text = def_votes.read()
-def_votes.close()
-Votes = json.loads(Votes_text)
-
-def_support = open(f"{Useful['secure_folder_path']}support_for_tickets.json", "r")
-Support_text = def_support.read()
-def_support.close()
-Support = json.loads(Support_text)
+votes_file = open(f"{Useful['secure_folder_path']}votes.json", "r")
+Votes = json.load(votes_file)
 
 if __name__ == "__main__":
 
@@ -87,6 +65,14 @@ if __name__ == "__main__":
 
 
     async def check_cmd_perms(ctx):
+        # print(vars(ctx))
+        # chan = Clash_info.get_channel(ctx.channel_id)
+        # print(ctx.channel_id, chan)
+        # if chan.type == "private":
+        #     return True
+        if not ctx.guild_id or Clash_info.get_channel(ctx.channel_id) is None:
+            await ctx.send("Slash commands are not available with neither threads nor direct messages. Please use classic text channels to use slash commands.")
+            return -1
         if ctx.data['name'] == "_help":
             ctx.data['name'] = "help"
         cursor_constants.execute(f"""SELECT user_permissions, bot_permissions FROM RequiredPermissions WHERE command_name = '{ctx.data["name"]}'""")
@@ -125,16 +111,22 @@ if __name__ == "__main__":
                 text += "The bot doesn't have the permission(s) :"
                 for perm in missing_bot_perms:
                     text += f"\n{perm}"
-                text += "\nPlease grant it/them to the bot and send again the command."
+                if len(missing_bot_perms) == 1:
+                    text += "\nPlease grant it to the bot and send again the command."
+                else:
+                    text += "\nPlease grant them to the bot and send again the command."
             if missing_user_perms:
                 text += "You don't have this/these permission(s) :"
                 for perm in missing_user_perms:
                     text += f"\n{perm}"
-                text += "\nThis/These permission(s) is/are required to use this command."  # TODO : Split 2 cases ?
+                if len(missing_user_perms) == 1:
+                    text += "\nThis permission is required to use this command."
+                else:
+                    text += "\nThese permissions are required to use this command."
             embed = create_embed("Missing permissions", text, 0xFF0000, "", channel.guild.me.avatar_url)
             await ctx.send(embed=embed)
             return -1
-        return
+        return True
 
 
     def edit_commands_used(user_id, cmd):
@@ -145,7 +137,6 @@ if __name__ == "__main__":
         connection_modifiable.commit()
 
 
-    # TODO : Replace @decorator by functions => less "\n" ?
     @Client_slash.slash(name="help")
     async def _help(ctx):
         if await check_cmd_perms(ctx) == -1:
@@ -154,7 +145,6 @@ if __name__ == "__main__":
         await help(ctx)
         edit_commands_used(ctx.author_id, "help")
         return
-
 
     @Client_slash.slash(name="_help")
     async def __help(ctx):
@@ -165,9 +155,7 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "help")
         return
 
-
     # Clash Of Clans
-
     @Client_slash.subcommand(base="auto_roles", name="bh")
     async def _auto_roles_bh(ctx, channel=None):
         if await check_cmd_perms(ctx) == -1:
@@ -175,10 +163,9 @@ if __name__ == "__main__":
         await ctx.defer()
         if channel is None:
             channel = ctx.channel
-        await auto_roles_bh(ctx, channel)
+        await auto_roles__bh(ctx, channel)
         edit_commands_used(ctx.author_id, "auto_roles__bh")
         return
-
 
     @Client_slash.subcommand(base="auto_roles", name="leagues")
     async def _auto_roles_leagues(ctx, channel=None):
@@ -187,10 +174,9 @@ if __name__ == "__main__":
         await ctx.defer()
         if channel is None:
             channel = ctx.channel
-        await auto_roles_leagues(ctx, channel)
+        await auto_roles__leagues(ctx, channel)
         edit_commands_used(ctx.author_id, "auto_roles__leagues")
         return
-
 
     @Client_slash.subcommand(base="auto_roles", name="th")
     async def _auto_roles_th(ctx, channel=None):
@@ -199,10 +185,9 @@ if __name__ == "__main__":
         await ctx.defer()
         if channel is None:
             channel = ctx.channel
-        await auto_roles_th(ctx, channel)
+        await auto_roles__th(ctx, channel)
         edit_commands_used(ctx.author_id, "auto_roles__th")
         return
-
 
     @Client_slash.slash(name="buildings_bh")
     async def _buildings_bh(ctx, builder_hall_level=0):
@@ -213,7 +198,6 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "buildings_bh")
         return
 
-
     @Client_slash.slash(name="buildings_th")
     async def _buildings_th(ctx, town_hall_level=0):
         if await check_cmd_perms(ctx) == -1:
@@ -222,7 +206,6 @@ if __name__ == "__main__":
         await buildings_th(ctx, town_hall_level)
         edit_commands_used(ctx.author_id, "buildings_th")
         return
-
 
     @Client_slash.slash(name="clan_info")
     async def _clan_info(ctx, clan_tag):
@@ -233,7 +216,6 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "clan_info")
         return
 
-
     @Client_slash.slash(name="clan_members")
     async def _clan_members(ctx, clan_tag):
         if await check_cmd_perms(ctx) == -1:
@@ -242,17 +224,6 @@ if __name__ == "__main__":
         await clan_members(ctx, clan_tag)
         edit_commands_used(ctx.author_id, "clan_members")
         return
-
-
-    @Client_slash.slash(name="file")
-    async def _file(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await coc_file(ctx)
-        edit_commands_used(ctx.author_id, "file")
-        return
-
 
     @Client_slash.slash(name="player_info")
     async def _player_info(ctx, player_tag, information):
@@ -263,16 +234,14 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "player_info")
         return
 
-
     @Client_slash.slash(name="search_clan")
-    async def _search_clan(ctx, name, number=10):
+    async def _search_clan(ctx, name):
         if await check_cmd_perms(ctx) == -1:
             return
         await ctx.defer()
-        await search_clan(ctx, name, number)
+        await search_clan(ctx, name)
         edit_commands_used(ctx.author_id, "search_clan")
         return
-
 
     @Client_slash.slash(name="clan_super_troops_activated")
     async def _clan_super_troops_activated(ctx, clan_tag, super_troop):
@@ -283,88 +252,23 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "clan_super_troops_activated")
         return
 
-
-    # USEFUL
-
-    @Client_slash.subcommand(base="add_the_bot", name="administrator")
-    async def _add_the_bot_administrator(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await add_the_bot_administrator(ctx)
-        edit_commands_used(ctx.author_id, "add_the_bot__administrator")
-        return
-
-
-    @Client_slash.subcommand(base="add_the_bot", name="default")
-    async def _add_the_bot_default(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await add_the_bot_default(ctx)
-        edit_commands_used(ctx.author_id, "add_the_bot__default")
-        return
-
-
-    @Client_slash.slash(name="bot_info")
-    async def _bot_info(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await bot_info(ctx)
-        edit_commands_used(ctx.author_id, "bot_info")
-        return
-
-
-    @Client_slash.subcommand(base="direct_message", name="member")
-    async def _direct_message_member(ctx, member, text):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await direct_message_member(ctx, member, text)
-        edit_commands_used(ctx.author_id, "direct_message__member")
-        return
-
-
-    @Client_slash.subcommand(base="direct_message", name="role")
-    async def _direct_message_member(ctx, role, text):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await direct_message_role(ctx, role, text)
-        edit_commands_used(ctx.author_id, "direct_message__role")
-        return
-
-
-    @Client_slash.slash(name="emoji_info")
-    async def _emoji_info(ctx, emoji):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await emoji_info(ctx, emoji)
-        edit_commands_used(ctx.author_id, "emoji_info")
-        return
-
-
-    @Client_slash.slash(name="github")
-    async def _github(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await github(ctx)
-        edit_commands_used(ctx.author_id, "github")
-        return
-
-
     @Client_slash.slash(name="link_coc_account")
-    async def _link_coc_account(ctx, player_tag, player_token):
+    async def _link_coc_account(ctx, player_tag, api_token):
         if await check_cmd_perms(ctx) == -1:
             return
         await ctx.defer()
-        await link_coc_account(ctx, player_tag, player_token)
+        await link_coc_account(ctx, player_tag, api_token)
         edit_commands_used(ctx.author_id, "link_coc_account")
         return
 
+    @Client_slash.slash(name="unlink_coc_account")
+    async def _unlink_coc_account(ctx, player_tag):
+        if await check_cmd_perms(ctx) == -1:
+            return
+        await ctx.defer()
+        await unlink_coc_account(ctx, player_tag)
+        edit_commands_used(ctx.author_id, "unlink_coc_account")
+        return
 
     @Client_slash.slash(name="member_info")
     async def _member_info(ctx, member):
@@ -375,135 +279,21 @@ if __name__ == "__main__":
         edit_commands_used(ctx.author_id, "member_info")
         return
 
-
-    @Client_slash.slash(name="poll")
-    async def _poll(ctx, question):
+    @Client_slash.slash(name="bot_info")
+    async def _bot_info(ctx):
         if await check_cmd_perms(ctx) == -1:
             return
         await ctx.defer()
-        await poll(ctx, question)
-        edit_commands_used(ctx.author_id, "poll")
+        await bot_info(ctx)
+        edit_commands_used(ctx.author_id, "bot_info")
         return
-
-
-    @Client_slash.slash(name="promote_the_bot")
-    async def _promote_the_bot(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await promote_the_bot(ctx)
-        edit_commands_used(ctx.author_id, "promote_the_bot")
-        return
-
-
-    @Client_slash.slash(name="role_info")
-    async def _role_info(ctx, role):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await role_info(ctx, role)
-        edit_commands_used(ctx.author_id, "role_info")
-        return
-
-
-    @Client_slash.slash(name="server_info")
-    async def _server_info(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await server_info(ctx)
-        edit_commands_used(ctx.author_id, "server_info")
-        return
-
-
-    @Client_slash.slash(name="support_server")
-    async def _support_server(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await support_server(ctx)
-        edit_commands_used(ctx.author_id, "support_server")
-        return
-
-
-    @Client_slash.slash(name="tickets")
-    async def _tickets(ctx, text, ticket_channel=None, support_role=None):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        if ticket_channel is None:
-            ticket_channel = ctx.channel
-        if support_role is not None:
-            Support.update({ctx.guild.id: support_role.id})
-        else:
-            Support.pop(ctx.guild.id, None)
-        await tickets(ctx, text, ticket_channel, support_role)
-        edit_commands_used(ctx.author_id, "tickets")
-        return
-
-
-    @Client_slash.slash(name="close_ticket")
-    async def _close_ticket(ctx, channel=None):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        if channel is None:
-            channel = ctx.channel
-        await close_ticket(ctx, channel)
-        edit_commands_used(ctx.author_id, "close_ticket")
-        return
-
-
-    @Client_slash.slash(name="youtube")
-    async def _youtube(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await youtube(ctx)
-        edit_commands_used(ctx.author_id, "youtube")
-        return
-
-
-    # MODERATION
-
-    @Client_slash.subcommand(base="delete_messages", name="all")
-    async def _delete_messages_all(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await delete_messages_all(ctx)
-        edit_commands_used(ctx.author_id, "delete_messages__all")
-        return
-
-
-    @Client_slash.subcommand(base="delete_messages", name="for_x_minutes")
-    async def _delete_messages_time(ctx, minutes):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await delete_messages_time(ctx, minutes)
-        edit_commands_used(ctx.author_id, "delete_messages__for_x_minutes")
-        return
-
-
-    @Client_slash.subcommand(base="delete_messages", name="number_of_messages")
-    async def _delete_messages_number(ctx, number_of_messages):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await delete_messages_number(ctx, number_of_messages)
-        edit_commands_used(ctx.author_id, "delete_messages__number_of_messages")
-        return
-
 
     # CREATORS
-
     @Client_slash.slash(name="__add_a_bot_id")
     async def ___add_a_bot_id(ctx, bot_id):
         await ctx.defer()
         await add_a_bot_id(ctx, int(bot_id))
         return
-
 
     @Client_slash.slash(name="__add_reaction_with_id")
     async def ___add_reaction_with_id(ctx, channel_id, message_id, emoji_id):
@@ -511,13 +301,11 @@ if __name__ == "__main__":
         await add_reaction_with_id(ctx, int(channel_id), int(message_id), int(emoji_id))
         return
 
-
     @Client_slash.slash(name="__download_emojis")
     async def ___download_emojis(ctx, recreate_emojis_zip):
         await ctx.defer()
         await download_emojis(ctx, recreate_emojis_zip)
         return
-
 
     @Client_slash.slash(name="__find_user_by_id")
     async def ___find_user_by_id(ctx, user_id):
@@ -525,6 +313,11 @@ if __name__ == "__main__":
         await find_user_by_id(ctx, int(user_id))
         return
 
+    @Client_slash.slash(name="__reboot")
+    async def ___reboot(ctx):
+        await ctx.defer()
+        await reboot(ctx)
+        return
 
     @Client_slash.slash(name="__refresh_dbl")
     async def ___refresh_dbl(ctx):
@@ -532,13 +325,11 @@ if __name__ == "__main__":
         await refresh_dbl(ctx)
         return
 
-
     @Client_slash.slash(name="__servers_list")
     async def ___servers_list(ctx):
         await ctx.defer()
         await servers_list(ctx)
         return
-
 
     @Client_slash.slash(name="__stats")
     async def ___stats(ctx):
@@ -623,8 +414,17 @@ if __name__ == "__main__":
         await change_bh_lvl(ctx)
         from Script.Commands.Components.Select_menu.change_player_info_page import change_player_stats_page
         await change_player_stats_page(ctx)
+        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__th
+        await auto_roles__th(ctx)
+        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__bh
+        await auto_roles__bh(ctx)
+        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__league
+        await auto_roles__league(ctx)
+        from Script.Commands.Components.Select_menu.change_search_clan import change_search_clan
+        await change_search_clan(ctx)
+        from Script.Commands.Components.Button.joined_guild_message import joined_guild_message
+        await joined_guild_message(ctx)
         return
-
 
     Clash_info.run(Token)  # Comment this line to create slash commands
 
@@ -718,11 +518,6 @@ if __name__ == "__main__":
         }]
     }
     add_slash_command_json(json_clan_members)
-    json_file = {
-        "name": "file",
-        "description": "Give the link for the Clash Of Clans data sheet"
-    }
-    add_slash_command_json(json_file)
     json_link_coc_account = {
         "name": "link_coc_account",
         "description": "Link your Clash Of Clans account to your Discord account",
@@ -732,13 +527,24 @@ if __name__ == "__main__":
             "required": True,
             "type": 3,
         }, {
-            "name": "player_token",
-            "description": "Your token",
+            "name": "api_token",
+            "description": "Your API token, findable in the game settings",
             "required": True,
             "type": 3,
         }]
     }
     add_slash_command_json(json_link_coc_account)
+    json_unlink_coc_account = {
+        "name": "unlink_coc_account",
+        "description": "Unlink your Clash Of Clans account from your Discord account",
+        "options": [{
+            "name": "player_tag",
+            "description": "Your Clash Of Clans tag",
+            "required": True,
+            "type": 3,
+        }]
+    }
+    add_slash_command_json(json_unlink_coc_account)
     json_player_info = {
         "name": "player_info",
         "description": "Show data about the player",
@@ -774,11 +580,6 @@ if __name__ == "__main__":
             "description": "Clan name",
             "required": True,
             "type": 3
-        }, {
-            "name": "number",
-            "description": "Number of clans to show",
-            "required": False,
-            "type": 4
         }]
     }
     add_slash_command_json(json_search_clan)
@@ -786,109 +587,61 @@ if __name__ == "__main__":
         "name": "clan_super_troops_activated",
         "description": "Show which player has activated the super troop in the clan",
         "options": [{
+            "name": "clan_tag",
+            "description": "Clash Of Clans clan tag, format : #A1B2C3D4",
+            "required": True,
+            "type": 3,
+        }, {
             "name": "super_troop",
             "description": "The wanted super troop",
             "required": True,
             "type": 3,
-            "choices": ["Super Barbarian"
-                        "Super Archer",
-                        "Super Giant",
-                        "Sneaky Goblin",
-                        "Super Wall Breaker",
-                        "Rocket Balloon",
-                        "Super Wizard",
-                        "Inferno Dragon",
-                        "Super Minion",
-                        "Super Valkyrie",
-                        "Super Witch",
-                        "Ice Hound"
-            ]
-        }]
-    }
-
-    # Useful
-    json_add_the_bot = {
-        "name": "add_the_bot",
-        "description": "Show the link to invite the bot to your server",
-        "options": [{
-            "name": "administrator",
-            "description": "Allows you to add the bot as an administrator, so you will not have to worry about bot permissions",
-            "type": 1,
-        }, {
-            "name": "default",
-            "description": "Allows you to manage each permission for the bot",
-            "type": 1,
-        }]
-    }
-    add_slash_command_json(json_add_the_bot)
-    json_bot_info = {
-        "name": "bot_info",
-        "description": "Show some information about the bot"
-    }
-    add_slash_command_json(json_bot_info)
-    json_close = {
-        "name": "close_ticket",
-        "description": "[Channels managers only] Close the ticket",
-        "options": [{
-            "name": "channel",
-            "description": "The ticket-channel to close",
-            "required": False,
-            "type": 7
-        }]
-    }
-    add_slash_command_json(json_close)
-    json_dm = {
-        "name": "direct_message",
-        "description": "[Administrators only] Send a direct message to a member/role",
-        "options": [{
-            "name": "member",
-            "description": "[Administrators only] Send a direct message to a member",
-            "type": 1,
-            "options": [{
-                "name": "member",
-                "description": "Send a direct message to this member",
-                "required": True,
-                "type": 6
+            "choices": [{
+                "name": "Super Barbarian",
+                "value": "Super Barbarian"
             }, {
-                "name": "text",
-                "description": "The text to send to this member",
-                "required": True,
-                "type": 3
-            }]
-        }, {
-            "name": "role",
-            "description": "[Administrators only] Send a direct message to a role",
-            "type": 1,
-            "options": [{
-                "name": "role",
-                "description": "Send a direct message to everyone who has this role",
-                "required": True,
-                "type": 8
+                "name": "Super Archer",
+                "value": "Super Archer"
             }, {
-                "name": "text",
-                "description": "The text to send to everyone who has this role",
-                "required": True,
-                "type": 3
+                "name": "Super Giant",
+                "value": "Super Giant"
+            }, {
+                "name": "Sneaky Goblin",
+                "value": "Sneaky Goblin"
+            }, {
+               "name": "Super Wall Breaker",
+               "value": "Super Wall Breaker"
+            }, {
+               "name": "Rocket Balloon",
+               "value": "Rocket Balloon"
+            }, {
+               "name": "Super Wizard",
+               "value": "Super Wizard"
+            }, {
+                "name": "Super Dragon",
+                "value": "Super Dragon"
+            }, {
+               "name": "Inferno Dragon",
+               "value": "Inferno Dragon"
+            }, {
+               "name": "Super Minion",
+               "value": "Super Minion"
+            }, {
+               "name": "Super Valkyrie",
+               "value": "Super Valkyrie"
+            }, {
+               "name": "Super Witch",
+               "value": "Super Witch"
+            }, {
+               "name": "Ice Hound",
+               "value": "Ice Hound"
+            }, {
+                "name": "Super Bowler",
+                "value": "Super Bowler"
             }]
         }]
     }
-    add_slash_command_json(json_dm)
-    json_emoji_info = {
-        "name": "emoji_info",
-        "description": "Show some information about the emoji",
-        "options": [{
-            "name": "emoji",
-            "description": "The emoji",
-            "required": True,
-            "type": 3
-        }]
-    }
-    add_slash_command_json(json_emoji_info)
-    json_github = {
-        "name": "github",
-        "description": "You can check our GitHub to help us to improve the bot"
-    }
-    add_slash_command_json(json_github)
+    add_slash_command_json(json_clan_super_troops_activated)
     json_member_info = {
         "name": "member_info",
         "description": "Show permissions, when the member joined Discord / the server and his avatar",
@@ -900,101 +653,12 @@ if __name__ == "__main__":
         }]
     }
     add_slash_command_json(json_member_info)
-    json_poll = {
-        "name": "poll",
-        "description": "Show a poll with the question",
-        "options": [{
-            "name": "question",
-            "description": "The poll question",
-            "required": True,
-            "type": 3
-        }]
+    json_bot_info = {
+        "name": "bot_info",
+        "description": "Show some information about the bot"
     }
-    add_slash_command_json(json_poll)
-    json_promote_the_bot = {
-        "name": "promote_the_bot",
-        "description": "Show the links to promote the bot"
-    }
-    add_slash_command_json(json_promote_the_bot)
-    json_role_info = {
-        "name": "role_info",
-        "description": "Show permissions and who have this role",
-        "options": [{
-            "name": "role",
-            "description": "The role",
-            "required": True,
-            "type": 8
-        }]
-    }
-    add_slash_command_json(json_role_info)
-    json_server_info = {
-        "name": "server_info",
-        "description": "Show some information about the server"
-    }
-    add_slash_command_json(json_server_info)
-    json_support_server = {
-        "name": "support_server",
-        "description": "Show the link to join the bot support server"
-    }
-    add_slash_command_json(json_support_server)
-    json_tickets = {
-        "name": "tickets",
-        "description": "[Administrators only] Create a ticket category, channel and message",
-        "options": [{
-            "name": "text",
-            "description": "The text of the ticket-message",
-            "required": True,
-            "type": 3
-        }, {
-            "name": "ticket_channel",
-            "description": "The channel with the ticket-message",
-            "required": False,
-            "type": 7
-        }, {
-            "name": "support_role",
-            "description": "This role will view all tickets",
-            "required": False,
-            "type": 8
-        }]
-    }
-    add_slash_command_json(json_tickets)
-    json_yt = {
-        "name": "youtube",
-        "description": "Show the YouTube channel dedicated to the bot (bot presentation, news...)"
-    }
-    add_slash_command_json(json_yt)
+    add_slash_command_json(json_bot_info)
 
-    # Moderation
-    json_delete_messages = {
-        "name": "delete_messages",
-        "description": "[Messages managers only] Delete the most recent and not-pinned messages in the current channel",
-        "options": [{
-            "name": "number_of_messages",
-            "description": "[Messages managers only] Delete the most recent and not-pinned messages in the current channel",
-            "type": 1,
-            "options": [{
-                "name": "number_of_messages",
-                "description": "Number of messages",
-                "required": True,
-                "type": 4
-            }]
-        }, {
-            "name": "for_x_minutes",
-            "description": "[Messages managers only] Delete not-pinned messages in the current channel sent for x minutes",
-            "type": 1,
-            "options": [{
-                "name": "minutes",
-                "description": "Duration in minutes",
-                "required": True,
-                "type": 4,
-            }]
-        }, {
-            "name": "all",
-            "description": "[Messages managers only] Delete ALL not-pinned messages in the current channel",
-            "type": 1
-        }]
-    }
-    add_slash_command_json(json_delete_messages)
     json_template = {
         "name": "",
         "description": "",

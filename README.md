@@ -8,9 +8,9 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/rreemmii-dev/Clash-Of-Clans-Discord-Bot?label=Contributors)
 
 
-**This project is a Discord Bot about the game Clash Of Clans. It uses the [discord.py](https://discordpy.readthedocs.io/en/latest/api.html), the [discord-py-slash-command](https://discord-py-slash-command.readthedocs.io/en/latest/index.html), the [coc.py](https://cocpy.readthedocs.io/en/latest/index.html) and the [dblpy](https://dblpy.readthedocs.io/en/latest/api.html) libraries.**
+**This project is a Discord Bot about the game Clash Of Clans. It uses the [discord.py](https://discordpy.readthedocs.io/en/latest/api.html), [discord-interactions](https://discord-interactions.readthedocs.io/en/latest/api.html), [coc.py](https://cocpy.readthedocs.io/en/latest/index.html) and [dblpy](https://dblpy.readthedocs.io/en/latest/api.html) libraries.**
 
-If you want to test the bot, you can add it [here](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot). You can also join the [support server](https://discord.gg/KQmstPw) and take a ticket if you have any question.
+If you want to test the bot, you can add it [here](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=275683592208&scope=applications.commands%20bot). You can also join the [support server](https://discord.gg/KQmstPw) to test the bot or to ask for help.
 
 ## Table of contents
 
@@ -29,14 +29,16 @@ pip install -r Clash-Of-Clans-Discord-Bot\requirements.txt
 ```
 
 ## Usage
-Create your own bot [here](https://discord.com/developers/applications) or [add our bot](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=805825751&scope=applications.commands%20bot).
+Create your own bot [here](https://discord.com/developers/applications) or [add the Clash INFO bot](https://discord.com/oauth2/authorize?client_id=704688212832026724&permissions=275683592208&scope=applications.commands%20bot).
 
-Copy/paste the template of the [secure folder](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Secure_folder_template), add yours tokens, email/password... in the login.json file (in the secure folder), and add the path of your secure folder [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Data/utils.py).
+Copy/paste the template of the [Secure_folder_template](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Secure_folder_template), add your tokens, email/password... in the login.json file (in the secure folder), and add the path of your secure folder [here](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Data/utils.py).
 
-You can edit [this file](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Script/Const_variables/ids.json) with yours IDs.
+Add the emojis from the [Emojis.zip](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Emojis.zip) file to your server, with a different server for each subfolder.
+
+Edit the [Data/Constants/ids.json](https://github.com/rreemmii-dev/Clash-Of-Clans-Discord-Bot/blob/main/Data/Constants/ids.json) file with your personalized IDs.
 ```shell
-# Run the script
-python3 Clash-Of-Clans-Discord-Bot\main.py
+# Run the script :
+python Clash-Of-Clans-Discord-Bot\main.py
 ```
 
 ## Features

@@ -7,12 +7,24 @@ import threading
 import time
 
 import discord
+import flask
 
-from Data.Constants.import_const import Login, Ids, Main_bot
+from Data.Constants.import_const import Login, Ids, Main_bot, Useful
 from Script.import_emojis import Emojis
+
+if Main_bot:
+    discord_token = Login["discord"]["token"]
+else:
+    discord_token = Login["discord"]["beta"]
 
 
 async def ready_loop(self):
+    support_server = self.get_guild(Ids["Support_server"])
+    member_role = discord.utils.get(support_server.roles, name="Member")
+    for member in support_server.members:
+        if (member_role not in member.roles) and (not member.bot):
+            await member.add_roles(member_role)
+
     if Main_bot:
         status_channel = self.get_channel(Ids["Status_channel"])
         msg = await status_channel.send(f"{Emojis['Yes']} Connected")
@@ -35,8 +47,6 @@ async def ready_loop(self):
             asyncio.set_event_loop(loop)
 
             class WeeklyStatsBot(discord.Client):
-                weekly_bot_connected = asyncio.Event()
-
                 def __init__(self):
                     super().__init__()
 
@@ -57,34 +67,15 @@ async def ready_loop(self):
                     await channel.send(f"Evolution of number of servers this week : {diff_servers_count}")
                     await self.logout()
 
-                async def on_disconnect(self):
-                    self.weekly_bot_connected.set()
-
             weekly_stats_bot = WeeklyStatsBot()
+            try:
+                loop.run_until_complete(weekly_stats_bot.start(discord_token))
+            except KeyboardInterrupt:
+                loop.run_until_complete(weekly_stats_bot.close())
+            finally:
+                loop.close()
 
-            async def login():
-                await weekly_stats_bot.login(Login["discord"]["beta"])
-
-            loop.run_until_complete(login())
-
-            async def wrapped_connect():
-                try:
-                    await weekly_stats_bot.connect()
-                except Exception as e:
-                    print("Weekly, ", e)
-                    await weekly_stats_bot.close()
-                    weekly_stats_bot.weekly_bot_connected.set()
-
-            loop.create_task(wrapped_connect())
-
-            async def check_close():
-                futures = [weekly_stats_bot.weekly_bot_connected.wait()]
-                await asyncio.wait(futures)
-
-            loop.run_until_complete(check_close())
-            loop.close()
-
-    thread = threading.Thread(target=thread_weekly_stats, args=())
+    thread = threading.Thread(target=thread_weekly_stats)
     thread.start()
 
     def thread_monthly_users():
@@ -104,13 +95,12 @@ async def ready_loop(self):
             asyncio.set_event_loop(loop)
 
             class MonthlyUsersBot(discord.Client):
-                monthly_bot_connected = asyncio.Event()
 
                 def __init__(self):
                     super().__init__()
 
                 async def on_ready(self):
-                    connection = sqlite3.connect("Data/Modifiable_variables.sqlite")
+                    connection = sqlite3.connect(Useful["secure_folder_path"] + "Modifiable.sqlite")
                     cursor = connection.cursor()
                     cursor.execute("SELECT COUNT(*) FROM BotUsage")
                     nb_monthly_users = cursor.fetchone()[0]
@@ -127,40 +117,86 @@ async def ready_loop(self):
                     connection.commit()
                     await self.logout()
 
-                async def on_disconnect(self):
-                    self.monthly_bot_connected.set()
-
             monthly_users_bot = MonthlyUsersBot()
+            try:
+                loop.run_until_complete(monthly_users_bot.start(discord_token))
+            except KeyboardInterrupt:
+                loop.run_until_complete(monthly_users_bot.close())
+            finally:
+                loop.close()
 
-            async def login():
-                await monthly_users_bot.login(Login["discord"]["beta"])
+    thread = threading.Thread(target=thread_monthly_users)
+    thread.start()
 
-            loop.run_until_complete(login())
+    def thread_webhooks_app():
+        app = flask.Flask(__name__)
 
-            async def wrapped_connect():
+        @app.route('/topgg_webhook', methods=['post'])
+        def topgg_webhook():
+            if (flask.request.remote_addr != "159.203.105.187") or ("Authorization" not in list(flask.request.headers.keys())) or (flask.request.headers["Authorization"] != Login["topgg"]["authorization"]):
+                authorization = None if "Authorization" not in list(flask.request.headers.keys()) else flask.request.headers["Authorization"]
+                print(f"Unauthorized :\nIP = {flask.request.remote_addr}\nAuthorization = {authorization}")
+                return flask.Response(status=401)
+
+            def run_bot(voter_id):
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+                class WebhooksBot(discord.Client):
+                    def __init__(self):
+                        super().__init__()
+
+                    async def on_ready(self):
+                        import json
+                        from Script.import_functions import create_embed
+                        from Data.Constants.useful import Useful
+                        from Data.Variables.import_var import Votes
+
+                        user = clash_info.get_user(voter_id)
+                        votes_channel = self.get_channel(Ids["Votes_channel"])
+
+                        if user.id not in list(Votes.keys()):
+                            Votes[user.id] = 1
+                        else:
+                            Votes[user.id] += 1
+                        json_text = json.dumps(Votes, sort_keys=True, indent=4)
+                        def_votes = open(f"{Useful['secure_folder_path']}votes.json", "w")
+                        def_votes.write(json_text)
+                        def_votes.close()
+                        vote_copy = dict(Votes)
+                        vote = {}
+                        for member_id, member_votes in vote_copy.items():
+                            member = clash_info.get_user(int(member_id))
+                            vote[member.mention] = member_votes
+                        vote = sorted(vote.items(), key=lambda t: t[1])
+                        text = ""
+                        for user_vote_tuple in vote:
+                            text += f"{user_vote_tuple[0]} has voted {user_vote_tuple[1]} times\n"
+                        embed = create_embed(f"{user} has voted for Clash INFO", text, votes_channel.guild.me.color, "", votes_channel.guild.me.avatar_url)
+                        await votes_channel.send(embed=embed)
+                        await self.logout()
+
+                webhooks_bot = WebhooksBot()
                 try:
-                    await monthly_users_bot.connect()
-                except Exception as e:
-                    print("Monthly, ", e)
-                    await monthly_users_bot.close()
-                    monthly_users_bot.monthly_bot_connected.set()
+                    loop.run_until_complete(webhooks_bot.start(discord_token))
+                except KeyboardInterrupt:
+                    loop.run_until_complete(webhooks_bot.close())
+                finally:
+                    loop.close()
 
-            loop.create_task(wrapped_connect())
+            import threading
+            thread = threading.Thread(target=run_bot, kwargs={"voter_id": int(flask.request.get_json()["user"])})
+            thread.start()
+            return flask.Response(status=200)
 
-            async def check_close():
-                futures = [monthly_users_bot.monthly_bot_connected.wait()]
-                await asyncio.wait(futures)
+        app.run(host="0.0.0.0", port=8080)
 
-            loop.run_until_complete(check_close())
-            loop.close()
-
-    thread = threading.Thread(target=thread_monthly_users, args=())
+    thread = threading.Thread(target=thread_webhooks_app, args=())
     thread.start()
 
     print("Connected")
 
-    while True:
-        nb_guilds = len(self.guilds)
-        act = discord.Activity(type=discord.ActivityType.watching, name=f"{nb_guilds: ,} servers")
-        await self.change_presence(status=discord.Status.online, activity=act)
-        await asyncio.sleep(60)
+    nb_guilds = len(self.guilds)
+    act = discord.Activity(type=discord.ActivityType.watching, name=f"{nb_guilds: ,} servers")
+    await self.change_presence(status=discord.Status.online, activity=act)
+    return
