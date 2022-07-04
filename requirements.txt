@@ -1,7 +1,7 @@
-coc.py==2.0.0
-discord.py==1.7.3
-discord-py-interactions==3.0.2
-Flask==2.0.2
-Pillow==8.4.0
-requests==2.26.0
-topggpy==1.4.0
+coc.py==2.0.1
+git+https://github.com/Rapptz/discord.py.git  # discord.py==2.0.0
+Flask==2.1.2
+google-api-python-client==2.52.0
+Pillow==9.2.0
+requests
+git+https://github.com/top-gg/python-sdk.git  # topggpy==2.0.0

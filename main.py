@@ -1,677 +1,419 @@
-# ----- PACKAGES : -----
+import nest_asyncio
+nest_asyncio.apply()
+
+# ----- PACKAGES: -----
 import json
 import sqlite3
 import sys
-import time
+import traceback
 
 import coc
 import discord.errors
-import requests
-import topgg
+from discord import app_commands
 
-# ----- PROJECT FILES : -----
-from Script.import_functions import *
+# ----- PROJECT FILES: -----
+from bot.functions import *
 
-# ----- COMMANDS : -----
+# ----- COMMANDS: -----
 
 # MESSAGES
-from Script.Commands.Messages.help import help
+from bot.core.slash_commands.help import help
 
-from Script.Commands.Messages.auto_roles import auto_roles__th, auto_roles__bh, auto_roles__leagues
-from Script.Commands.Messages.buildings_bh import buildings_bh
-from Script.Commands.Messages.buildings_th import buildings_th
-from Script.Commands.Messages.clan_info import clan_info
-from Script.Commands.Messages.clan_members import clan_members
-from Script.Commands.Messages.link_coc_account import link_coc_account, unlink_coc_account
-from Script.Commands.Messages.member_info import member_info
-from Script.Commands.Messages.player_info import player_info
-from Script.Commands.Messages.search_clan import search_clan
-from Script.Commands.Messages.clan_super_troops_activated import clan_super_troops_activated
-from Script.Commands.Messages.bot_info import bot_info
+from bot.core.slash_commands.army_link_analyze import army_link_analyze
+from bot.core.slash_commands.auto_roles import auto_roles_bh, auto_roles_leagues, auto_roles_th
+from bot.core.slash_commands.buildings_bh import buildings_bh
+from bot.core.slash_commands.buildings_th import buildings_th
+from bot.core.slash_commands.clan_info import clan_info
+from bot.core.slash_commands.clan_members import clan_members
+from bot.core.slash_commands.clan_super_troops_activated import clan_super_troops_activated
+from bot.core.slash_commands.link_coc_account import link_coc_account, unlink_coc_account
+from bot.core.slash_commands.member_info import member_info
+from bot.core.slash_commands.player_info import player_info
+from bot.core.slash_commands.search_clan import search_clan
+from bot.core.slash_commands.bot_info import bot_info
 
-from Script.Commands.Messages.Creators.add_a_bot_id import add_a_bot_id
-from Script.Commands.Messages.Creators.add_reaction_with_id import add_reaction_with_id
-from Script.Commands.Messages.Creators.download_emojis import download_emojis
-from Script.Commands.Messages.Creators.find_user_by_id import find_user_by_id
-from Script.Commands.Messages.Creators.reboot import reboot
-from Script.Commands.Messages.Creators.refresh_dbl import refresh_dbl
-from Script.Commands.Messages.Creators.servers_list import servers_list
-from Script.Commands.Messages.Creators.stats import stats
+from bot.core.slash_commands.bot_creators_only.add_a_bot_id import add_a_bot_id
+from bot.core.slash_commands.bot_creators_only.add_reaction_with_id import add_reaction_with_id
+from bot.core.slash_commands.bot_creators_only.download_emojis import download_emojis
+from bot.core.slash_commands.bot_creators_only.find_user_by_id import find_user_by_id
+from bot.core.slash_commands.bot_creators_only.reboot import reboot
+from bot.core.slash_commands.bot_creators_only.refresh_dbl import refresh_dbl
+from bot.core.slash_commands.bot_creators_only.servers_list import servers_list
+from bot.core.slash_commands.bot_creators_only.stats import stats
 
-# ----- VARIABLES : -----
+# ----- VARIABLES: -----
+from data.config import Config
+from data.useful import Ids
 
 # MODIFIABLE VARIABLES
-votes_file = open(f"{Useful['secure_folder_path']}votes.json", "r")
+votes_file = open(f"{Config['secure_folder_path']}votes.json", "r")
 Votes = json.load(votes_file)
 
+
 if __name__ == "__main__":
+    print(f"Python: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+          f"CoC: {coc.__version__}\n"
+          f"Discord: {discord.__version__}")
 
-    print(f"Python : {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
-          f"DBL : {topgg.__version__}\n"
-          f"CoC : {coc.__version__}\n"
-          f"Discord : {discord.__version__}")
+    from bot.apis_clients.discord import Clash_info
 
-    from discord_slash import SlashCommand
-    from Script.Clients.discord_client import Clash_info
-
-    Client_slash = SlashCommand(Clash_info)
-
-    connection_modifiable = sqlite3.connect(f"{Useful['secure_folder_path']}Modifiable.sqlite")
+    connection_modifiable = sqlite3.connect(f"{Config['secure_folder_path']}secure.sqlite")
     cursor_modifiable = connection_modifiable.cursor()
 
-    connection_constants = sqlite3.connect("Data/Constants/Constants.sqlite")
-    connection_constants.row_factory = sqlite3.Row
-    cursor_constants = connection_constants.cursor()
 
-
-    async def check_cmd_perms(ctx):
-        # print(vars(ctx))
-        # chan = Clash_info.get_channel(ctx.channel_id)
-        # print(ctx.channel_id, chan)
-        # if chan.type == "private":
-        #     return True
-        if not ctx.guild_id or Clash_info.get_channel(ctx.channel_id) is None:
-            await ctx.send("Slash commands are not available with neither threads nor direct messages. Please use classic text channels to use slash commands.")
+    async def check_cmd_perms(interaction: discord.Interaction, command: str = None):
+        if interaction.channel.type == discord.ChannelType.private:
+            await interaction.response.send_message("Slash commands are not available in direct messages. Please add the bot to your server and then use slash commands there.")
             return -1
-        if ctx.data['name'] == "_help":
-            ctx.data['name'] = "help"
-        cursor_constants.execute(f"""SELECT user_permissions, bot_permissions FROM RequiredPermissions WHERE command_name = '{ctx.data["name"]}'""")
-        perms_dict = dict(cursor_constants.fetchall()[0])
-        if perms_dict["bot_permissions"]:
-            perms_dict["bot_permissions"] += ", embed_links, external_emojis, send_messages, view_channel"
-        else:
-            perms_dict["bot_permissions"] = "embed_links, external_emojis, send_messages, view_channel"
-        if perms_dict["user_permissions"]:
-            perms_dict["user_permissions"] += ", use_slash_commands"
-        else:
-            perms_dict["user_permissions"] = "use_slash_commands"
-        channel = Clash_info.get_channel(ctx.channel_id)
-        me = channel.guild.me
+        if command is None:
+            command = interaction.data["name"]
+        if command == "_help":
+            command = "help"
+
+        from data.required_permissions import Required_permissions
+        permissions_needed = Required_permissions[command] + ["embed_links"]
         missing_bot_perms = []
-        for perm in perms_dict["bot_permissions"].split(", "):
-            if not getattr(channel.permissions_for(me), perm):
+        for perm in permissions_needed:
+            if not getattr(interaction.app_permissions, perm):
                 missing_bot_perms.append(perm)
-        missing_user_perms = []
-        if perms_dict["user_permissions"]:
-            for perm in perms_dict["user_permissions"].split(", "):
-                if not getattr(channel.permissions_for(ctx.author), perm):
-                    missing_user_perms.append(perm)
-        if missing_bot_perms or missing_user_perms:
-            text = ""
-            if "send_messages" in missing_bot_perms or "view_channel" in missing_bot_perms:
-                try:
-                    await ctx.author.send("The bot doesn't have the 'send_messages' or the 'view_channel' permission(s) ! Please grant it/them to the bot and send again the command.")
-                except discord.errors.Forbidden:
-                    pass
-                return -1
-            if "embed_links" in missing_bot_perms:
-                await ctx.send("The bot doesn't have the 'embed_links' permission ! Please grant it to the bot and send again the command.")
-                return -1
-            if missing_bot_perms:
-                text += "The bot doesn't have the permission(s) :"
-                for perm in missing_bot_perms:
-                    text += f"\n{perm}"
-                if len(missing_bot_perms) == 1:
-                    text += "\nPlease grant it to the bot and send again the command."
-                else:
-                    text += "\nPlease grant them to the bot and send again the command."
-            if missing_user_perms:
-                text += "You don't have this/these permission(s) :"
-                for perm in missing_user_perms:
-                    text += f"\n{perm}"
-                if len(missing_user_perms) == 1:
-                    text += "\nThis permission is required to use this command."
-                else:
-                    text += "\nThese permissions are required to use this command."
-            embed = create_embed("Missing permissions", text, 0xFF0000, "", channel.guild.me.avatar_url)
-            await ctx.send(embed=embed)
+        if missing_bot_perms:
+            text = "the bot doesn't have the permission(s):"
+            for perm in missing_bot_perms:
+                text += f"\n{perm}"
+            if len(missing_bot_perms) == 1:
+                text += "\nPlease grant it to the bot and send again the command."
+            else:
+                text += "\nPlease grant them to the bot and send again the command."
+            await interaction.response.send_message(f"Missing permissions: {text}")
             return -1
         return True
 
 
-    def edit_commands_used(user_id, cmd):
-        text = f"""INSERT INTO BotUsage(user_id) SELECT({user_id}) WHERE NOT EXISTS(SELECT 1 FROM BotUsage WHERE user_id={user_id})"""
+    def edit_commands_used(user_id: int, cmd: str):
+        text = f"""INSERT INTO bot_usage(user_id) SELECT({user_id}) WHERE NOT EXISTS(SELECT 1 FROM bot_usage WHERE user_id={user_id})"""
         cursor_modifiable.execute(text)
-        text = f"""UPDATE BotUsage SET {cmd} = (SELECT {cmd} FROM BotUsage WHERE user_id={user_id})+1 WHERE user_id={user_id}"""
+        text = f"""UPDATE bot_usage SET {cmd} = (SELECT {cmd} FROM bot_usage WHERE user_id={user_id})+1 WHERE user_id={user_id}"""
         cursor_modifiable.execute(text)
         connection_modifiable.commit()
 
 
-    @Client_slash.slash(name="help")
-    async def _help(ctx):
-        if await check_cmd_perms(ctx) == -1:
-            return
-        await ctx.defer()
-        await help(ctx)
-        edit_commands_used(ctx.author_id, "help")
+    command_tree = app_commands.CommandTree(Clash_info)
+
+    async def on_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
+        if type(error.original) == discord.errors.NotFound:
+            if interaction.app_permissions.send_messages:
+                await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
+        else:
+            print(traceback.format_exc())
         return
 
-    @Client_slash.slash(name="_help")
-    async def __help(ctx):
-        if await check_cmd_perms(ctx) == -1:
+    command_tree.on_error = on_error
+
+
+    @command_tree.command(name="help", description="Show the help message to use @Clash INFO#3976")
+    async def _help(interaction: discord.Interaction):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await help(ctx)
-        edit_commands_used(ctx.author_id, "help")
+        await help(interaction)
+        edit_commands_used(interaction.user.id, "help")
         return
+
+    @command_tree.command(name="_help", description="Show the help message to use @Clash INFO#3976")
+    async def __help(interaction: discord.Interaction):
+        if await check_cmd_perms(interaction) == -1:
+            return
+        await help(interaction)
+        edit_commands_used(interaction.user.id, "help")
+        return
+
 
     # Clash Of Clans
-    @Client_slash.subcommand(base="auto_roles", name="bh")
-    async def _auto_roles_bh(ctx, channel=None):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="army_link_analyze", description="Show the troops and spells from an in-game army link")
+    @app_commands.describe(army_link="Army link, gettable from Clash Of Clans > Army > Quick Train > Share > Share as link")
+    async def _army_link_analyze(interaction: discord.Interaction, army_link: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
+        await army_link_analyze(interaction, army_link)
+        edit_commands_used(interaction.user.id, "army_link_analyze")
+        return
+
+    @command_tree.command(name="auto_roles_bh", description="[Administrators only] Create an auto-roles system to give the BH level roles")
+    @app_commands.guild_only()
+    @app_commands.describe(channel="Channel where it will be the auto-roles system")
+    @app_commands.default_permissions(administrator=True)
+    async def _auto_roles_bh(interaction: discord.Interaction, channel: discord.TextChannel = None):
+        if await check_cmd_perms(interaction) == -1:
+            return
         if channel is None:
-            channel = ctx.channel
-        await auto_roles__bh(ctx, channel)
-        edit_commands_used(ctx.author_id, "auto_roles__bh")
+            channel = interaction.channel
+        await auto_roles_bh(interaction, channel)
+        edit_commands_used(interaction.user.id, "auto_roles_bh")
         return
 
-    @Client_slash.subcommand(base="auto_roles", name="leagues")
-    async def _auto_roles_leagues(ctx, channel=None):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="auto_roles_leagues", description="[Administrators only] Create an auto-roles system to give the league role")
+    @app_commands.guild_only()
+    @app_commands.describe(channel="Channel where it will be the auto-roles system")
+    @app_commands.default_permissions(administrator=True)
+    async def _auto_roles_leagues(interaction: discord.Interaction, channel: discord.TextChannel = None):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
         if channel is None:
-            channel = ctx.channel
-        await auto_roles__leagues(ctx, channel)
-        edit_commands_used(ctx.author_id, "auto_roles__leagues")
+            channel = interaction.channel
+        await auto_roles_leagues(interaction, channel)
+        edit_commands_used(interaction.user.id, "auto_roles_leagues")
         return
 
-    @Client_slash.subcommand(base="auto_roles", name="th")
-    async def _auto_roles_th(ctx, channel=None):
-        if await check_cmd_perms(ctx) == -1:  # TODO : Check with the ctx.channel permission, instead of channel permission
+    @command_tree.command(name="auto_roles_th", description="[Administrators only] Create an auto-roles system to give the TH level roles")
+    @app_commands.guild_only()
+    @app_commands.describe(channel="Channel where it will be the auto-roles system")
+    @app_commands.default_permissions(administrator=True)
+    async def _auto_roles_th(interaction: discord.Interaction, channel: discord.TextChannel = None):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
         if channel is None:
-            channel = ctx.channel
-        await auto_roles__th(ctx, channel)
-        edit_commands_used(ctx.author_id, "auto_roles__th")
+            channel = interaction.channel
+        await auto_roles_th(interaction, channel)
+        edit_commands_used(interaction.user.id, "auto_roles_th")
         return
 
-    @Client_slash.slash(name="buildings_bh")
-    async def _buildings_bh(ctx, builder_hall_level=0):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="buildings_bh", description="Show the maximum level for each buildings at the given Builder Hall level")
+    @app_commands.describe(builder_hall_level="Builder Hall level")
+    async def _buildings_bh(interaction: discord.Interaction, builder_hall_level: int = 0):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await buildings_bh(ctx, builder_hall_level)
-        edit_commands_used(ctx.author_id, "buildings_bh")
+        await buildings_bh(interaction, builder_hall_level)
+        edit_commands_used(interaction.user.id, "buildings_bh")
         return
 
-    @Client_slash.slash(name="buildings_th")
-    async def _buildings_th(ctx, town_hall_level=0):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="buildings_th", description="Show the maximum level for each buildings at the given Town Hall level")
+    @app_commands.describe(town_hall_level="Town Hall level")
+    async def _buildings_th(interaction: discord.Interaction, town_hall_level: int = 0):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await buildings_th(ctx, town_hall_level)
-        edit_commands_used(ctx.author_id, "buildings_th")
+        await buildings_th(interaction, town_hall_level)
+        edit_commands_used(interaction.user.id, "buildings_th")
         return
 
-    @Client_slash.slash(name="clan_info")
-    async def _clan_info(ctx, clan_tag):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="clan_info", description="Show data about the clan")
+    @app_commands.describe(clan_tag="Clash Of Clans clan tag, format: #A1B2C3D4")
+    async def _clan_info(interaction: discord.Interaction, clan_tag: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await clan_info(ctx, clan_tag)
-        edit_commands_used(ctx.author_id, "clan_info")
+        await clan_info(interaction, clan_tag)
+        edit_commands_used(interaction.user.id, "clan_info")
         return
 
-    @Client_slash.slash(name="clan_members")
-    async def _clan_members(ctx, clan_tag):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="clan_members", description="Show the clan members")
+    @app_commands.describe(clan_tag="Clash Of Clans clan tag, format: #A1B2C3D4")
+    async def _clan_members(interaction: discord.Interaction, clan_tag: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await clan_members(ctx, clan_tag)
-        edit_commands_used(ctx.author_id, "clan_members")
+        await clan_members(interaction, clan_tag)
+        edit_commands_used(interaction.user.id, "clan_members")
         return
 
-    @Client_slash.slash(name="player_info")
-    async def _player_info(ctx, player_tag, information):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="player_info", description="Show data about the player")
+    @app_commands.describe(player_tag="Clash Of Clans player tag, format: #A1B2C3D4")
+    @app_commands.describe(information="Information wanted")
+    @app_commands.choices(information=[
+        app_commands.Choice(name="main", value="main"),
+        app_commands.Choice(name="troops", value="troops"),
+        app_commands.Choice(name="success", value="success")
+    ])
+    async def _player_info(interaction: discord.Interaction, player_tag: str, information: app_commands.Choice[str]):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await player_info(ctx, player_tag, information)
-        edit_commands_used(ctx.author_id, "player_info")
+        await player_info(interaction, player_tag, information.value)
+        edit_commands_used(interaction.user.id, "player_info")
         return
 
-    @Client_slash.slash(name="search_clan")
-    async def _search_clan(ctx, name):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="search_clan", description="Search clans by name")
+    @app_commands.describe(name="Clan name")
+    async def _search_clan(interaction: discord.Interaction, name: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await search_clan(ctx, name)
-        edit_commands_used(ctx.author_id, "search_clan")
+        await search_clan(interaction, name)
+        edit_commands_used(interaction.user.id, "search_clan")
         return
 
-    @Client_slash.slash(name="clan_super_troops_activated")
-    async def _clan_super_troops_activated(ctx, clan_tag, super_troop):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="clan_super_troops_activated", description="Show which player has activated the super troop in the clan")
+    @app_commands.describe(clan_tag="Clash Of Clans clan tag, format: #A1B2C3D4")
+    @app_commands.describe(super_troop="Super troop")
+    @app_commands.choices(super_troop=[
+        app_commands.Choice(name="Super Barbarian", value="Super Barbarian"),
+        app_commands.Choice(name="Super Archer", value="Super Archer"),
+        app_commands.Choice(name="Super Giant", value="Super Giant"),
+        app_commands.Choice(name="Sneaky Goblin", value="Sneaky Goblin"),
+        app_commands.Choice(name="Super Wall Breaker", value="Super Wall Breaker"),
+        app_commands.Choice(name="Rocket Balloon", value="Rocket Balloon"),
+        app_commands.Choice(name="Super Wizard", value="Super Wizard"),
+        app_commands.Choice(name="Super Dragon", value="Super Dragon"),
+        app_commands.Choice(name="Inferno Dragon", value="Inferno Dragon"),
+        app_commands.Choice(name="Super Minion", value="Super Minion"),
+        app_commands.Choice(name="Super Valkyrie", value="Super Valkyrie"),
+        app_commands.Choice(name="Super Witch", value="Super Witch"),
+        app_commands.Choice(name="Ice Hound", value="Ice Hound"),
+        app_commands.Choice(name="Super Bowler", value="Super Bowler")
+    ])
+    async def _clan_super_troops_activated(interaction: discord.Interaction, clan_tag: str, super_troop: app_commands.Choice[str]):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await clan_super_troops_activated(ctx, clan_tag, super_troop)
-        edit_commands_used(ctx.author_id, "clan_super_troops_activated")
+        await clan_super_troops_activated(interaction, clan_tag, super_troop.value)
+        edit_commands_used(interaction.user.id, "clan_super_troops_activated")
         return
 
-    @Client_slash.slash(name="link_coc_account")
-    async def _link_coc_account(ctx, player_tag, api_token):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="link_coc_account", description="Link your Clash Of Clans account to your Discord account")
+    @app_commands.describe(player_tag="Clash Of Clans player tag, format: #A1B2C3D4")
+    @app_commands.describe(api_token="Your API token, findable in Clash Of Clans > Settings > More Settings > API Token > Show")
+    async def _link_coc_account(interaction: discord.Interaction, player_tag: str, api_token: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await link_coc_account(ctx, player_tag, api_token)
-        edit_commands_used(ctx.author_id, "link_coc_account")
+        await link_coc_account(interaction, player_tag, api_token)
+        edit_commands_used(interaction.user.id, "link_coc_account")
         return
 
-    @Client_slash.slash(name="unlink_coc_account")
-    async def _unlink_coc_account(ctx, player_tag):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="unlink_coc_account", description="Unlink your Clash Of Clans account from your Discord account")
+    @app_commands.describe(player_tag="Clash Of Clans player tag, format: #A1B2C3D4")
+    async def _unlink_coc_account(interaction: discord.Interaction, player_tag: str):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await unlink_coc_account(ctx, player_tag)
-        edit_commands_used(ctx.author_id, "unlink_coc_account")
+        await unlink_coc_account(interaction, player_tag)
+        edit_commands_used(interaction.user.id, "unlink_coc_account")
         return
 
-    @Client_slash.slash(name="member_info")
-    async def _member_info(ctx, member):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="member_info", description="Show permissions, when the member joined Discord / the server and his avatar")
+    @app_commands.describe(member="The member")
+    async def _member_info(interaction: discord.Interaction, member: discord.Member):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await member_info(ctx, member)
-        edit_commands_used(ctx.author_id, "member_info")
+        await member_info(interaction, member)
+        edit_commands_used(interaction.user.id, "member_info")
         return
 
-    @Client_slash.slash(name="bot_info")
-    async def _bot_info(ctx):
-        if await check_cmd_perms(ctx) == -1:
+    @command_tree.command(name="bot_info", description="Show some information about the bot")
+    async def _bot_info(interaction: discord.Interaction):
+        if await check_cmd_perms(interaction) == -1:
             return
-        await ctx.defer()
-        await bot_info(ctx)
-        edit_commands_used(ctx.author_id, "bot_info")
+        await bot_info(interaction)
+        edit_commands_used(interaction.user.id, "bot_info")
         return
 
     # CREATORS
-    @Client_slash.slash(name="__add_a_bot_id")
-    async def ___add_a_bot_id(ctx, bot_id):
-        await ctx.defer()
-        await add_a_bot_id(ctx, int(bot_id))
+    @command_tree.command(name="__add_a_bot_id", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Add the bot with the given id")
+    async def ___add_a_bot_id(interaction: discord.Interaction, bot_id: str):
+        await add_a_bot_id(interaction, int(bot_id))
         return
 
-    @Client_slash.slash(name="__add_reaction_with_id")
-    async def ___add_reaction_with_id(ctx, channel_id, message_id, emoji_id):
-        await ctx.defer()
-        await add_reaction_with_id(ctx, int(channel_id), int(message_id), int(emoji_id))
+    @command_tree.command(name="__add_reaction_with_id", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Add a reaction everywhere with the channel/message/emoji ids")
+    async def ___add_reaction_with_id(interaction: discord.Interaction, channel_id: str, message_id: str, emoji_id: str):
+        await add_reaction_with_id(interaction, int(channel_id), int(message_id), int(emoji_id))
         return
 
-    @Client_slash.slash(name="__download_emojis")
-    async def ___download_emojis(ctx, recreate_emojis_zip):
-        await ctx.defer()
-        await download_emojis(ctx, recreate_emojis_zip)
+    @command_tree.command(name="__download_emojis", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Send a .zip message with the emojis of emojis channels")
+    @app_commands.choices(recreate_emojis_zip=[
+        app_commands.Choice(name="True", value=1),
+        app_commands.Choice(name="False", value=0)
+    ])
+    async def ___download_emojis(interaction: discord.Interaction, recreate_emojis_zip: app_commands.Choice[int]):
+        await download_emojis(interaction, bool(recreate_emojis_zip.value))
         return
 
-    @Client_slash.slash(name="__find_user_by_id")
-    async def ___find_user_by_id(ctx, user_id):
-        await ctx.defer()
-        await find_user_by_id(ctx, int(user_id))
+    @command_tree.command(name="__find_user_by_id", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Find the user with the given id")
+    async def ___find_user_by_id(interaction: discord.Interaction, user_id: str):
+        await find_user_by_id(interaction, int(user_id))
         return
 
-    @Client_slash.slash(name="__reboot")
-    async def ___reboot(ctx):
-        await ctx.defer()
-        await reboot(ctx)
+    @command_tree.command(name="__reboot", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Reboot the Raspberry Pi")
+    async def ___reboot(interaction: discord.Interaction):
+        await reboot(interaction)
         return
 
-    @Client_slash.slash(name="__refresh_dbl")
-    async def ___refresh_dbl(ctx):
-        await ctx.defer()
-        await refresh_dbl(ctx)
+    @command_tree.command(name="__refresh_dbl", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Refresh the top.gg servers counter")
+    async def ___refresh_dbl(interaction: discord.Interaction):
+        await refresh_dbl(interaction)
         return
 
-    @Client_slash.slash(name="__servers_list")
-    async def ___servers_list(ctx):
-        await ctx.defer()
-        await servers_list(ctx)
+    @command_tree.command(name="__servers_list", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Show all the servers with the bot")
+    async def ___servers_list(interaction: discord.Interaction):
+        await servers_list(interaction)
         return
 
-    @Client_slash.slash(name="__stats")
-    async def ___stats(ctx):
-        await ctx.defer()
-        await stats(ctx)
+    @command_tree.command(name="__stats", guild=discord.Object(id=Ids["Bot_creators_only_server"]), description="Show monthly usages")
+    async def ___stats(interaction: discord.Interaction):
+        await stats(interaction)
         return
 
 
-    from Script.Clients.discord_client import Token
+    from bot.apis_clients.discord import Discord_token
 
     Bot_id = Clash_info.id
 
 
-    def add_slash_command_json(json_dict):
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
-        req = requests.post(url, headers=headers, json=json_dict)
-        print(json_dict.get("name"), req)
-        if not req.ok:
-            print(json_dict["name"], req.content)
-            if "retry_after" in list(req.json().keys()):
-                time.sleep(req.json()["retry_after"])
-                add_slash_command_json(json_dict)
-
-
-    def add_slash_command_json_guild(json_dict):
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands"
-        req = requests.post(url, headers=headers, json=json_dict)
-        print(json_dict.get("name"), req)
-        if not req.ok:
-            print(json_dict["name"], req.content)
-            if "retry_after" in list(req.json().keys()):
-                time.sleep(req.json()["retry_after"])
-                add_slash_command_json(json_dict)
-
-
-    def see_slash_commands():
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
-        req = requests.get(url, headers=headers)
-        json_dict = json.loads(req.content)
-        print("Slash Commands list : ", end="")
-        for command in json_dict:
-            print(command["name"], end=", ")
-        print()
-
-
-    def dlt_slash_command(name):
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/commands"
-        req = requests.get(url, headers=headers)
-        json_dict = json.loads(req.content)
-        for command in json_dict:
-            if command.get("name") == name:
-                url += f"/{(command.get('id'))}"
-                req = requests.delete(url, headers=headers)
-                print(req)
-                print(req.content)
-        print("Content :", req.content)
-
-
-    def see_slash_command_guild():
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands"
-        req = requests.get(url, headers=headers)
-        print(req.content)
-
-
-    def dlt_slash_command_guild(command_id):
-        headers = {"Authorization": f"Bot {Token}"}
-        url = f"https://discord.com/api/v8/applications/{Bot_id}/guilds/710237092931829893/commands/{command_id}"
-        req = requests.delete(url, headers=headers)
-        print(req.content)
-
-
     @Clash_info.event
-    async def on_component(ctx):
-        from Script.Commands.Components.Select_menu.change_th_lvl import change_th_lvl
-        await change_th_lvl(ctx)
-        from Script.Commands.Components.Select_menu.change_bh_lvl import change_bh_lvl
-        await change_bh_lvl(ctx)
-        from Script.Commands.Components.Select_menu.change_player_info_page import change_player_stats_page
-        await change_player_stats_page(ctx)
-        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__th
-        await auto_roles__th(ctx)
-        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__bh
-        await auto_roles__bh(ctx)
-        from Script.Commands.Components.Select_menu.auto_roles import auto_roles__league
-        await auto_roles__league(ctx)
-        from Script.Commands.Components.Select_menu.change_search_clan import change_search_clan
-        await change_search_clan(ctx)
-        from Script.Commands.Components.Button.joined_guild_message import joined_guild_message
-        await joined_guild_message(ctx)
+    async def on_interaction(interaction: discord.Interaction):
+        if interaction.type == discord.InteractionType.component:
+            try:
+                if interaction.message.embeds[0].footer.text == "joined_guild_message":
+                    from bot.core.components.buttons.joined_guild_message import joined_guild_message
+                    await joined_guild_message(interaction)
+                    return
+
+                footer_text = interaction.message.embeds[0].footer.text
+                command_name = footer_text.split("|")[0]
+                if (command_name == "auto_roles_bh") or (command_name == "auto_roles bh"):
+                    if await check_cmd_perms(interaction, command="auto_roles_bh") == -1:
+                        return
+                    from bot.core.components.select_menus.auto_roles import auto_roles_bh
+                    await auto_roles_bh(interaction)
+                    return
+                elif (command_name == "auto_roles_leagues") or (command_name == "auto_roles_league") or (command_name == "auto_roles league"):
+                    if await check_cmd_perms(interaction, command="auto_roles_leagues") == -1:
+                        return
+                    from bot.core.components.select_menus.auto_roles import auto_roles_leagues
+                    await auto_roles_leagues(interaction)
+                    return
+                elif (command_name == "auto_roles_th") or (command_name == "auto_roles th"):
+                    if await check_cmd_perms(interaction, command="auto_roles_th") == -1:
+                        return
+                    from bot.core.components.select_menus.auto_roles import auto_roles_th
+                    await auto_roles_th(interaction)
+                    return
+                if interaction.user.id == int(footer_text.split("|")[-1]):
+                    if command_name == "buildings_bh":
+                        if await check_cmd_perms(interaction, command="buildings_bh") == -1:
+                            return
+                        from bot.core.components.select_menus.change_bh_lvl import change_bh_lvl
+                        await change_bh_lvl(interaction)
+                        return
+                    elif command_name == "buildings_th":
+                        if await check_cmd_perms(interaction, command="buildings_th") == -1:
+                            return
+                        from bot.core.components.select_menus.change_th_lvl import change_th_lvl
+                        await change_th_lvl(interaction)
+                        return
+                    elif command_name == "search_clan":
+                        if await check_cmd_perms(interaction, command="search_clan") == -1:
+                            return
+                        from bot.core.components.select_menus.change_search_clan import change_search_clan
+                        await change_search_clan(interaction)
+                        return
+                    elif command_name == "player_info":
+                        if await check_cmd_perms(interaction, command="player_info") == -1:
+                            return
+                        from bot.core.components.select_menus.change_player_info_page import change_player_stats_page
+                        await change_player_stats_page(interaction)
+                        return
+                else:
+                    await interaction.response.send_message("You can only use select menu of slash commands sent by you", ephemeral=True)
+
+            except discord.errors.NotFound:
+                await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
         return
 
-    Clash_info.run(Token)  # Comment this line to create slash commands
+    async def sync_commands():
+        await command_tree.sync()
+        await command_tree.sync(guild=discord.Object(id=710237092931829893))
+        await command_tree.sync(guild=discord.Object(id=Ids["Bot_creators_only_server"]))
 
-    json__help = {
-        "name": "_help",
-        "description": "Show the help message to use @Clash INFO#3976"
-    }
-    add_slash_command_json(json__help)
-    json_help = json__help
-    json_help["name"] = "help"
-    add_slash_command_json(json_help)
-
-    # Clash Of Clans
-    json_auto_roles = {
-        "name": "auto_roles",
-        "description": "[Administrators only] Create an auto-roles system to give roles",
-        "options": [{
-            "name": "th",
-            "description": "[Administrators only] Create an auto-roles system to give the TH level roles",
-            "type": 1,
-            "options": [{
-                "name": "channel",
-                "description": "Channel where it will be the auto-roles system",
-                "required": False,
-                "type": 7
-            }]
-        }, {
-            "name": "bh",
-            "description": "[Administrators only] Create an auto-roles system to give the BH level roles",
-            "type": 1,
-            "options": [{
-                "name": "channel",
-                "description": "Channel where it will be the auto-roles system",
-                "required": False,
-                "type": 7
-            }]
-        }, {
-            "name": "leagues",
-            "description": "[Administrators only] Create an auto-roles system to give the league role",
-            "type": 1,
-            "options": [{
-                "name": "channel",
-                "description": "Channel where it will be the auto-roles system",
-                "required": False,
-                "type": 7
-            }]
-        }]
-    }
-    add_slash_command_json(json_auto_roles)
-    json_buildings_bh = {
-        "name": "buildings_bh",
-        "description": "Show the maximum level for each buildings at the given Builder Hall level",
-        "options": [{
-            "name": "builder_hall_level",
-            "description": "Builder Hall level",
-            "required": False,
-            "type": 4,
-        }]
-    }
-    add_slash_command_json(json_buildings_bh)
-    json_buildings_th = {
-        "name": "buildings_th",
-        "description": "Show the maximum level for each buildings at the given Town Hall level",
-        "options": [{
-            "name": "town_hall_level",
-            "description": "Town Hall level",
-            "required": False,
-            "type": 4,
-        }]
-    }
-    add_slash_command_json(json_buildings_th)
-    json_clan_info = {
-        "name": "clan_info",
-        "description": "Show data about the clan",
-        "options": [{
-            "name": "clan_tag",
-            "description": "Clash Of Clans clan tag, format : #A1B2C3D4",
-            "required": True,
-            "type": 3,
-        }]
-    }
-    add_slash_command_json(json_clan_info)
-    json_clan_members = {
-        "name": "clan_members",
-        "description": "Show the clan members",
-        "options": [{
-            "name": "clan_tag",
-            "description": "Clash Of Clans clan tag, format : #A1B2C3D4",
-            "required": True,
-            "type": 3,
-        }]
-    }
-    add_slash_command_json(json_clan_members)
-    json_link_coc_account = {
-        "name": "link_coc_account",
-        "description": "Link your Clash Of Clans account to your Discord account",
-        "options": [{
-            "name": "player_tag",
-            "description": "Your Clash Of Clans tag",
-            "required": True,
-            "type": 3,
-        }, {
-            "name": "api_token",
-            "description": "Your API token, findable in the game settings",
-            "required": True,
-            "type": 3,
-        }]
-    }
-    add_slash_command_json(json_link_coc_account)
-    json_unlink_coc_account = {
-        "name": "unlink_coc_account",
-        "description": "Unlink your Clash Of Clans account from your Discord account",
-        "options": [{
-            "name": "player_tag",
-            "description": "Your Clash Of Clans tag",
-            "required": True,
-            "type": 3,
-        }]
-    }
-    add_slash_command_json(json_unlink_coc_account)
-    json_player_info = {
-        "name": "player_info",
-        "description": "Show data about the player",
-        "options": [{
-            "name": "player_tag",
-            "description": "Clash Of Clans player tag, format : #A1B2C3D4",
-            "required": True,
-            "type": 3,
-        }, {
-            "name": "information",
-            "description": "Information wanted",
-            "required": True,
-            "type": 3,
-            "choices": [{
-                "name": "main",
-                "value": "main"
-            }, {
-                "name": "troops",
-                "value": "troops"
-            }, {
-                "name": "success",
-                "value": "success"
-            }]
-
-        }]
-    }
-    add_slash_command_json(json_player_info)
-    json_search_clan = {
-        "name": "search_clan",
-        "description": "Search clans by name",
-        "options": [{
-            "name": "name",
-            "description": "Clan name",
-            "required": True,
-            "type": 3
-        }]
-    }
-    add_slash_command_json(json_search_clan)
-    json_clan_super_troops_activated = {
-        "name": "clan_super_troops_activated",
-        "description": "Show which player has activated the super troop in the clan",
-        "options": [{
-            "name": "clan_tag",
-            "description": "Clash Of Clans clan tag, format : #A1B2C3D4",
-            "required": True,
-            "type": 3,
-        }, {
-            "name": "super_troop",
-            "description": "The wanted super troop",
-            "required": True,
-            "type": 3,
-            "choices": [{
-                "name": "Super Barbarian",
-                "value": "Super Barbarian"
-            }, {
-                "name": "Super Archer",
-                "value": "Super Archer"
-            }, {
-                "name": "Super Giant",
-                "value": "Super Giant"
-            }, {
-                "name": "Sneaky Goblin",
-                "value": "Sneaky Goblin"
-            }, {
-               "name": "Super Wall Breaker",
-               "value": "Super Wall Breaker"
-            }, {
-               "name": "Rocket Balloon",
-               "value": "Rocket Balloon"
-            }, {
-               "name": "Super Wizard",
-               "value": "Super Wizard"
-            }, {
-                "name": "Super Dragon",
-                "value": "Super Dragon"
-            }, {
-               "name": "Inferno Dragon",
-               "value": "Inferno Dragon"
-            }, {
-               "name": "Super Minion",
-               "value": "Super Minion"
-            }, {
-               "name": "Super Valkyrie",
-               "value": "Super Valkyrie"
-            }, {
-               "name": "Super Witch",
-               "value": "Super Witch"
-            }, {
-               "name": "Ice Hound",
-               "value": "Ice Hound"
-            }, {
-                "name": "Super Bowler",
-                "value": "Super Bowler"
-            }]
-        }]
-    }
-    add_slash_command_json(json_clan_super_troops_activated)
-    json_member_info = {
-        "name": "member_info",
-        "description": "Show permissions, when the member joined Discord / the server and his avatar",
-        "options": [{
-            "name": "member",
-            "description": "The member",
-            "required": True,
-            "type": 6
-        }]
-    }
-    add_slash_command_json(json_member_info)
-    json_bot_info = {
-        "name": "bot_info",
-        "description": "Show some information about the bot"
-    }
-    add_slash_command_json(json_bot_info)
-
-    json_template = {
-        "name": "",
-        "description": "",
-        "options": [{
-            "name": "",
-            "description": "",
-            "required": True,
-            "type": 0,
-            "choices": [{}, {}]
-        }]
-    }
-
-    see_slash_commands()
-    see_slash_command_guild()
-
-    Clash_info.run(Token)
+    Clash_info.sync_commands = sync_commands
+    Clash_info.run(Discord_token)

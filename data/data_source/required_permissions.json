@@ -1,0 +1,20 @@
+{
+    "__Comment": "The `embed_links` permission is needed for ALL of the commands",
+    
+    "army_link_analyze": [],
+    "auto_roles_bh": ["manage_roles", "send_messages", "view_channel"],
+    "auto_roles_leagues": ["manage_roles", "send_messages", "view_channel"],
+    "auto_roles_th": ["manage_roles", "send_messages", "view_channel"],
+    "bot_info": [],
+    "buildings_bh": [],
+    "buildings_th": [],
+    "clan_info": [],
+    "clan_members": ["send_messages", "view_channel"],
+    "clan_super_troops_activated": [],
+    "help": [],
+    "link_coc_account": [],
+    "member_info": [],
+    "player_info": [],
+    "search_clan": [],
+    "unlink_coc_account": []
+}

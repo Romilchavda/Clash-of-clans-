@@ -1,0 +1,34 @@
+{
+    "__Comment": "Check the README.md file to get help to fill in this file, in the Installation part.",
+    
+    "USERS": "",
+    "Creators": [
+        490190727612071939
+    ],
+    "Bot": 704688212832026724,
+    "Bot_beta": 710119855348645888,
+    
+    "SERVERS": "",
+    "Support_server": 719537805604290650,
+    "Bot_creators_only_server": 808814347224481863,
+    "Emojis_coc_th_bh_leagues_server": 696344010905747487,
+    "Emojis_coc_troops_spells_server": 716259214279966770,
+    "Emojis_coc_war_leagues": 932354828154331226,
+    "Emojis_coc_main_server": 870305165180305408,
+    "Emojis_discord_main_server": 714841480602320958,
+    "Emojis_discord_badges_server": 761885092649762826,
+    "Emojis_general_icons_server": 836587468144509009,
+
+    "CHANNELS": "",
+    "Weekly_stats_channel": 785956772568367144,
+    "Monthly_stats_channel": 869658106701959258,
+    "News_channel": 741278417130881024,
+    "Rules_channel": 719579241364193331,
+    "Status_channel": 733089353634545684,
+    "Guilds_bot_log_channel": 722423315909836860,
+    "Dm_bot_log_channel": 748509142578233364,
+    "Votes_channel": 793853230476034078,
+    "Welcome_channel": 722849076416217161,
+    "Perspective_api_channel": 945659445638234112,
+    "Secure_folder_backup_channel": 808814347224481866
+}
