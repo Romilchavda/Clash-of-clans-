@@ -416,4 +416,4 @@ if __name__ == "__main__":
         await command_tree.sync(guild=discord.Object(id=Ids["Bot_creators_only_server"]))
 
     Clash_info.sync_commands = sync_commands
-    Clash_info.run(Discord_token)
+    Clash_info.run(Discord_token, log_handler=None)

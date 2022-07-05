@@ -49,7 +49,7 @@ You can get here the help you need for each file:
 
 </summary>
 
-In this file, you can choose whether to activate or not some parts of the code (e.g.: code using Discord Intents). You have also some initialization of variables to do.
+In this file, you can choose whether to activate or not some parts of the code (e.g. code using Discord Intents). You have also some initialization of variables to do.
 
 | Field                    | Description                                                                                                                                                       | Requirements                                                                                                                                                                                                                                            |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -68,7 +68,7 @@ In this file, you can choose whether to activate or not some parts of the code (
 
 </summary>
 
-In this file, you can choose whether to activate or not some parts of the code (e.g.: code using Discord Intents). You have also some initialization of variables to do.
+In this file, you can choose whether to activate or not some parts of the code (e.g. code using Discord Intents). You have also some initialization of variables to do.
 
 | Field                             | Description                                                                                                                                                                                                     |
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -77,7 +77,7 @@ In this file, you can choose whether to activate or not some parts of the code (
 | `Bot`                             | Main bot id.                                                                                                                                                                                                    |
 | `Bot_beta`                        | Beta bot id.                                                                                                                                                                                                    |
 | Servers                           |                                                                                                                                                                                                                 |
-| `Support_server`                  | Support server id. You have some functions only for the support server (e.g.: Auto-moderation).                                                                                                                 |
+| `Support_server`                  | Support server id. You have some functions only for the support server (e.g. Auto-moderation).                                                                                                                 |
 | `Bot_creators_only_server`        | The server where all the slash commands for bot creators are. Everybody in this server will be able to use the slash commands for creators, so make sure only bot creators are in this server.                  |
 | `Emojis_coc_th_bh_leagues_server` | The server with emojis of Town Halls, Builder Halls, leagues and heroes.                                                                                                                                        |
 | `Emojis_coc_troops_spells_server` | The server with emojis of troops and spells.                                                                                                                                                                    |

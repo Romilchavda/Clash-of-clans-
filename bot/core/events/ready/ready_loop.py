@@ -20,8 +20,7 @@ from data.useful import Ids
 async def ready_loop(self: discord.Client):
     if Config["main_bot"]:
         status_channel = self.get_channel(Ids["Status_channel"])
-        msg = await status_channel.send(f"{Emojis['Yes']} Connected")
-        await msg.edit(content=f"{Emojis['Yes']} Connected `{msg.created_at.replace(microsecond=0).isoformat(sep=' ')}` UTC-0")
+        await status_channel.send(f"{Emojis['Yes']} Connected `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
 
     await self.sync_commands()
 
@@ -33,8 +32,7 @@ async def ready_loop(self: discord.Client):
 
     if Config["main_bot"]:
         status_channel = self.get_channel(Ids["Status_channel"])
-        msg = await status_channel.send(f"{Emojis['Yes']} Cache loaded")
-        await msg.edit(content=f"{Emojis['Yes']} Cache loaded `{msg.created_at.replace(microsecond=0).isoformat(sep=' ')}` UTC-0")
+        await status_channel.send(f"{Emojis['Yes']} Cache loaded `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
 
     support_server = self.get_guild(Ids["Support_server"])
     member_role = discord.utils.get(support_server.roles, name="Member")
