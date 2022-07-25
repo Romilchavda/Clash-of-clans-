@@ -1,10 +1,8 @@
 {
-    "__Comment": "The `embed_links` permission is needed for ALL of the commands",
-    
     "army_link_analyze": [],
-    "auto_roles_bh": ["manage_roles", "send_messages", "view_channel"],
-    "auto_roles_leagues": ["manage_roles", "send_messages", "view_channel"],
-    "auto_roles_th": ["manage_roles", "send_messages", "view_channel"],
+    "auto_roles_bh": ["manage_roles", "send_messages", "view_channel", "embed_links"],
+    "auto_roles_leagues": ["manage_roles", "send_messages", "view_channel", "embed_links"],
+    "auto_roles_th": ["manage_roles", "send_messages", "view_channel", "embed_links"],
     "bot_info": [],
     "buildings_bh": [],
     "buildings_th": [],
