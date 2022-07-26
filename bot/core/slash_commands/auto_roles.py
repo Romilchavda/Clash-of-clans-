@@ -12,7 +12,7 @@ async def auto_roles_th(interaction: discord.Interaction, channel: discord.TextC
         if role is None:
             role = await interaction.guild.create_role(name=f"Town Hall {th_level}")
         text += f"{emoji} to be {role.mention}\n"
-    embed = create_embed("Select your town hall level to get the matching role", text, interaction.guild.me.color, "auto_roles_th", interaction.guild.me.avatar.url)
+    embed = create_embed("Select your town hall level to get the matching role", text, interaction.guild.me.color, "auto_roles_th", interaction.guild.me.display_avatar.url)
     if interaction.channel == channel:
         await interaction.response.send_message(embed=embed, view=ComponentView("auto_roles_th"))
     else:
@@ -28,7 +28,7 @@ async def auto_roles_bh(interaction: discord.Interaction, channel: discord.TextC
         if role is None:
             role = await interaction.guild.create_role(name=f"Builder Hall {bh_level}")
         text += f"{emoji} to be {role.mention}\n"
-    embed = create_embed("Select your builder hall level to get the matching role", text, interaction.guild.me.color, "auto_roles_bh", interaction.guild.me.avatar.url)
+    embed = create_embed("Select your builder hall level to get the matching role", text, interaction.guild.me.color, "auto_roles_bh", interaction.guild.me.display_avatar.url)
     if interaction.channel == channel:
         await interaction.response.send_message(embed=embed, view=ComponentView("auto_roles_bh"))
     else:
@@ -44,7 +44,7 @@ async def auto_roles_leagues(interaction: discord.Interaction, channel: discord.
         if role is None:
             role = await interaction.guild.create_role(name=league)
         text += f"{emoji} to be {role.mention}\n"
-    embed = create_embed("Select your league to get the matching role", text, interaction.guild.me.color, "auto_roles_leagues", interaction.guild.me.avatar.url)
+    embed = create_embed("Select your league to get the matching role", text, interaction.guild.me.color, "auto_roles_leagues", interaction.guild.me.display_avatar.url)
     if interaction.channel == channel:
         await interaction.response.send_message(embed=embed, view=ComponentView("auto_roles_leagues"))
     else:

@@ -43,7 +43,7 @@ async def player_info_embed(interaction: discord.Interaction, tag: str, informat
         else:
             player__versus_trophies = 0
             player__best_versus_trophies = 0
-        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Main information)", f"===== Main Base =====\n{Emojis['Th_emojis'][player.town_hall]} {weapon} | {trophies_to_league(player.trophies)} {player.trophies} | {trophies_to_league(player.best_trophies)} Best: {player.best_trophies} | {Emojis['Exp']} {player.exp_level}\n{Emojis['Barbarian_king']} {lvl_barbarian_king} | {Emojis['Archer_queen']} {lvl_archer_queen} | {Emojis['Grand_warden']} {lvl_grand_warden} | {Emojis['Royal_champion']} {lvl_royal_champion}\n{Emojis['Members']} Clan: {clan}\n{Emojis['Star']} War stars earned: {player.war_stars}\n{Emojis['Donations']} Troops donated: {player.donations}\n{Emojis['Received']} Troops received: {player.received}\n:crossed_swords: Attacks won: {player.attack_wins}\n:shield: Defenses won: {player.defense_wins}\n\n===== Builder Base =====\n{Emojis['Bh_emojis'][player.builder_hall] if player.builder_hall else Emojis['Bh_emojis'][1]} | {Emojis['Versus_trophy']} {player__versus_trophies} | {Emojis['Versus_trophy']} Best: {player__best_versus_trophies} | {Emojis['Battle_machine']} {lvl_battle_machine}\n:crossed_swords: Versus battle won: {player.versus_attack_wins}\n\n[Open in Clash Of Clans]({player.share_link})", interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.avatar.url)
+        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Main information)", f"===== Main Base =====\n{Emojis['Th_emojis'][player.town_hall]} {weapon} | {trophies_to_league(player.trophies)} {player.trophies} | {trophies_to_league(player.best_trophies)} Best: {player.best_trophies} | {Emojis['Exp']} {player.exp_level}\n{Emojis['Barbarian_king']} {lvl_barbarian_king} | {Emojis['Archer_queen']} {lvl_archer_queen} | {Emojis['Grand_warden']} {lvl_grand_warden} | {Emojis['Royal_champion']} {lvl_royal_champion}\n{Emojis['Members']} Clan: {clan}\n{Emojis['Star']} War stars earned: {player.war_stars}\n{Emojis['Donations']} Troops donated: {player.donations}\n{Emojis['Received']} Troops received: {player.received}\n:crossed_swords: Attacks won: {player.attack_wins}\n:shield: Defenses won: {player.defense_wins}\n\n===== Builder Base =====\n{Emojis['Bh_emojis'][player.builder_hall] if player.builder_hall else Emojis['Bh_emojis'][1]} | {Emojis['Versus_trophy']} {player__versus_trophies} | {Emojis['Versus_trophy']} Best: {player__best_versus_trophies} | {Emojis['Battle_machine']} {lvl_battle_machine}\n:crossed_swords: Versus battle won: {player.versus_attack_wins}\n\n[Open in Clash Of Clans]({player.share_link})", interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.display_avatar.url)
 
     elif information == "troops":
         troops = {}
@@ -84,7 +84,7 @@ async def player_info_embed(interaction: discord.Interaction, tag: str, informat
             a += 1
             emoji = f"<:{emoji.name}:{emoji.id}>"
             text += f"{emoji}: {troop['player']} | {troop['max for the th']} | {troop['max for the game']} "
-        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Troops)", text, interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.avatar.url)
+        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Troops)", text, interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.display_avatar.url)
 
     elif information == "success":
         achievements = "*name: stars | % for next star*"
@@ -93,7 +93,7 @@ async def player_info_embed(interaction: discord.Interaction, tag: str, informat
             total_stars += achievement.stars
             achievements += f"\n{achievement.name}: {achievement.stars} {Emojis['Star_success']} | {int(achievement.value / achievement.target * 100)}%"
         achievements += f"\n\nTotal stars: {total_stars} {Emojis['Star_success']}"
-        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Achievements)", f"{achievements}\n[Open in Clash Of Clans]({player.share_link})", interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.avatar.url)
+        embed = create_embed(f"Player: {escape_markdown(player.name)} ({player.tag}) (Achievements)", f"{achievements}\n[Open in Clash Of Clans]({player.share_link})", interaction.guild.me.color, f"player_info|{interaction.user.id}", interaction.guild.me.display_avatar.url)
 
     return embed
 

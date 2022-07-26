@@ -10,8 +10,9 @@ from data.useful import Ids
 
 async def member_join(self: discord.Client, member: discord.Member):
     if member.guild.id == Ids["Support_server"]:
-        member_role = discord.utils.get(member.guild.roles, name="Member")
-        await member.add_roles(member_role)
+        if self.id == 704688212832026724:  # TODO : The following code only works with Clash INFO for the moment (see also ready.py)
+            member_role = discord.utils.get(member.guild.roles, name="Member")
+            await member.add_roles(member_role)
 
         users = 0
         for m in member.guild.members:
@@ -74,7 +75,7 @@ async def member_join(self: discord.Client, member: discord.Member):
         url = "attachment://Welcome.png"
 
         rules_channel = self.get_channel(Ids["Rules_channel"])
-        embed = create_embed(f"Welcome {escape_markdown(member.name)} !", f"Welcome ! Please check the {rules_channel.mention}, you will find everything you need here !\n{Emojis['Id']} ID: `{member.id}`\n{Emojis['Discord']} Discord account creation: {member.created_at.date().isoformat()}", member.color, "", member.guild.me.avatar.url, img=url)
+        embed = create_embed(f"Welcome {escape_markdown(member.name)} !", f"Welcome ! Please check the {rules_channel.mention}, you will find everything you need here !\n{Emojis['Id']} ID: `{member.id}`\n{Emojis['Discord']} Discord account creation: {member.created_at.date().isoformat()}", member.color, "", member.guild.me.display_avatar.url, img=url)
         welcome = self.get_channel(Ids["Welcome_channel"])
         await welcome.send(embed=embed, file=file)
     return

@@ -1,7 +1,7 @@
 import discord
 
 
-from bot.core.events.ready.ready_loop import ready_loop
+from bot.core.events.ready.ready import ready
 
 from bot.core.events.guild.guild_join import guild_join
 from bot.core.events.guild.guild_remove import guild_remove
@@ -22,7 +22,7 @@ class Bot(discord.Client):
         pass
 
     async def on_ready(self):
-        await ready_loop(self)
+        await ready(self)
 
     async def on_guild_join(self, guild: discord.Guild):
         await guild_join(self, guild)

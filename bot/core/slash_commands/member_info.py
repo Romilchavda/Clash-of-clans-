@@ -9,7 +9,7 @@ async def member_info(interaction: discord.Interaction, member: discord.Member):
     accounts_linked = ""
     if member.id in list(Linked_accounts.keys()):
         for k, v in Linked_accounts[member.id].items():
-            accounts_linked += f"{k}: {escape_markdown(v)}"
+            accounts_linked += f"{k}: {escape_markdown(', '.join(v))}"
     else:
         accounts_linked = "None"
     member_permissions = ""
@@ -47,7 +47,7 @@ async def member_info(interaction: discord.Interaction, member: discord.Member):
         member_permissions += "View logs\n"
     if member_permissions == "":
         member_permissions = "Any"
-    embed = create_embed(escape_markdown(member.name), f"{Emojis['Invite']} Server join: **{member.joined_at.date().isoformat()}**.\n{Emojis['Discord']} Discord account creation: **{member.created_at.date().isoformat()}**\n\n{Emojis['Member']} **Accounts linked:**\n{accounts_linked}\n\n{Emojis['Settings']} **Member permissions:**\n{member_permissions}", member.color, "", interaction.guild.me.avatar.url)
-    embed.set_thumbnail(url=member.avatar.url)
+    embed = create_embed(escape_markdown(member.name), f"{Emojis['Invite']} Server join: **{member.joined_at.date().isoformat()}**.\n{Emojis['Discord']} Discord account creation: **{member.created_at.date().isoformat()}**\n\n{Emojis['Member']} **Accounts linked:**\n{accounts_linked}\n\n{Emojis['Settings']} **Member permissions:**\n{member_permissions}", member.color, "", interaction.guild.me.display_avatar.url)
+    embed.set_thumbnail(url=member.display_avatar.url)
     await interaction.response.send_message(embed=embed)
     return

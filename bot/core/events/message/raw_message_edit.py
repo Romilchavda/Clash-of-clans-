@@ -22,7 +22,7 @@ async def raw_message_edit(self: discord.Client, payload: discord.RawMessageUpda
         if message is None:
             return
         author = message.author
-        if author is None:
+        if author is None or type(author) is not discord.Member:
             return
         if author.top_role < discord.utils.get(message.guild.roles, name="Staff"):
             text = message.content
@@ -55,7 +55,7 @@ async def raw_message_edit(self: discord.Client, payload: discord.RawMessageUpda
                     max_value = (max(d, key=d.get), d[max(d, key=d.get)])
                     if max_value[1] > 0.5:
                         channel = message.guild.get_channel(Ids["Perspective_api_channel"])
-                        await channel.send(embed=create_embed(f"{max_value[0]}: {max_value[1]}", f"[This message]({message.jump_url}) with the content: ```{text}``` has been flagged for {max_value[0]} with a probability of {max_value[1]}", message.guild.me.color, "", message.guild.me.avatar.url))
+                        await channel.send(embed=create_embed(f"{max_value[0]}: {max_value[1]}", f"[This message]({message.jump_url}) with the content: ```{text}``` has been flagged for {max_value[0]} with a probability of {max_value[1]}", message.guild.me.color, "", message.guild.me.display_avatar.url))
                         await message.author.timeout(datetime.timedelta(minutes=5), reason=f"Toxic message:\n{text}")
                         await message.reply(f"{message.author.mention} has been timed out for {max_value[0]}\n\n*This message will be deleted in 5 minutes*", delete_after=300)
 

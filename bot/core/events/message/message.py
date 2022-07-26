@@ -13,7 +13,7 @@ from data.useful import Ids
 async def on_message(self: discord.Client, message: discord.Message):
     if message.author.bot:
         return
-    if message.channel.type == discord.ChannelType.private:
+    if message.channel.type is discord.ChannelType.private:
         channel = self.get_channel(Ids["Dm_bot_log_channel"])
         if message.author.id != self.id:
             await message.author.send("Hello !\nI am a bot, so I cannot answer you !\nSupport server:\nhttps://discord.gg/KQmstPw")
@@ -66,7 +66,7 @@ async def on_message(self: discord.Client, message: discord.Message):
                     max_value = (max(d, key=d.get), d[max(d, key=d.get)])
                     if max_value[1] > 0.5:
                         channel = message.guild.get_channel(Ids["Perspective_api_channel"])
-                        await channel.send(embed=create_embed(f"{max_value[0]}: {max_value[1]}", f"[This message]({message.jump_url}) with the content: ```{text}``` has been flagged for {max_value[0]} with a probability of {max_value[1]}", message.guild.me.color, "", message.guild.me.avatar.url))
+                        await channel.send(embed=create_embed(f"{max_value[0]}: {max_value[1]}", f"[This message]({message.jump_url}) with the content: ```{text}``` has been flagged for {max_value[0]} with a probability of {max_value[1]}", message.guild.me.color, "", message.guild.me.display_avatar.url))
                         await message.author.timeout(datetime.timedelta(minutes=5), reason=f"Toxic message:\n{text}")
                         await message.reply(f"{message.author.mention} has been timed out for {max_value[0]}\n\n*This message will be deleted in 5 minutes*", delete_after=300)
 
@@ -99,7 +99,7 @@ async def on_message(self: discord.Client, message: discord.Message):
                     message_numbers += 1
                     await msg.delete()
             message_numbers -= 1
-            embed = create_embed("Messages deleted", f"{message_numbers: ,} messages deleted", message.guild.me.color, "", message.guild.me.avatar.url)
+            embed = create_embed("Messages deleted", f"{message_numbers: ,} messages deleted", message.guild.me.color, "", message.guild.me.display_avatar.url)
             msg = await message.channel.send(embed=embed)
             import asyncio
 

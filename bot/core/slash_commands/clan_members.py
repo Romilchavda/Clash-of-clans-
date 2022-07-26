@@ -3,7 +3,7 @@ import discord
 
 from bot.apis_clients.clash_of_clans import Clash_of_clans
 from bot.emojis import Emojis
-from bot.functions import create_embed, escape_markdown, trophies_to_league
+from bot.functions import create_embed, escape_markdown, cardinal_to_ordinal_number, trophies_to_league
 
 
 async def clan_members(interaction: discord.Interaction, tag: str):
@@ -18,15 +18,16 @@ async def clan_members(interaction: discord.Interaction, tag: str):
     embeds = []
     async for member in clan.get_detailed_members():
         rank += 1
-        text += f"- {rank} `{escape_markdown(member.name)}`: {trophies_to_league(member.trophies)} (best: {trophies_to_league(member.best_trophies)}) {Emojis['Th_emojis'][member.town_hall]} {member.tag}\n"
+        text += f"{cardinal_to_ordinal_number(rank)} | {trophies_to_league(member.trophies)} {member.trophies} | {Emojis['Th_emojis'][member.town_hall]} | {Emojis['Exp']} {member.exp_level} | {escape_markdown(member.name)}: {member.tag}\n"
         x += 1
         if x == 25:
-            embed = create_embed(f"Clan members {escape_markdown(clan.name)} ({clan.tag})", f"Members list: \n{text}", interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+            print(len(text))
+            embed = create_embed(f"Clan members {escape_markdown(clan.name)} ({clan.tag})", f"Members list: \n{text}", interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
             embeds += [embed]
             text = ""
             x = 0
     if x != 0:
-        embed = create_embed(f"Clan members {escape_markdown(clan.name)} ({clan.tag})", f"Members list: \n{text}", interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+        embed = create_embed(f"Clan members {escape_markdown(clan.name)} ({clan.tag})", f"Members list: \n{text}", interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
         embeds += [embed]
     if (lambda l: sum([len(l[i]) for i in range(len(l))]))(embeds) <= 6000:
         await interaction.response.send_message(embeds=embeds)

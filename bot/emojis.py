@@ -77,6 +77,7 @@ class EmojisBot(discord.Client):
         emojis["Bot_certified"] = discord.utils.get(guild.emojis, name="bot_certified")  # NOT USED
         emojis["Clash_info"] = discord.utils.get(guild.emojis, name="ClashINFO")
         emojis["Github"] = discord.utils.get(guild.emojis, name="github")
+        emojis["Patreon"] = discord.utils.get(guild.emojis, name="patreon")
         emojis["Yes"] = discord.utils.get(guild.emojis, name="yes")
         emojis["No"] = discord.utils.get(guild.emojis, name="no")
 

@@ -22,7 +22,7 @@ async def link_coc_account(interaction: discord.Interaction, player_tag: str, ap
             linked_account_file = open(f"{Config['secure_folder_path']}linked_accounts.json", "w")
             linked_account_file.write(json_text)
             linked_account_file.close()
-            embed = create_embed("Accounts linked", f"Your Discord account is now linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+            embed = create_embed("Accounts linked", f"Your Discord account is now linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(f"Your Discord account is already linked with the Clash Of Clans account `{player_tag}`")
@@ -41,9 +41,9 @@ async def unlink_coc_account(interaction: discord.Interaction, player_tag: str):
         linked_account_file = open(f"{Config['secure_folder_path']}linked_accounts.json", "w")
         linked_account_file.write(json_text)
         linked_account_file.close()
-        embed = create_embed("Accounts unlinked", f"Your Discord account is no longer linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+        embed = create_embed("Accounts unlinked", f"Your Discord account is no longer linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
-        embed = create_embed("Account not linked", f"Your Discord account is not linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+        embed = create_embed("Account not linked", f"Your Discord account is not linked with the Clash Of Clans account `{player_tag}`", interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
         await interaction.response.send_message(embed=embed, ephemeral=True)
     return

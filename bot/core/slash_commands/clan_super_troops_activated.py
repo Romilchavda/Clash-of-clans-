@@ -16,14 +16,15 @@ async def clan_super_troops_activated(interaction: discord.Interaction, clan_tag
     async for member in clan.get_detailed_members():
         s_troop = member.get_troop(super_troop)
         if s_troop is not None and s_troop.is_active:
-            max_level = s_troop.max_level
-            s_troop.level = "*Unknown*"  # TODO : s_troop.level is always 1
-            members_with_super_troop.append({"name": member.name, "tag": member.tag, "super_troop_level": s_troop.level})
+            normal_troop = member.get_troop(s_troop.original_troop.name, is_home_troop=True)
+            max_level = normal_troop.max_level
+            level = normal_troop.level
+            members_with_super_troop.append({"name": member.name, "tag": member.tag, "super_troop_level": level})
     text = ""
     for player in members_with_super_troop:
-        text += f"- `{escape_markdown(player['name'])}`: {super_troop} level {player['super_troop_level']}/{max_level} {player['tag']}\n"
+        text += f"{escape_markdown(player['name'])}: {super_troop} level {player['super_troop_level']}/{max_level} | {player['tag']}\n"
     if text == "":
         text = f"No player has the {super_troop} active in this clan"
-    embed = create_embed(f"Members with the {super_troop} active in the clan {escape_markdown(clan.name)} ({clan.tag})", text, interaction.guild.me.color, "", icon_url=interaction.guild.me.avatar.url)
+    embed = create_embed(f"Members with the {super_troop} active in the clan {escape_markdown(clan.name)} ({clan.tag})", text, interaction.guild.me.color, "", icon_url=interaction.guild.me.display_avatar.url)
     await interaction.response.send_message(embed=embed)
     return

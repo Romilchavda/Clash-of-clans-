@@ -17,7 +17,7 @@ from data.secure_folder import Login
 from data.useful import Ids
 
 
-async def ready_loop(self: discord.Client):
+async def ready(self: discord.Client):
     if Config["main_bot"]:
         status_channel = self.get_channel(Ids["Status_channel"])
         await status_channel.send(f"{Emojis['Yes']} Connected `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
@@ -35,10 +35,12 @@ async def ready_loop(self: discord.Client):
         await status_channel.send(f"{Emojis['Yes']} Cache loaded `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
 
     support_server = self.get_guild(Ids["Support_server"])
-    member_role = discord.utils.get(support_server.roles, name="Member")
-    for member in support_server.members:
-        if (member_role not in member.roles) and (not member.bot):
-            await member.add_roles(member_role)
+
+    if self.id == 704688212832026724:  # TODO : The following code only works with Clash INFO for the moment (see also member_join.py)
+        member_role = discord.utils.get(support_server.roles, name="Member")
+        for member in support_server.members:
+            if member_role not in member.roles and not member.bot:
+                await member.add_roles(member_role)
 
     clash_info = self
 
@@ -119,17 +121,22 @@ async def ready_loop(self: discord.Client):
                     cursor = connection.cursor()
                     cursor.execute("SELECT COUNT(*) FROM bot_usage")
                     nb_monthly_users = cursor.fetchone()[0]
-                    text = f"Monthly users: {nb_monthly_users}\n"
+                    text = f"**Monthly users: {nb_monthly_users}\n\n**"
+                    commands_stats = {}
 
                     cursor.execute("PRAGMA table_info(bot_usage)")
                     commands_names = []
-                    for command_name in cursor.fetchall():
-                        if command_name[1] != "user_id":
-                            commands_names += [command_name[1]]
+                    for command in cursor.fetchall():
+                        command_name = command[1]
+                        if command_name != "user_id":
+                            commands_names += [command_name]
 
-                    for command in commands_names:
-                        cursor.execute(f"SELECT COUNT(*) FROM bot_usage WHERE NOT {command} = 0")
-                        text += f"{command}: {cursor.fetchone()[0]}\n"
+                    for command_name in commands_names:
+                        cursor.execute(f"SELECT COUNT(*) FROM bot_usage WHERE NOT {command_name} = 0")
+                        commands_stats[command_name] = cursor.fetchone()[0]
+
+                    for name, usages in {k: v for k, v in sorted(commands_stats.items(), key=lambda x: x[1], reverse=True)}.items():
+                        text += f"{name}: {usages}\n"
 
                     channel = self.get_channel(Ids["Monthly_stats_channel"])
                     await channel.send(text)
@@ -190,7 +197,7 @@ async def ready_loop(self: discord.Client):
 
         @app.route("/topgg_webhook", methods=["post"])
         def topgg_webhook():
-            if (flask.request.remote_addr != "159.203.105.187") or ("Authorization" not in list(flask.request.headers.keys())) or (flask.request.headers["Authorization"] != Login["top_gg"]["authorization"]):
+            if flask.request.remote_addr != "159.203.105.187" or "Authorization" not in list(flask.request.headers.keys()) or flask.request.headers["Authorization"] != Login["top_gg"]["authorization"]:
                 authorization = None if "Authorization" not in list(flask.request.headers.keys()) else flask.request.headers["Authorization"]
                 print(f"Unauthorized:\nIP = {flask.request.remote_addr}\nAuthorization = {authorization}")
                 return flask.Response(status=401)
@@ -199,7 +206,7 @@ async def ready_loop(self: discord.Client):
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
 
-                class WebhooksBot(discord.Client):
+                class TopggWebhooksBot(discord.Client):
                     def __init__(self):
                         super().__init__(intents=discord.Intents.default())
 
@@ -226,15 +233,15 @@ async def ready_loop(self: discord.Client):
                         text = ""
                         for user_vote_tuple in vote:
                             text += f"{user_vote_tuple[0]} has voted {user_vote_tuple[1]} times\n"
-                        embed = create_embed(f"{user} has voted for Clash INFO", text, votes_channel.guild.me.color, "", votes_channel.guild.me.avatar.url)
+                        embed = create_embed(f"{user} has voted for Clash INFO", text, votes_channel.guild.me.color, "", votes_channel.guild.me.display_avatar.url)
                         await votes_channel.send(embed=embed)
                         await self.close()
 
-                webhooks_bot = WebhooksBot()
+                topgg_webhooks_bot = TopggWebhooksBot()
                 try:
-                    loop.run_until_complete(webhooks_bot.start(discord_token))
+                    loop.run_until_complete(topgg_webhooks_bot.start(discord_token))
                 except KeyboardInterrupt:
-                    loop.run_until_complete(webhooks_bot.close())
+                    loop.run_until_complete(topgg_webhooks_bot.close())
                 finally:
                     loop.close()
 
@@ -244,8 +251,46 @@ async def ready_loop(self: discord.Client):
 
         @app.route("/github_webhook", methods=["post"])
         def github_webhook():  # TODO : Finish it
+            if flask.request.get_json()["repository"]["name"] != "Clash-Of-Clans-Discord-Bot":
+                return 418
+
             print("GitHub Webhooks:", flask.request.headers["X-Github-Event"])
             print(flask.request.get_json())
+
+            def run_bot(event_name: str, original_json: dict):
+                lite_json = original_json
+                for k, v in original_json["repository"].items():
+                    lite_json.pop(k)
+                lite_json.pop("repository")
+                if "forkee" in list(original_json.keys()):
+                    for k, v in original_json["forkee"].items():
+                        lite_json.pop(k)
+                    lite_json.pop("forkee")
+                print(lite_json)
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+                class GitHubWebhooksBot(discord.Client):
+                    def __init__(self):
+                        super().__init__(intents=discord.Intents.default())
+
+                    async def on_ready(self):
+                        events_channel = self.get_channel(837339878869565460)  # TODO : Generalize it (with ids.json)
+                        embed = create_embed(f"{event_name.capitalize()} from {lite_json['sender']['login']}", f"```json\n{json.dumps(lite_json, indent=2)}```", events_channel.guild.me.color, "", events_channel.guild.me.display_avatar.url)
+                        await events_channel.send(f"{event_name.capitalize()} from {lite_json['sender']['login']}")
+                        await events_channel.send(embed=embed)
+                        await self.close()
+
+                github_webhooks_bot = GitHubWebhooksBot()
+                try:
+                    loop.run_until_complete(github_webhooks_bot.start(discord_token))
+                except KeyboardInterrupt:
+                    loop.run_until_complete(github_webhooks_bot.close())
+                finally:
+                    loop.close()
+
+            thread = threading.Thread(target=run_bot, kwargs={"event_name": flask.request.headers["X-Github-Event"], "original_json": flask.request.get_json()})
+            thread.start()
             return flask.Response(status=200)
 
         app.run(host="0.0.0.0", port=8080)

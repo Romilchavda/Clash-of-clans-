@@ -1,3 +1,6 @@
+# TODO : Final check : Go from GitHub and try to make the bot using README.md
+import logging
+
 import nest_asyncio
 nest_asyncio.apply()
 
@@ -62,7 +65,7 @@ if __name__ == "__main__":
 
 
     async def check_cmd_perms(interaction: discord.Interaction, command: str = None):
-        if interaction.channel.type == discord.ChannelType.private:
+        if interaction.channel.type is discord.ChannelType.private:
             await interaction.response.send_message("Slash commands are not available in direct messages. Please add the bot to your server and then use slash commands there.")
             return -1
         if command is None:
@@ -71,7 +74,7 @@ if __name__ == "__main__":
             command = "help"
 
         from data.required_permissions import Required_permissions
-        permissions_needed = Required_permissions[command] + ["embed_links"]
+        permissions_needed = Required_permissions[command]
         missing_bot_perms = []
         for perm in permissions_needed:
             if not getattr(interaction.app_permissions, perm):
@@ -100,7 +103,7 @@ if __name__ == "__main__":
     command_tree = app_commands.CommandTree(Clash_info)
 
     async def on_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
-        if type(error.original) == discord.errors.NotFound:
+        if type(error.original) is discord.errors.NotFound:
             if interaction.app_permissions.send_messages:
                 await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
         else:
@@ -351,7 +354,7 @@ if __name__ == "__main__":
 
     @Clash_info.event
     async def on_interaction(interaction: discord.Interaction):
-        if interaction.type == discord.InteractionType.component:
+        if interaction.type is discord.InteractionType.component:
             try:
                 if interaction.message.embeds[0].footer.text == "joined_guild_message":
                     from bot.core.components.buttons.joined_guild_message import joined_guild_message
@@ -360,19 +363,19 @@ if __name__ == "__main__":
 
                 footer_text = interaction.message.embeds[0].footer.text
                 command_name = footer_text.split("|")[0]
-                if (command_name == "auto_roles_bh") or (command_name == "auto_roles bh"):
+                if command_name == "auto_roles_bh" or command_name == "auto_roles bh":
                     if await check_cmd_perms(interaction, command="auto_roles_bh") == -1:
                         return
                     from bot.core.components.select_menus.auto_roles import auto_roles_bh
                     await auto_roles_bh(interaction)
                     return
-                elif (command_name == "auto_roles_leagues") or (command_name == "auto_roles_league") or (command_name == "auto_roles league"):
+                elif command_name == "auto_roles_leagues" or command_name == "auto_roles_league" or command_name == "auto_roles league":
                     if await check_cmd_perms(interaction, command="auto_roles_leagues") == -1:
                         return
                     from bot.core.components.select_menus.auto_roles import auto_roles_leagues
                     await auto_roles_leagues(interaction)
                     return
-                elif (command_name == "auto_roles_th") or (command_name == "auto_roles th"):
+                elif command_name == "auto_roles_th" or command_name == "auto_roles th":
                     if await check_cmd_perms(interaction, command="auto_roles_th") == -1:
                         return
                     from bot.core.components.select_menus.auto_roles import auto_roles_th
@@ -412,8 +415,8 @@ if __name__ == "__main__":
 
     async def sync_commands():
         await command_tree.sync()
-        await command_tree.sync(guild=discord.Object(id=710237092931829893))
+        await command_tree.sync(guild=discord.Object(id=Ids["Test_server"]))
         await command_tree.sync(guild=discord.Object(id=Ids["Bot_creators_only_server"]))
 
     Clash_info.sync_commands = sync_commands
-    Clash_info.run(Discord_token, log_handler=None)
+    Clash_info.run(Discord_token, log_handler=logging.StreamHandler(), log_level=30)

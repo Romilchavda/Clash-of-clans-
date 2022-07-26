@@ -11,18 +11,23 @@ async def stats(interaction: discord.Interaction):
     cursor = connection.cursor()
     cursor.execute("SELECT COUNT(*) FROM bot_usage")
     nb_monthly_users = cursor.fetchone()[0]
-    text = f"Monthly users: {nb_monthly_users}\n"
+    text = f"**Monthly users: {nb_monthly_users}\n\n**"
+    commands_stats = {}
 
     cursor.execute("PRAGMA table_info(bot_usage)")
     commands_names = []
-    for command_name in cursor.fetchall():
-        if command_name[1] != "user_id":
-            commands_names += [command_name[1]]
+    for command in cursor.fetchall():
+        command_name = command[1]
+        if command_name != "user_id":
+            commands_names += [command_name]
 
-    for command in commands_names:
-        cursor.execute(f"SELECT COUNT(*) FROM bot_usage WHERE NOT {command} = 0")
-        text += f"{command}: {cursor.fetchone()[0]}\n"
+    for command_name in commands_names:
+        cursor.execute(f"SELECT COUNT(*) FROM bot_usage WHERE NOT {command_name} = 0")
+        commands_stats[command_name] = cursor.fetchone()[0]
 
-    embed = create_embed("Stats:", text, interaction.guild.me.color, "", interaction.guild.me.avatar.url)
+    for name, usages in {k: v for k, v in sorted(commands_stats.items(), key=lambda x: x[1], reverse=True)}.items():
+        text += f"{name}: {usages}\n"
+
+    embed = create_embed("Stats:", text, interaction.guild.me.color, "", interaction.guild.me.display_avatar.url)
     await interaction.response.send_message(embed=embed)
     return

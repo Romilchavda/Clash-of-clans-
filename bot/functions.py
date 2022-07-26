@@ -25,7 +25,22 @@ def escape_markdown(text: str) -> str:
     text = text.replace(">", "\>")
     text = text.replace("|", "\|")
     text = text.replace("`", "\`")
+    text = text.replace(":", "\:")
     return text
+
+
+def cardinal_to_ordinal_number(n: int) -> str:
+    if 10 <= n % 100 < 20:
+        ordinal_indicator = "th"
+    elif n % 10 == 1:
+        ordinal_indicator = "st"
+    elif n % 10 == 2:
+        ordinal_indicator = "nd"
+    elif n % 10 == 3:
+        ordinal_indicator = "rd"
+    else:
+        ordinal_indicator = "th"
+    return str(n) + ordinal_indicator
 
 
 def trophies_to_league(trophies: int) -> discord.Emoji:

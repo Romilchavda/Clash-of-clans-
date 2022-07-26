@@ -13,7 +13,7 @@ async def buildings_bh_embed(interaction: discord.Interaction, lvl: int) -> disc
         text_bh += f"\n__{category}:__\n"
         for building_name, building_max_level in buildings.items():
             text_bh += f"{building_name} level max: {building_max_level}\n"
-    embed = create_embed(f"__**BH {lvl}:\n**__", text_bh, interaction.guild.me.color, f"buildings_bh|{interaction.user.id}", interaction.guild.me.avatar.url)
+    embed = create_embed(f"__**BH {lvl}:\n**__", text_bh, interaction.guild.me.color, f"buildings_bh|{interaction.user.id}", interaction.guild.me.display_avatar.url)
     return embed
 
 
@@ -23,7 +23,7 @@ async def buildings_bh(interaction: discord.Interaction, lvl: int):
         return
 
     elif lvl == 0:
-        embed = create_embed("What is your BH level ?", "", interaction.guild.me.color, f"buildings_bh|{interaction.user.id}", interaction.guild.me.avatar.url)
+        embed = create_embed("What is your BH level ?", "", interaction.guild.me.color, f"buildings_bh|{interaction.user.id}", interaction.guild.me.display_avatar.url)
         await interaction.response.send_message(embed=embed, view=ComponentView("buildings_bh"))
 
     elif 0 < lvl <= Useful["max_bh_lvl"]:
