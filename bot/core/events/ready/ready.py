@@ -259,13 +259,11 @@ async def ready(self: discord.Client):
 
             def run_bot(event_name: str, original_json: dict):
                 lite_json = original_json
-                for k, v in original_json["repository"].items():
-                    lite_json.pop(k)
-                lite_json.pop("repository")
-                if "forkee" in list(original_json.keys()):
-                    for k, v in original_json["forkee"].items():
-                        lite_json.pop(k)
-                    lite_json.pop("forkee")
+                useless = ["repository", "forkee"]
+                for key in useless:
+                    if key in list(original_json.keys()):
+                        for k, v in original_json[key].items():
+                            lite_json[key].pop(k)
                 print(lite_json)
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)

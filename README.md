@@ -110,7 +110,7 @@ In this file, you can choose whether to activate or not some parts of the code (
 
 </summary>
 
-First of all, you have to copy the [secure_folder_template](secure_folder_template) and rename it "Secure Folder".
+First, you have to copy the [secure_folder_template](secure_folder_template) and rename it "Secure Folder".
 
 Then you have to fill in your [Secure Folder/login.json](secure_folder_template/login.json) with your credentials. You can see with the following table when each field is required
 

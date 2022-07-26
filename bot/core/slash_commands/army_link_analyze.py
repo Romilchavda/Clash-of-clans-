@@ -6,11 +6,7 @@ from bot.functions import create_embed
 
 
 async def army_link_analyze(interaction: discord.interactions, army_link: str):
-    try:
-        troops, spells = Clash_of_clans.parse_army_link(army_link)
-    except:
-        await interaction.response.send_message("There is an error, make sure your link is really an army link!")
-        return
+    troops, spells = Clash_of_clans.parse_army_link(army_link)
     text = f"[This army]({army_link}) contains:\n\n"
     if [troops, spells] != [[], []]:
         for troop, quantity in troops:

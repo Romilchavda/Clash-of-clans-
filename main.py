@@ -1,40 +1,19 @@
 # TODO : Final check : Go from GitHub and try to make the bot using README.md
-import logging
 
-import nest_asyncio
-nest_asyncio.apply()
-
-# ----- PACKAGES: -----
 import json
+import logging
 import sqlite3
 import sys
 import traceback
 
 import coc
 import discord.errors
+import nest_asyncio
 from discord import app_commands
 
-# ----- PROJECT FILES: -----
-from bot.functions import *
-
-# ----- COMMANDS: -----
-
-# MESSAGES
-from bot.core.slash_commands.help import help
-
+from bot.apis_clients.discord import Discord_token
 from bot.core.slash_commands.army_link_analyze import army_link_analyze
 from bot.core.slash_commands.auto_roles import auto_roles_bh, auto_roles_leagues, auto_roles_th
-from bot.core.slash_commands.buildings_bh import buildings_bh
-from bot.core.slash_commands.buildings_th import buildings_th
-from bot.core.slash_commands.clan_info import clan_info
-from bot.core.slash_commands.clan_members import clan_members
-from bot.core.slash_commands.clan_super_troops_activated import clan_super_troops_activated
-from bot.core.slash_commands.link_coc_account import link_coc_account, unlink_coc_account
-from bot.core.slash_commands.member_info import member_info
-from bot.core.slash_commands.player_info import player_info
-from bot.core.slash_commands.search_clan import search_clan
-from bot.core.slash_commands.bot_info import bot_info
-
 from bot.core.slash_commands.bot_creators_only.add_a_bot_id import add_a_bot_id
 from bot.core.slash_commands.bot_creators_only.add_reaction_with_id import add_reaction_with_id
 from bot.core.slash_commands.bot_creators_only.download_emojis import download_emojis
@@ -43,15 +22,25 @@ from bot.core.slash_commands.bot_creators_only.reboot import reboot
 from bot.core.slash_commands.bot_creators_only.refresh_dbl import refresh_dbl
 from bot.core.slash_commands.bot_creators_only.servers_list import servers_list
 from bot.core.slash_commands.bot_creators_only.stats import stats
-
-# ----- VARIABLES: -----
+from bot.core.slash_commands.bot_info import bot_info
+from bot.core.slash_commands.buildings_bh import buildings_bh
+from bot.core.slash_commands.buildings_th import buildings_th
+from bot.core.slash_commands.clan_info import clan_info
+from bot.core.slash_commands.clan_members import clan_members
+from bot.core.slash_commands.clan_super_troops_activated import clan_super_troops_activated
+from bot.core.slash_commands.help import help
+from bot.core.slash_commands.link_coc_account import link_coc_account, unlink_coc_account
+from bot.core.slash_commands.member_info import member_info
+from bot.core.slash_commands.player_info import player_info
+from bot.core.slash_commands.search_clan import search_clan
+from bot.functions import *
 from data.config import Config
 from data.useful import Ids
 
-# MODIFIABLE VARIABLES
 votes_file = open(f"{Config['secure_folder_path']}votes.json", "r")
 Votes = json.load(votes_file)
 
+nest_asyncio.apply()
 
 if __name__ == "__main__":
     print(f"Python: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
@@ -103,7 +92,7 @@ if __name__ == "__main__":
     command_tree = app_commands.CommandTree(Clash_info)
 
     async def on_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
-        if type(error.original) is discord.errors.NotFound:
+        if type(error.original) is discord.errors.NotFound:  # TODO : Check `error` type
             if interaction.app_permissions.send_messages:
                 await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
         else:
@@ -111,7 +100,6 @@ if __name__ == "__main__":
         return
 
     command_tree.on_error = on_error
-
 
     @command_tree.command(name="help", description="Show the help message to use @Clash INFO#3976")
     async def _help(interaction: discord.Interaction):
@@ -347,11 +335,6 @@ if __name__ == "__main__":
         return
 
 
-    from bot.apis_clients.discord import Discord_token
-
-    Bot_id = Clash_info.id
-
-
     @Clash_info.event
     async def on_interaction(interaction: discord.Interaction):
         if interaction.type is discord.InteractionType.component:
@@ -413,10 +396,11 @@ if __name__ == "__main__":
                 await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
         return
 
+
     async def sync_commands():
         await command_tree.sync()
         await command_tree.sync(guild=discord.Object(id=Ids["Test_server"]))
         await command_tree.sync(guild=discord.Object(id=Ids["Bot_creators_only_server"]))
 
     Clash_info.sync_commands = sync_commands
-    Clash_info.run(Discord_token, log_handler=logging.StreamHandler(), log_level=30)
+    Clash_info.run(Discord_token, log_handler=logging.StreamHandler(), log_level=logging.ERROR)

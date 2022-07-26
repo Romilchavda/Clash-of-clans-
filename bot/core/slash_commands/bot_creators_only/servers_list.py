@@ -4,6 +4,7 @@ import discord
 
 
 async def servers_list(interaction: discord.Interaction):
+    await interaction.response.defer()
     guilds = {}
     for guild in interaction.client.guilds:
         users = 0
@@ -21,6 +22,6 @@ async def servers_list(interaction: discord.Interaction):
         text = f"\n{ones}) {guild[1]['users'] + guild[1]['bots']} members ({guild[1]['users']} users, {guild[1]['bots']} bots) ; creator: {guild[0].owner.name} ; server: {guild[0].name}"
         file.write(text)
     file.close()
-    await interaction.response.send_message(file=discord.File("tmp.txt"))
+    await interaction.followup.send(file=discord.File("tmp.txt"))
     os.remove("tmp.txt")
     return
