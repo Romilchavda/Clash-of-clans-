@@ -197,8 +197,8 @@ async def ready(self: discord.Client):
 
         @app.route("/topgg_webhook", methods=["post"])
         def topgg_webhook():
-            if flask.request.remote_addr != "159.203.105.187" or "Authorization" not in list(flask.request.headers.keys()) or flask.request.headers["Authorization"] != Login["top_gg"]["authorization"]:
-                authorization = None if "Authorization" not in list(flask.request.headers.keys()) else flask.request.headers["Authorization"]
+            if flask.request.remote_addr != "159.203.105.187" or "Authorization" not in flask.request.headers.keys() or flask.request.headers["Authorization"] != Login["top_gg"]["authorization"]:
+                authorization = None if "Authorization" not in flask.request.headers.keys() else flask.request.headers["Authorization"]
                 print(f"Unauthorized:\nIP = {flask.request.remote_addr}\nAuthorization = {authorization}")
                 return flask.Response(status=401)
 
@@ -216,7 +216,7 @@ async def ready(self: discord.Client):
                         user = clash_info.get_user(voter_id)
                         votes_channel = self.get_channel(Ids["Votes_channel"])
 
-                        if user.id not in list(Votes.keys()):
+                        if user.id not in Votes.keys():
                             Votes[user.id] = 1
                         else:
                             Votes[user.id] += 1
@@ -250,7 +250,7 @@ async def ready(self: discord.Client):
             return flask.Response(status=200)
 
         @app.route("/github_webhook", methods=["post"])
-        def github_webhook():  # TODO : Finish it
+        def github_webhook():
             if flask.request.get_json()["repository"]["name"] != "Clash-Of-Clans-Discord-Bot":
                 return 418
 
@@ -258,13 +258,6 @@ async def ready(self: discord.Client):
             print(flask.request.get_json())
 
             def run_bot(event_name: str, original_json: dict):
-                lite_json = original_json
-                useless = ["repository", "forkee"]
-                for key in useless:
-                    if key in list(original_json.keys()):
-                        for k, v in original_json[key].items():
-                            lite_json[key].pop(k)
-                print(lite_json)
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
 
@@ -274,8 +267,31 @@ async def ready(self: discord.Client):
 
                     async def on_ready(self):
                         events_channel = self.get_channel(837339878869565460)  # TODO : Generalize it (with ids.json)
-                        embed = create_embed(f"{event_name.capitalize()} from {lite_json['sender']['login']}", f"```json\n{json.dumps(lite_json, indent=2)}```", events_channel.guild.me.color, "", events_channel.guild.me.display_avatar.url)
-                        await events_channel.send(f"{event_name.capitalize()} from {lite_json['sender']['login']}")
+                        embed = create_embed(f"{event_name.capitalize()} by {original_json['sender']['login']}", "", events_channel.guild.me.color, "", events_channel.guild.me.display_avatar.url)
+                        description = ""
+                        if event_name == "push":
+                            description += f"[{'Forced ' if original_json['forced'] else ''}Push]({original_json['head_commit']['url']}) by [{original_json['sender']['login']}]({original_json['sender']['html_url']})\n"
+                            description += f"{original_json['head_commit']['message']}\n\n"
+                            nl = "\n"  # Because `f"{'\n'}"` is forbidden
+                            if json.dumps(original_json['head_commit']['added']):
+                                description += f"**Added:**\n{nl.join(original_json['head_commit']['added'])}\n\n"
+                            if json.dumps(original_json['head_commit']['modified']):
+                                description += f"**Modified:**\n{nl.join(original_json['head_commit']['modified'])}\n\n"
+                            if json.dumps(original_json['head_commit']['removed']):
+                                description += f"**Removed:**\n{nl.join(original_json['head_commit']['removed'])}\n\n"
+                        elif event_name == "fork":
+                            description += f"[Fork]({original_json['forkee']['html_url']}) by [{original_json['sender']['login']}]({original_json['sender']['html_url']})\n"
+                        elif event_name == "star":
+                            if original_json['action'] == 'created':
+                                from bot.functions import cardinal_to_ordinal_number
+                                description += f"[{original_json['sender']['login']}]({original_json['sender']['html_url']}) is now the {cardinal_to_ordinal_number(original_json['repository']['stargazers_count'])} stargazer!\n[See the stargazers list]({original_json['repository']['html_url']}/stargazers)"
+                            else:
+                                description += f"[{original_json['sender']['login']}]({original_json['sender']['html_url']}) is no longer a stargazer.\n[See the stargazers list]({original_json['repository']['html_url']}/stargazers)"
+                        elif event_name == "":  # TODO : Add other event types
+                            pass
+                        else:
+                            embed.description = description
+                        await events_channel.send(f"{event_name.capitalize()} by {original_json['sender']['login']}")
                         await events_channel.send(embed=embed)
                         await self.close()
 

@@ -138,6 +138,104 @@ python Clash-Of-Clans-Discord-Bot\main.py
 
 ## Usage
 
+<details>
+<summary>
+
+#### See the whole directory tree
+
+</summary>
+
+```
+├─ bot/
+|  ├─ apis_clients/
+|  |  ├─ clash_of_clans.py
+|  |  ├─ discord.py
+|  |  └─ top_gg.py
+|  ├─ core/
+|  |  ├─ components/
+|  |  |  ├─ buttons/
+|  |  |  |  └─ joined_guild_message.py
+|  |  |  ├─ select_menus/
+|  |  |  |  ├─ auto_roles.py
+|  |  |  |  ├─ change_bh_lvl.py
+|  |  |  |  ├─ change_player_info_page.py
+|  |  |  |  ├─ change_search_clan.py
+|  |  |  |  └─ change_th_lvl.py
+|  |  ├─ events/
+|  |  |  ├─ guild/
+|  |  |  |  ├─ guild_join.py
+|  |  |  |  └─ guild_remove.py
+|  |  |  ├─ member/
+|  |  |  |  ├─ member_join.py
+|  |  |  |  └─ member_remove.py
+|  |  |  ├─ message/
+|  |  |  |  ├─ message.py
+|  |  |  |  └─ raw_message_edit.py
+|  |  |  ├─ ready/
+|  |  |  |  └─ ready.py
+|  |  ├─ slash_commands/
+|  |  |  ├─ bot_creators_only/
+|  |  |  |  ├─ add_a_bot_id.py
+|  |  |  |  ├─ add_reaction_with_id.py
+|  |  |  |  ├─ download_emojis.py
+|  |  |  |  ├─ find_user_by_id.py
+|  |  |  |  ├─ reboot.py
+|  |  |  |  ├─ refresh_dbl.py
+|  |  |  |  ├─ servers_list.py
+|  |  |  |  └─ stats.py
+|  |  |  ├─ army_link_analyze.py
+|  |  |  ├─ auto_roles.py
+|  |  |  ├─ best_donations.py
+|  |  |  ├─ bot_info.py
+|  |  |  ├─ buildings_bh.py
+|  |  |  ├─ buildings_th.py
+|  |  |  ├─ clan_info.py
+|  |  |  ├─ clan_members.py
+|  |  |  ├─ clan_super_troops_activated.py
+|  |  |  ├─ help.py
+|  |  |  ├─ link_coc_account.py
+|  |  |  ├─ member_info.py
+|  |  |  ├─ player_info.py
+|  |  |  └─ search_clan.py
+|  ├─ bot.py
+|  ├─ config.json
+|  ├─ emojis.py
+|  └─ functions.py
+├─ data/
+|  ├─ data_source/
+|  |  ├─ clash_of_clans.sqlite
+|  |  ├─ ids.json
+|  |  ├─ required_permissions.json
+|  |  └─ useful.json
+|  ├─ clash_of_clans.py
+|  ├─ config.py
+|  ├─ required_permissions.py
+|  ├─ secure_folder.py
+|  ├─ useful.py
+|  └─ views.py
+├─ ressources/
+|  ├─ supercell_magic_webfont.ttf
+|  └─ welcome.png
+├─ secure_folder_template/
+|  ├─ linked_accounts.json
+|  ├─ login.json
+|  ├─ secure.sqlite
+|  └─ votes.json
+├─ CODE_OF_CONDUCT.md
+├─ Commands.md
+├─ Emojis.zip
+├─ FUNDING.yml
+├─ LICENSE
+├─ PRIVACY.md
+├─ README.md
+├─ TERMS.md
+├─ main.py
+└─ requirements.txt
+```
+
+</details>
+
+*This section will be filled later*
 
 
 ## Features
@@ -147,7 +245,7 @@ You can see [here](Commands.md) the list of available commands.
 
 ## Support
 
-You can support this project with subscribing our [Patreon](https://www.patreon.com/clash_info)
+You can support this project by subscribing our [Patreon](https://www.patreon.com/clash_info)
 
 
 ## License

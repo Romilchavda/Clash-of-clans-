@@ -7,7 +7,7 @@ from data.secure_folder import Linked_accounts
 
 async def member_info(interaction: discord.Interaction, member: discord.Member):
     accounts_linked = ""
-    if member.id in list(Linked_accounts.keys()):
+    if member.id in Linked_accounts.keys():
         for k, v in Linked_accounts[member.id].items():
             accounts_linked += f"{k}: {escape_markdown(', '.join(v))}"
     else:

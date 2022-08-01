@@ -92,9 +92,10 @@ if __name__ == "__main__":
     command_tree = app_commands.CommandTree(Clash_info)
 
     async def on_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
-        if type(error.original) is discord.errors.NotFound:  # TODO : Check `error` type
-            if interaction.app_permissions.send_messages:
-                await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
+        if type(error) is discord.app_commands.CommandInvokeError:
+            if type(error.original) is discord.errors.NotFound:
+                if interaction.app_permissions.send_messages:
+                    await interaction.channel.send("The command has expired, please try again\n\n*This message will be deleted in 15 seconds*", delete_after=15)
         else:
             print(traceback.format_exc())
         return

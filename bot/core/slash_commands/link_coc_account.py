@@ -14,7 +14,7 @@ async def link_coc_account(interaction: discord.Interaction, player_tag: str, ap
     player_tag = coc.utils.correct_tag(player_tag)
     is_correct_token = await Clash_of_clans.verify_player_token(player_tag, api_token)
     if is_correct_token:
-        if interaction.user.id not in list(Linked_accounts.keys()):
+        if interaction.user.id not in Linked_accounts.keys():
             Linked_accounts[interaction.user.id] = {"Clash Of Clans": []}
         if player_tag not in Linked_accounts[interaction.user.id]["Clash Of Clans"]:
             Linked_accounts[interaction.user.id]["Clash Of Clans"] = Linked_accounts[interaction.user.id]["Clash Of Clans"] + [player_tag]
@@ -33,7 +33,7 @@ async def link_coc_account(interaction: discord.Interaction, player_tag: str, ap
 
 async def unlink_coc_account(interaction: discord.Interaction, player_tag: str):
     player_tag = coc.utils.correct_tag(player_tag)
-    if player_tag in Linked_accounts[interaction.user.id]["Clash Of Clans"]:
+    if interaction.user.id in Linked_accounts.keys() and player_tag in Linked_accounts[interaction.user.id]["Clash Of Clans"]:
         Linked_accounts[interaction.user.id]["Clash Of Clans"].pop(Linked_accounts[interaction.user.id]["Clash Of Clans"].index(player_tag))
         if not Linked_accounts[interaction.user.id]["Clash Of Clans"]:
             Linked_accounts.pop(interaction.user.id)
