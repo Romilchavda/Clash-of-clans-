@@ -25,6 +25,7 @@ from bot.core.slash_commands.bot_creators_only.stats import stats
 from bot.core.slash_commands.bot_info import bot_info
 from bot.core.slash_commands.buildings_bh import buildings_bh
 from bot.core.slash_commands.buildings_th import buildings_th
+from bot.core.slash_commands.clan_donations import clan_donations
 from bot.core.slash_commands.clan_info import clan_info
 from bot.core.slash_commands.clan_members import clan_members
 from bot.core.slash_commands.clan_super_troops_activated import clan_super_troops_activated
@@ -184,6 +185,15 @@ if __name__ == "__main__":
             return
         await buildings_th(interaction, town_hall_level)
         edit_commands_used(interaction.user.id, "buildings_th")
+        return
+
+    @command_tree.command(name="clan_donations", description="Show the clan members, sorted by donations stats")
+    @app_commands.describe(clan_tag="Clash Of Clans clan tag, format: #A1B2C3D4")
+    async def _clan_donations(interaction: discord.Interaction, clan_tag: str):
+        if await check_cmd_perms(interaction) == -1:
+            return
+        await clan_donations(interaction, clan_tag)
+        edit_commands_used(interaction.user.id, "clan_donations")
         return
 
     @command_tree.command(name="clan_info", description="Show data about the clan")
@@ -404,4 +414,4 @@ if __name__ == "__main__":
         await command_tree.sync(guild=discord.Object(id=Ids["Bot_creators_only_server"]))
 
     Clash_info.sync_commands = sync_commands
-    Clash_info.run(Discord_token, log_handler=logging.StreamHandler(), log_level=logging.ERROR)
+    Clash_info.run(Discord_token, log_handler=logging.StreamHandler(), log_level=logging.WARNING)

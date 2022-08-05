@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import io
 import json
 import os
 import shutil
@@ -34,10 +35,9 @@ async def ready(self: discord.Client):
         status_channel = self.get_channel(Ids["Status_channel"])
         await status_channel.send(f"{Emojis['Yes']} Cache loaded `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
 
-    support_server = self.get_guild(Ids["Support_server"])
-
-    if self.id == 704688212832026724:  # TODO : The following code only works with Clash INFO for the moment (see also member_join.py)
-        member_role = discord.utils.get(support_server.roles, name="Member")
+    if Ids["Member_role"]:
+        support_server = self.get_guild(Ids["Support_server"])
+        member_role = support_server.get_role(Ids["Member_role"])
         for member in support_server.members:
             if member_role not in member.roles and not member.bot:
                 await member.add_roles(member_role)
@@ -289,10 +289,12 @@ async def ready(self: discord.Client):
                                 description += f"[{original_json['sender']['login']}]({original_json['sender']['html_url']}) is no longer a stargazer.\n[See the stargazers list]({original_json['repository']['html_url']}/stargazers)"
                         elif event_name == "":  # TODO : Add other event types
                             pass
-                        else:
-                            embed.description = description
+                        embed.description = description
                         await events_channel.send(f"{event_name.capitalize()} by {original_json['sender']['login']}")
-                        await events_channel.send(embed=embed)
+
+                        file_content = io.BytesIO(json.dumps(original_json).encode('utf-8'))
+                        file = discord.File(file_content, filename="content.json")
+                        await events_channel.send(embed=embed, file=file)
                         await self.close()
 
                 github_webhooks_bot = GitHubWebhooksBot()

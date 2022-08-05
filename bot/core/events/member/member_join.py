@@ -10,8 +10,8 @@ from data.useful import Ids
 
 async def member_join(self: discord.Client, member: discord.Member):
     if member.guild.id == Ids["Support_server"]:
-        if self.id == 704688212832026724:  # TODO : The following code only works with Clash INFO for the moment (see also ready.py)
-            member_role = discord.utils.get(member.guild.roles, name="Member")
+        if Ids["Member_role"] and not member.bot:
+            member_role = member.guild.get_role(Ids["Member_role"])
             await member.add_roles(member_role)
 
         users = 0

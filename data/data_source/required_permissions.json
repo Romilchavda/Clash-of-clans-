@@ -6,6 +6,7 @@
     "bot_info": [],
     "buildings_bh": [],
     "buildings_th": [],
+    "clan_donations": ["send_messages", "view_channel"],
     "clan_info": [],
     "clan_members": ["send_messages", "view_channel"],
     "clan_super_troops_activated": [],
