@@ -175,7 +175,7 @@ async def ready(self: discord.Client):
                     super().__init__(intents=discord.Intents.default())
 
                 async def on_ready(self):
-                    shutil.make_archive("Secure Folder", 'zip', "../Secure Folder")
+                    shutil.make_archive("Secure Folder", 'zip', Config["secure_folder_path"][:-1])
                     file = discord.File(fp="Secure Folder.zip", filename="Secure Folder.zip")
                     await self.get_channel(Ids["Secure_folder_backup_channel"]).send("Here is the Secure Folder backup !", file=file)
                     os.remove("Secure Folder.zip")
