@@ -103,7 +103,7 @@ async def ready(self: discord.Client):
             else:
                 day1 = datetime.datetime(date.year + 1, 1, 1)
             diff = day1 - date
-            time.sleep(diff.seconds + diff.days * 24 * 3600 + 3600)  # 1h00 instead of 0h00 to avoid conflicts with WeeklyStats
+            time.sleep(diff.seconds + diff.days * 24 * 3600)
             print("Monthly Users Stats", datetime.datetime.now())
 
             # ===== MONTHLY USERS =====
@@ -254,9 +254,6 @@ async def ready(self: discord.Client):
             if flask.request.get_json()["repository"]["name"] != "Clash-Of-Clans-Discord-Bot":
                 return 418
 
-            print("GitHub Webhooks:", flask.request.headers["X-Github-Event"])
-            print(flask.request.get_json())
-
             def run_bot(event_name: str, original_json: dict):
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
@@ -292,7 +289,7 @@ async def ready(self: discord.Client):
                         embed.description = description
                         await events_channel.send(f"{event_name.capitalize()} by {original_json['sender']['login']}")
 
-                        file_content = io.BytesIO(json.dumps(original_json).encode('utf-8'))
+                        file_content = io.BytesIO(json.dumps(original_json, indent=4).encode('utf-8'))
                         file = discord.File(file_content, filename="content.json")
                         await events_channel.send(embed=embed, file=file)
                         await self.close()

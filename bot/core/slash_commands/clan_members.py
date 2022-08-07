@@ -10,7 +10,7 @@ async def clan_members(interaction: discord.Interaction, tag: str):
     try:
         clan = await Clash_of_clans.get_clan(tag)
     except coc.errors.NotFound:
-        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{tag}` (do not forget the # in front of the tag).", ephemeral=True)
+        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{tag}`.", ephemeral=True)
         return
     text = ""
     x = 0

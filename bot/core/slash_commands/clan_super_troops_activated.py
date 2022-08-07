@@ -9,7 +9,7 @@ async def clan_super_troops_activated(interaction: discord.Interaction, clan_tag
     try:
         clan = await Clash_of_clans.get_clan(clan_tag)
     except coc.errors.NotFound:
-        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{clan_tag}` (do not forget the # in front of the tag).", ephemeral=True)
+        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{clan_tag}`.", ephemeral=True)
         return
     members_with_super_troop = []
     max_level = "Max level unknown"

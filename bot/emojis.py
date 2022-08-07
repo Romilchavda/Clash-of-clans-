@@ -63,6 +63,7 @@ class EmojisBot(discord.Client):
 
         # ----- COC Main -----
         guild = self.get_guild(Ids["Emojis_coc_main_server"])
+        emojis["Capital_gold"] = discord.utils.get(guild.emojis, name="capital_gold")
         emojis["Exp"] = discord.utils.get(guild.emojis, name="exp")
         emojis["Star"] = discord.utils.get(guild.emojis, name="star")
         emojis["Star_empty"] = discord.utils.get(guild.emojis, name="star_empty")  # NOT USED

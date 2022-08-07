@@ -14,7 +14,7 @@ async def clan_info_embed(interaction: discord.Interaction, tag: str) -> discord
         location = "International"
     leader = "None"
     for member in clan.members:
-        if member.role is coc.Role.leader:  # Check `is` OK
+        if member.role is coc.Role.leader:
             leader = member
             break
     ties = clan.war_ties
@@ -32,7 +32,7 @@ async def clan_info(interaction: discord.Interaction, tag: str):
     try:
         embed = await clan_info_embed(interaction, tag)
     except coc.errors.NotFound:
-        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{tag}` (do not forget the # in front of the tag).", ephemeral=True)
+        await interaction.response.send_message(f"Clan not found\nThere is no clan with the tag `{tag}`.", ephemeral=True)
         return
     await interaction.response.send_message(embed=embed)
     return
