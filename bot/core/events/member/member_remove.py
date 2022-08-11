@@ -20,7 +20,7 @@ async def member_remove(self: discord.Client, member: discord.Member):
             overwrite = {member.guild.default_role: discord.PermissionOverwrite(connect=False, view_channel=True)}
             await member.guild.create_voice_channel(f"👤 Users: {users: ,}", overwrites=overwrite)
 
-        welcome = self.get_channel(Ids["Welcome_channel"])
+        welcome = member.guild.get_channel(Ids["Welcome_channel"])
         days_spent_in_the_server = (datetime.datetime.now().date() - member.joined_at.date()).days
         if days_spent_in_the_server > 1:
             embed = create_embed(f"Unfortunately, {escape_markdown(member.name)} left us", f"{escape_markdown(member.name)}#{member.discriminator} (`{member.id}`) left us. He/She joined the server the {member.joined_at.date().isoformat()} ({days_spent_in_the_server} days ago)", member.color, "", member.guild.me.display_avatar.url)

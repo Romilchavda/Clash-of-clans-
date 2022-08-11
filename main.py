@@ -1,9 +1,6 @@
-# TODO : Final check : Go from GitHub and try to make the bot using README.md
-
 import json
 import logging
 import sqlite3
-import sys
 import traceback
 
 import coc
@@ -44,10 +41,6 @@ Votes = json.load(votes_file)
 nest_asyncio.apply()
 
 if __name__ == "__main__":
-    print(f"Python: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
-          f"CoC: {coc.__version__}\n"
-          f"Discord: {discord.__version__}")
-
     from bot.apis_clients.discord import Clash_info
 
     connection_modifiable = sqlite3.connect(f"{Config['secure_folder_path']}secure.sqlite")
@@ -241,22 +234,7 @@ if __name__ == "__main__":
     @command_tree.command(name="clan_super_troops_activated", description="Show which player has activated the super troop in the clan")
     @app_commands.describe(clan_tag="Clash Of Clans clan tag, format: #A1B2C3D4")
     @app_commands.describe(super_troop="Super troop")
-    @app_commands.choices(super_troop=[
-        app_commands.Choice(name="Super Barbarian", value="Super Barbarian"),
-        app_commands.Choice(name="Super Archer", value="Super Archer"),
-        app_commands.Choice(name="Super Giant", value="Super Giant"),
-        app_commands.Choice(name="Sneaky Goblin", value="Sneaky Goblin"),
-        app_commands.Choice(name="Super Wall Breaker", value="Super Wall Breaker"),
-        app_commands.Choice(name="Rocket Balloon", value="Rocket Balloon"),
-        app_commands.Choice(name="Super Wizard", value="Super Wizard"),
-        app_commands.Choice(name="Super Dragon", value="Super Dragon"),
-        app_commands.Choice(name="Inferno Dragon", value="Inferno Dragon"),
-        app_commands.Choice(name="Super Minion", value="Super Minion"),
-        app_commands.Choice(name="Super Valkyrie", value="Super Valkyrie"),
-        app_commands.Choice(name="Super Witch", value="Super Witch"),
-        app_commands.Choice(name="Ice Hound", value="Ice Hound"),
-        app_commands.Choice(name="Super Bowler", value="Super Bowler")
-    ])
+    @app_commands.choices(super_troop=[app_commands.Choice(name=s_troop, value=s_troop) for s_troop in coc.SUPER_TROOP_ORDER])
     async def _clan_super_troops_activated(interaction: discord.Interaction, clan_tag: str, super_troop: app_commands.Choice[str]):
         if await check_cmd_perms(interaction) == -1:
             return
@@ -387,6 +365,12 @@ if __name__ == "__main__":
                             return
                         from bot.core.components.select_menus.change_th_lvl import change_th_lvl
                         await change_th_lvl(interaction)
+                        return
+                    elif command_name == "clan_super_troops_activated":
+                        if await check_cmd_perms(interaction, command="clan_super_troops_activated") == -1:
+                            return
+                        from bot.core.components.select_menus.change_clan_super_troops_activated import change_clan_super_troops_activated
+                        await change_clan_super_troops_activated(interaction)
                         return
                     elif command_name == "search_clan":
                         if await check_cmd_perms(interaction, command="search_clan") == -1:

@@ -13,7 +13,7 @@ async def download_emojis(interaction: discord.Interaction, recreate_emojis_zip:
         if os.path.exists("Emojis_save"):
             shutil.rmtree("Emojis_save")
         os.mkdir("Emojis_save")
-        emojis_servers_id = [Ids["Support_server"], Ids["Emojis_coc_th_bh_leagues_server"], Ids["Emojis_coc_troops_spells_server"], Ids["Emojis_coc_war_leagues"], Ids["Emojis_coc_main_server"], Ids["Emojis_discord_badges_server"], Ids["Emojis_general_icons_server"], Ids["Emojis_discord_main_server"]]
+        emojis_servers_id = [Ids["Emojis_coc_players_related_server"], Ids["Emojis_coc_troops_server"], Ids["Emojis_coc_clans_related_server"], Ids["Emojis_coc_remains_server"], Ids["Emojis_discord_main_server"], Ids["Emojis_general_remains_server"]]
         forbidden_characters = ["<", ">", ":", "“", "/", "\\", "|", "?", "*"]
         for guild_id in emojis_servers_id:
             guild = interaction.client.get_guild(guild_id)
@@ -25,7 +25,7 @@ async def download_emojis(interaction: discord.Interaction, recreate_emojis_zip:
                 r = requests.get(emoji.url, allow_redirects=True)
                 extension = r.headers["Content-type"].split("/")[1]
                 open(f"Emojis_save/{guild_name}/{emoji.name}.{extension}", "wb").write(r.content)
-        shutil.make_archive("Emojis", 'zip', "Emojis_save")
+        shutil.make_archive("Emojis", "zip", "Emojis_save")
         shutil.rmtree("Emojis_save")
 
     file = discord.File(fp="Emojis.zip", filename="Emojis.zip")

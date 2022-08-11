@@ -24,7 +24,7 @@ async def raw_message_edit(self: discord.Client, payload: discord.RawMessageUpda
         author = message.author
         if author is None or type(author) is not discord.Member:
             return
-        if author.top_role < discord.utils.get(message.guild.roles, name="Staff"):
+        if author.top_role < message.guild.get_role(Ids["Staff_role"]):
             text = message.content
 
             if Config["perspective_api"]:

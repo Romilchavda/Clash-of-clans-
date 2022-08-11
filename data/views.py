@@ -1,5 +1,6 @@
 from typing import Union
 
+import coc
 import discord
 
 from bot.emojis import Emojis
@@ -26,8 +27,12 @@ buildings_th = discord.ui.Select(placeholder="Select your Town Hall level", min_
 for th_level, emoji in Emojis["Th_emojis"].items():
     buildings_th.add_option(label=f"TH {th_level}", value=str(th_level), emoji=emoji)
 
+clan_super_troops_activated = discord.ui.Select(placeholder="Select the super troop", min_values=1, max_values=1)
+for s_troop in coc.SUPER_TROOP_ORDER:
+    clan_super_troops_activated.add_option(label=s_troop, value=s_troop)
+
 player_info = discord.ui.Select(placeholder="Select the type of stats that you want to see", min_values=1, max_values=1)
-player_info.add_option(label="Main", value="main", emoji=Emojis["Barbarian_king"])
+player_info.add_option(label="Main", value="main", emoji=Emojis["Th_emojis"][Useful["max_th_lvl"]])
 player_info.add_option(label="Troops", value="troops", emoji=Emojis["Troop"])
 player_info.add_option(label="Success", value="success", emoji=Emojis["Exp"])
 
@@ -36,7 +41,7 @@ button_delete = discord.ui.Button(style=discord.ButtonStyle.danger, label="Delet
 
 
 class ComponentView(discord.ui.View):
-    def __init__(self, command: Union["auto_roles_bh", "auto_roles_leagues", "auto_roles_th", "buildings_bh", "buildings_th", "player_info", "joined_guild_message"]):
+    def __init__(self, command: Union["auto_roles_bh", "auto_roles_leagues", "auto_roles_th", "buildings_bh", "buildings_th", "clan_super_troops_activated", "player_info", "joined_guild_message"]):
         super().__init__(timeout=None)
         if command == "auto_roles_bh":
             self.add_item(auto_roles_bh)
@@ -48,6 +53,8 @@ class ComponentView(discord.ui.View):
             self.add_item(buildings_bh)
         elif command == "buildings_th":
             self.add_item(buildings_th)
+        elif command == "clan_super_troops_activated":
+            self.add_item(clan_super_troops_activated)
         elif command == "player_info":
             self.add_item(player_info)
 

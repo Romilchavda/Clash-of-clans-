@@ -8,20 +8,20 @@
     "Bot": 704688212832026724,
     "Bot_beta": 710119855348645888,
     
-    "ROLES": "",
-    "Member_role": 719548456674394172,
-    
     "SERVERS": "",
     "Support_server": 719537805604290650,
     "Test_server": 710237092931829893,
     "Bot_creators_only_server": 808814347224481863,
-    "Emojis_coc_th_bh_leagues_server": 696344010905747487,
-    "Emojis_coc_troops_spells_server": 716259214279966770,
-    "Emojis_coc_war_leagues": 932354828154331226,
-    "Emojis_coc_main_server": 870305165180305408,
+    "Emojis_coc_players_related_server": 696344010905747487,
+    "Emojis_coc_troops_server": 716259214279966770,
+    "Emojis_coc_clans_related_server": 932354828154331226,
+    "Emojis_coc_remains_server": 870305165180305408,
     "Emojis_discord_main_server": 714841480602320958,
-    "Emojis_discord_badges_server": 761885092649762826,
-    "Emojis_general_icons_server": 836587468144509009,
+    "Emojis_general_remains_server": 836587468144509009,
+    
+    "ROLES": "",
+    "Member_role": 719548456674394172,
+    "Staff_role": 743796789769142354,
 
     "CHANNELS": "",
     "Weekly_stats_channel": 785956772568367144,
@@ -34,5 +34,6 @@
     "Votes_channel": 793853230476034078,
     "Welcome_channel": 722849076416217161,
     "Perspective_api_channel": 945659445638234112,
-    "Secure_folder_backup_channel": 808814347224481866
+    "Secure_folder_backup_channel": 808814347224481866,
+    "Events_github_channel": 837339878869565460
 }

@@ -19,11 +19,15 @@ from data.useful import Ids
 
 
 async def ready(self: discord.Client):
+    print("Beginning of the preparation of the bot")
+
     if Config["main_bot"]:
         status_channel = self.get_channel(Ids["Status_channel"])
         await status_channel.send(f"{Emojis['Yes']} Connected `{datetime.datetime.now().replace(microsecond=0).isoformat(sep=' ')}`")
 
+    print("Slash Commands will be synced...")
     await self.sync_commands()
+    print("Slash Commands synced")
 
     from bot.apis_clients.clash_of_clans import Clash_of_clans, login
     await Clash_of_clans.login(login["email"], login["password"])
@@ -263,7 +267,7 @@ async def ready(self: discord.Client):
                         super().__init__(intents=discord.Intents.default())
 
                     async def on_ready(self):
-                        events_channel = self.get_channel(837339878869565460)  # TODO : Generalize it (with ids.json)
+                        events_channel = self.get_channel(Ids["Events_github_channel"])
                         embed = create_embed(f"{event_name.capitalize()} by {original_json['sender']['login']}", "", events_channel.guild.me.color, "", events_channel.guild.me.display_avatar.url)
                         description = ""
                         if event_name == "push":
@@ -311,7 +315,7 @@ async def ready(self: discord.Client):
     thread = threading.Thread(target=thread_webhooks_app, args=())
     thread.start()
 
-    print("Connected")
+    print("The bot is ready to be used!")
 
     nb_guilds = len(self.guilds)
     act = discord.Activity(type=discord.ActivityType.watching, name=f"{nb_guilds: ,} servers")

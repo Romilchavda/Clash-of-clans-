@@ -35,7 +35,7 @@ async def on_message(self: discord.Client, message: discord.Message):
 
     # ----- Auto Moderation -----
     if message.guild.id == Ids["Support_server"]:
-        if message.author.top_role < discord.utils.get(message.guild.roles, name="Staff"):
+        if message.author.top_role < message.guild.get_role(Ids["Staff_role"]):
             text = message.content
 
             if Config["perspective_api"]:
