@@ -12,7 +12,7 @@ async def buildings_bh_embed(interaction: discord.Interaction, lvl: int) -> disc
     for category, buildings in level_bh.items():
         text_bh += f"\n__{category}:__\n"
         for building_name, building_max_level in buildings.items():
-            text_bh += f"{building_name} level max: {building_max_level}\n"
+            text_bh += f"{building_name} max level: {building_max_level}\n"
     embed = create_embed(f"__**BH {lvl}:\n**__", text_bh, interaction.guild.me.color, f"buildings_bh|{interaction.user.id}", interaction.guild.me.display_avatar.url)
     return embed
 
